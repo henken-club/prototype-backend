@@ -1,0 +1,13 @@
+scalar DateTime
+
+type PageInfo {
+  startCursor: String
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+
+enum OrderDirection {
+  ASC
+  DESC
+}

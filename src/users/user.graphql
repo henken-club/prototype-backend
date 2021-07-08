@@ -1,0 +1,65 @@
+type User {
+  id: ID!
+  alias: ID!
+  name: String
+
+  following(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): UserConnection
+  followers(
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): UserConnection
+
+  postPreduices(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    orderBy: PrejudiceOrder
+  ): PrejudiceConnection
+
+  recievedPreduices(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    orderBy: PrejudiceOrder
+  ): PrejudiceConnection
+
+  postAnswers(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    orderBy: AnswerOrder
+  ): AnswerConnection
+
+  recievedAnswers(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    orderBy: AnswerOrder
+  ): AnswerConnection
+}
+
+type UserEdge {
+  cursor: String!
+  node: User!
+}
+
+type UserConnection {
+  edges: [UserEdge!]!
+  nodes: [User!]!
+  pageInfo: PageInfo
+}
+
+type Query {
+  user(alias: ID!): User
+}

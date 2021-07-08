@@ -1,0 +1,35 @@
+type Prejudice {
+  id: ID!
+  createdAt: DateTime!
+
+  book: Book!
+
+  userFrom: User!
+  userTo: User!
+
+  answer: Answer
+}
+
+type PrejudiceEdge {
+  cursor: String!
+  node: Prejudice!
+}
+
+type PrejudiceConnection {
+  edges: [PrejudiceEdge!]!
+  nodes: [Prejudice!]!
+  pageInfo: PageInfo
+}
+
+input PrejudiceOrder {
+  direction: OrderDirection!
+  field: PrejudiceOrderField!
+}
+
+enum PrejudiceOrderField {
+  CREATED_AT
+}
+
+type Query {
+  prejudice(id: ID!): Prejudice
+}

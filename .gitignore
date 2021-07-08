@@ -1,0 +1,29 @@
+# dependencies
+node_modules/
+package-lock.json
+
+# logfiles
+*.log
+
+# output
+dist/
+
+# auto generated
+src/graphql.ts
+
+# test
+coverage/
+
+# env
+.env*
+!.env.example
+
+# OS
+.DS_Store
+
+# VSCode
+.vscode/*
+!.vscode/extensions.json
+
+# ESLint
+.eslintcache

@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  neo4j:
+    image: neo4j:4.2
+    ports:
+      - published: $TEST_NEO4J_HTTP_PORT
+        target: 7474
+      - published: $TEST_NEO4J_BOLT_PORT
+        target: 7687
+    environment:
+      NEO4J_AUTH: none
+      NEO4JLABS_PLUGINS: '["apoc"]'

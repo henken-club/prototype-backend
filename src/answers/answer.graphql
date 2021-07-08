@@ -1,0 +1,39 @@
+type Answer {
+  id: ID!
+  createdAt: DateTime!
+
+  status: AnswerStatus!
+  text: String!
+
+  prejudice: Prejudice!
+}
+
+enum AnswerStatus {
+  ALREADY_READ
+  READING
+  UNREAD
+}
+
+type AnswerEdge {
+  cursor: String!
+  node: Answer!
+}
+
+type AnswerConnection {
+  edges: [AnswerEdge!]!
+  nodes: [Answer!]!
+  pageInfo: PageInfo
+}
+
+input AnswerOrder {
+  direction: OrderDirection!
+  field: AnswerOrderField!
+}
+
+enum AnswerOrderField {
+  CREATED_AT
+}
+
+type Query {
+  answer(id: ID!): Answer
+}

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  neo4j:
+    image: neo4j:4.2
+    ports:
+      - published: $NEO4J_HTTP_PORT
+        target: 7474
+      - published: $NEO4J_BOLT_PORT
+        target: 7687
+    healthcheck:
+      test: wget http://localhost:7474/browser -O-
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    environment:
+      NEO4J_AUTH: ${NEO4J_USERNAME}/${NEO4J_PASSWORD}
+      NEO4JLABS_PLUGINS: '["apoc"]'
+    volumes:
+      - henken-club-backend-prototype-neo4j-data:/data
+      - henken-club-backend-prototype-neo4j-logs:/logs
+      - henken-club-backend-prototype-neo4j-import:/var/lib/neo4j/import
+      - henken-club-backend-prototype-neo4j-plugins:/plugins
+
+volumes:
+  henken-club-backend-prototype-neo4j-data:
+  henken-club-backend-prototype-neo4j-logs:
+  henken-club-backend-prototype-neo4j-import:
+  henken-club-backend-prototype-neo4j-plugins:
