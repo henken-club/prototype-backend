@@ -2,9 +2,11 @@
   "root": true,
   "extends": [
     "plugin:@shopify/typescript",
+    "plugin:@shopify/jest",
     "plugin:@shopify/prettier"
   ],
   "rules": {
+    "import/extensions": [0],
     "@typescript-eslint/consistent-type-definitions": [2, "type"],
     "@typescript-eslint/consistent-indexed-object-style": [2, "record"]
   },
