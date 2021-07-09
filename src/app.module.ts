@@ -13,8 +13,13 @@ import {BooksModule} from './books/books.module';
   imports: [
     GraphQLModule.forRoot({
       typePaths: ['src/*/*.graphql'],
-      definitions: {path: path.resolve(process.cwd(), 'src/graphql.ts')},
       resolvers: {DateTime: GraphQLDateTime},
+      definitions: {
+        path: path.resolve(process.cwd(), 'src/graphql.ts'),
+        customScalarTypeMapping: {
+          DateTime: 'Date',
+        },
+      },
     }),
     Neo4jModule.forRootAsync({
       imports: [ConfigModule.forFeature(Neo4jConfig)],
