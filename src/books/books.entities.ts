@@ -1,5 +1,7 @@
-export class BookEntity {
-  id!: string;
+import {Book, AuthorConnection} from '~/graphql';
+import {Connection} from '~/common/common.entities';
 
-  title!: string;
-}
+export {BookOrder, BookOrderField, AddBookInput} from '~/graphql';
+
+export type BookEntity = Omit<Book, 'authors'>;
+export class BookConnection extends Connection<BookEntity> {}
