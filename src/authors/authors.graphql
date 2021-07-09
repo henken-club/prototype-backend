@@ -1,0 +1,26 @@
+type Author {
+  id: ID!
+  name: String!
+  writedBooks(
+    skip: Int = 0
+    limit: Int = 10
+    orderBy: BookOrder = {direction: ASC, field: TITLE}
+  ): BookConnection!
+}
+
+type AuthorConnection {
+  nodes: [Author!]!
+}
+
+input AuthorOrder {
+  direction: OrderDirection!
+  field: AuthorOrderField!
+}
+
+enum AuthorOrderField {
+  NAME
+}
+
+type Query {
+  author(id: ID!): Author
+}

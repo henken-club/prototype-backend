@@ -8,6 +8,7 @@ import {GraphQLDateTime} from 'graphql-scalars';
 import {Neo4jConfig} from './neo4j/neo4j.config';
 import {Neo4jModule} from './neo4j/neo4j.module';
 import {BooksModule} from './books/books.module';
+import {AuthorsModule} from './authors/authors.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import {BooksModule} from './books/books.module';
         password: config.password,
       }),
     }),
+    AuthorsModule,
     BooksModule,
   ],
 })

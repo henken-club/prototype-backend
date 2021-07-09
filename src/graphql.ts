@@ -91,15 +91,8 @@ export interface Author {
     writedBooks: BookConnection;
 }
 
-export interface AuthorEdge {
-    cursor: string;
-    node: Author;
-}
-
 export interface AuthorConnection {
-    edges: AuthorEdge[];
     nodes: Author[];
-    pageInfo: PageInfo;
 }
 
 export interface Book {
@@ -108,15 +101,8 @@ export interface Book {
     authors: AuthorConnection;
 }
 
-export interface BookEdge {
-    cursor: string;
-    node: Book;
-}
-
 export interface BookConnection {
-    edges: BookEdge[];
     nodes: Book[];
-    pageInfo?: PageInfo;
 }
 
 export interface IMutation {
