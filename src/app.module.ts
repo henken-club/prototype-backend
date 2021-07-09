@@ -7,6 +7,7 @@ import {GraphQLDateTime} from 'graphql-scalars';
 
 import {Neo4jConfig} from './neo4j/neo4j.config';
 import {Neo4jModule} from './neo4j/neo4j.module';
+import {BooksModule} from './books/books.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import {Neo4jModule} from './neo4j/neo4j.module';
         password: config.password,
       }),
     }),
+    BooksModule,
   ],
 })
 export class AppModule {}
