@@ -6,3 +6,11 @@ type Book {
 type Query {
   book(id: ID!): Book
 }
+
+type Mutation {
+  addBook(input: AddBookInput!): Book!
+}
+
+input AddBookInput {
+  title: String!
+}

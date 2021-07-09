@@ -36,6 +36,7 @@
     "graphql-relay": "^0.8.0",
     "graphql-scalars": "^1.10.0",
     "graphql-tools": "^7.0.5",
+    "nanoid": "^3.1.23",
     "neo4j-driver": "^4.3.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0"

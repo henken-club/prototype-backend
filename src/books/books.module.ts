@@ -3,8 +3,10 @@ import {Module} from '@nestjs/common';
 import {BooksResolver} from './books.resolver';
 import {BooksService} from './books.service';
 
+import {IdModule} from '~/id/id.module';
+
 @Module({
-  imports: [],
+  imports: [IdModule],
   providers: [BooksResolver, BooksService],
   exports: [BooksService],
 })
