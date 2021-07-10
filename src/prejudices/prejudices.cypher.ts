@@ -24,3 +24,16 @@ export const CYPHER_GET_PREJUDICE_ANSWER = `
     a.correctness AS correctness,
     a.text AS text
 `;
+
+const getRelatedBooks = (property: 'title', order: 'ASC' | 'DESC') =>
+  `
+  MATCH (:Prejudice {id: $id})-[:RELATED_BOOK]->(b:Book)
+  RETURN
+    b.id AS id,
+    b.title AS title
+  ORDER BY ${property} ${order}
+  SKIP $skip LIMIT $limit` as const;
+export const CYPHER_GET_PREJUDICE_RELATED_BOOKS_ORDERBY_TITLE_AT_ASC =
+  getRelatedBooks('title', 'ASC');
+export const CYPHER_GET_PREJUDICE_RELATED_BOOKS_ORDERBY_TITLE_AT_DESC =
+  getRelatedBooks('title', 'DESC');

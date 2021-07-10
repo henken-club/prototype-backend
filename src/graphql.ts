@@ -117,6 +117,7 @@ export interface Prejudice {
     from: User;
     to: User;
     answer?: Answer;
+    relatedBooks: BookConnection;
 }
 
 export interface PrejudiceConnection {

@@ -5,6 +5,6 @@ export {PrejudiceOrder, PrejudiceOrderField} from '~/graphql';
 
 export type PrejudiceEntity = Omit<
   Prejudice,
-  'book' | 'from' | 'to' | 'answer'
+  'book' | 'from' | 'to' | 'answer' | 'relatedBooks'
 >;
 export class PrejudiceConnection extends Connection<PrejudiceEntity> {}
