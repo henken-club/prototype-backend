@@ -10,12 +10,15 @@ import {
 import {UserEntity} from './users.entities';
 import {UsersService} from './users.service';
 
+import {AnswerEntity} from '~/answers/answers.entities';
+import {PrejudiceEntity} from '~/prejudices/prejudices.entities';
+
 @Resolver('User')
 export class UsersResolver {
   constructor(private usersService: UsersService) {}
 
   @Query('user')
-  async getBook(@Args('alias') alias: string): Promise<UserEntity | null> {
+  async getUser(@Args('alias') alias: string): Promise<UserEntity | null> {
     return this.usersService.getByAlias(alias);
   }
 }

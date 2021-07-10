@@ -7,10 +7,10 @@
 
 /* tslint:disable */
 /* eslint-disable */
-export enum AnswerStatus {
-    ALREADY_READ = "ALREADY_READ",
-    READING = "READING",
-    UNREAD = "UNREAD"
+export enum Correctness {
+    CORRECT = "CORRECT",
+    PARTLY_CORRECT = "PARTLY_CORRECT",
+    INCORRECT = "INCORRECT"
 }
 
 export enum AnswerOrderField {
@@ -61,8 +61,8 @@ export interface PrejudiceOrder {
 export interface Answer {
     id: string;
     createdAt: DateTime;
-    status: AnswerStatus;
-    text: string;
+    correctness: Correctness;
+    text?: string;
     prejudice: Prejudice;
 }
 
