@@ -1,5 +1,4 @@
 import {Injectable} from '@nestjs/common';
-import {int, isDateTime, temporal} from 'neo4j-driver';
 
 import {
   CYPHER_GET_PREJUDICE,
@@ -11,7 +10,6 @@ import {PrejudiceEntity} from './prejudices.entities';
 
 import {Neo4jService} from '~/neo4j/neo4j.service';
 import {IdService} from '~/id/id.service';
-import {AuthorEntity, AuthorOrder} from '~/authors/authors.entities';
 import {UserEntity} from '~/users/users.entities';
 import {AnswerEntity} from '~/answers/answers.entities';
 

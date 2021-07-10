@@ -14,9 +14,7 @@ import {
 
 import {Neo4jService} from '~/neo4j/neo4j.service';
 import {IdService} from '~/id/id.service';
-import {AuthorEntity, AuthorOrder} from '~/authors/authors.entities';
 import {
-  PrejudiceConnection,
   PrejudiceEntity,
   PrejudiceOrder,
 } from '~/prejudices/prejudices.entities';

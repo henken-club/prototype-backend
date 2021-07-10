@@ -2,7 +2,7 @@ import * as path from 'path';
 
 import {Module} from '@nestjs/common';
 import {ConfigModule, ConfigType} from '@nestjs/config';
-import {GraphQLModule, GraphQLTimestamp} from '@nestjs/graphql';
+import {GraphQLModule} from '@nestjs/graphql';
 import {GraphQLDateTime} from 'graphql-scalars';
 
 import {Neo4jConfig} from './neo4j/neo4j.config';

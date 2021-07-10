@@ -1,4 +1,4 @@
-import {Book, AuthorConnection, User, Prejudice} from '~/graphql';
+import {Prejudice} from '~/graphql';
 import {Connection} from '~/common/common.entities';
 
 export {PrejudiceOrder, PrejudiceOrderField} from '~/graphql';

@@ -1,11 +1,4 @@
-import {
-  Args,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import {Args, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
 
 import {PrejudiceEntity} from './prejudices.entities';
 import {PrejudicesService} from './prejudices.service';

@@ -7,14 +7,10 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 
-import {BookEntity, BookOrder, AddBookInput} from './books.entities';
+import {BookEntity, AddBookInput} from './books.entities';
 import {BooksService} from './books.service';
 
-import {
-  AuthorConnection,
-  AuthorEntity,
-  AuthorOrder,
-} from '~/authors/authors.entities';
+import {AuthorConnection, AuthorOrder} from '~/authors/authors.entities';
 
 @Resolver('Book')
 export class BooksResolver {

@@ -1,11 +1,4 @@
-import {
-  Args,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import {Args, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
 
 import {AuthorsService} from './authors.service';
 import {AuthorEntity} from './authors.entities';

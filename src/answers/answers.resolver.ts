@@ -1,16 +1,8 @@
-import {
-  Args,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import {Args, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
 
 import {AnswersService} from './answers.service';
 import {AnswerEntity} from './answers.entities';
 
-import {UserEntity} from '~/users/users.entities';
 import {PrejudiceEntity} from '~/prejudices/prejudices.entities';
 
 @Resolver('Answer')

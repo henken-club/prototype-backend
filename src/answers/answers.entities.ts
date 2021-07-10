@@ -1,4 +1,4 @@
-import {Book, Answer, AuthorConnection, User, Prejudice} from '~/graphql';
+import {Answer} from '~/graphql';
 import {Connection} from '~/common/common.entities';
 
 export {Correctness, AnswerOrder, AnswerOrderField} from '~/graphql';

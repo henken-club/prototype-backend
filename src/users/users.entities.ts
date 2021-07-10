@@ -1,4 +1,4 @@
-import {Book, AuthorConnection, User} from '~/graphql';
+import {User} from '~/graphql';
 import {Connection} from '~/common/common.entities';
 
 export {BookOrder, BookOrderField, AddBookInput} from '~/graphql';

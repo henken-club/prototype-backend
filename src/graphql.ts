@@ -131,7 +131,7 @@ export interface User {
     followers?: UserConnection;
     postPreduices: PrejudiceConnection;
     recievedPreduices: PrejudiceConnection;
-    postAnswers?: AnswerConnection;
+    postAnswers: AnswerConnection;
 }
 
 export interface UserConnection {
