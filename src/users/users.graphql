@@ -1,7 +1,7 @@
 type User {
   id: ID!
   alias: ID!
-  name: String
+  displayName: String
 
   following(
     after: String
