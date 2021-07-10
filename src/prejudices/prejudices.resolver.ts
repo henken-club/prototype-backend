@@ -11,6 +11,7 @@ import {PrejudiceEntity} from './prejudices.entities';
 import {PrejudicesService} from './prejudices.service';
 
 import {UserEntity} from '~/users/users.entities';
+import {AnswerEntity} from '~/answers/answers.entities';
 
 @Resolver('Prejudice')
 export class PrejudicesResolver {
@@ -24,6 +25,11 @@ export class PrejudicesResolver {
   @ResolveField('to')
   async getUserTo(@Parent() {id}: PrejudiceEntity): Promise<UserEntity> {
     return this.prejudicesService.getUserTo(id);
+  }
+
+  @ResolveField('answer')
+  async getAnswer(@Parent() {id}: PrejudiceEntity): Promise<AnswerEntity> {
+    return this.prejudicesService.getAnswer(id);
   }
 
   @Query('prejudice')

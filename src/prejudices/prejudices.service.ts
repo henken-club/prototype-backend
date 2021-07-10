@@ -3,6 +3,7 @@ import {int, isDateTime, temporal} from 'neo4j-driver';
 
 import {
   cypherGetPrejudice,
+  cypherGetPrejudiceAnswer,
   cypherGetPrejudiceUserFrom,
   cypherGetPrejudiceUserTo,
 } from './prejudices.cypher';
@@ -12,6 +13,7 @@ import {Neo4jService} from '~/neo4j/neo4j.service';
 import {IdService} from '~/id/id.service';
 import {AuthorEntity, AuthorOrder} from '~/authors/authors.entities';
 import {UserEntity} from '~/users/users.entities';
+import {AnswerEntity} from '~/answers/answers.entities';
 
 @Injectable()
 export class PrejudicesService {
@@ -57,6 +59,20 @@ export class PrejudicesService {
       id: result.records[0].get('id'),
       alias: result.records[0].get('alias'),
       displayName: result.records[0].get('displayName'),
+    };
+  }
+
+  async getAnswer(id: string): Promise<AnswerEntity> {
+    const result = await this.neo4jService.read(cypherGetPrejudiceAnswer, {
+      id,
+    });
+    if (result.records.length !== 1) throw new Error('Prejudice.answer broken');
+
+    return {
+      id: result.records[0].get('id'),
+      createdAt: new Date(result.records[0].get('createdAt')),
+      correctness: result.records[0].get('correctness'),
+      text: result.records[0].get('text'),
     };
   }
 }
