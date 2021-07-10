@@ -1,11 +1,11 @@
 import {Injectable} from '@nestjs/common';
 import {int} from 'neo4j-driver';
 
-import {cypherGetById} from './cypher/get-by-id.cypher';
 import {
-  cypherGetWritedBooksOrderByNameAsc,
-  cypherGetWritedBooksOrderByNameDesc,
-} from './cypher/get-writed-books';
+  CYPHER_GET_AUTHOR,
+  CYPHER_GET_AUTHOR_WRITED_BOOKS_ORDER_BY_TITLE_ASC,
+  CYPHER_GET_AUTHOR_WRITED_BOOKS_ORDER_BY_TITLE_DESC,
+} from './authors.cypher';
 
 import {OrderDirection} from '~/common/common.entities';
 import {Neo4jService} from '~/neo4j/neo4j.service';
@@ -17,7 +17,7 @@ export class AuthorsService {
   constructor(private readonly neo4jService: Neo4jService) {}
 
   async getById(id: string): Promise<AuthorEntity | null> {
-    const result = await this.neo4jService.read(cypherGetById, {id});
+    const result = await this.neo4jService.read(CYPHER_GET_AUTHOR, {id});
     if (result.records.length !== 1) return null;
     return {
       id: result.records[0].get('id'),
@@ -27,8 +27,8 @@ export class AuthorsService {
 
   getWritedBooksQuery({direction, field}: BookOrder) {
     if (direction === OrderDirection.ASC)
-      return cypherGetWritedBooksOrderByNameAsc;
-    else return cypherGetWritedBooksOrderByNameDesc;
+      return CYPHER_GET_AUTHOR_WRITED_BOOKS_ORDER_BY_TITLE_ASC;
+    else return CYPHER_GET_AUTHOR_WRITED_BOOKS_ORDER_BY_TITLE_DESC;
   }
 
   async getWritedBooks(

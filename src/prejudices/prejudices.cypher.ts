@@ -1,4 +1,4 @@
-export const cypherGetPrejudice = `
+export const CYPHER_GET_PREJUDICE = `
   MATCH (p:Prejudice {id: $id})
   RETURN
     p.id AS id,
@@ -6,17 +6,17 @@ export const cypherGetPrejudice = `
     p.createdAt AS createdAt
 `;
 
-export const cypherGetPrejudiceUserFrom = `
+export const CYPHER_GET_PREJUDICE_USER_FROM = `
   MATCH (u:User)-[:POST_PREJUDICE]->(:Prejudice {id: $id})
   RETURN u.id AS id, u.alias AS alias, u.displayName AS displayName
 `;
 
-export const cypherGetPrejudiceUserTo = `
+export const CYPHER_GET_PREJUDICE_USER_TO = `
   MATCH (:Prejudice {id: $id})-[:PREJUDICE_AGAINST]->(u:User)
   RETURN u.id AS id, u.alias AS alias, u.displayName AS displayName
 `;
 
-export const cypherGetPrejudiceAnswer = `
+export const CYPHER_GET_PREJUDICE_ANSWER = `
   MATCH (a:Answer)-[:ANSWER_TO]->(:Prejudice {id: $id})
   RETURN
     a.id AS id,

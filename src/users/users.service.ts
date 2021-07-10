@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {int} from 'neo4j-driver';
 
 import {UserEntity} from './users.entities';
-import {cypherGetUserByAlias} from './cypher/get-by-alias.cypher';
+import {CYPHER_GET_USER} from './users.cypher';
 
 import {Neo4jService} from '~/neo4j/neo4j.service';
 import {IdService} from '~/id/id.service';
@@ -16,7 +16,7 @@ export class UsersService {
   ) {}
 
   async getByAlias(alias: string): Promise<UserEntity | null> {
-    const result = await this.neo4jService.read(cypherGetUserByAlias, {alias});
+    const result = await this.neo4jService.read(CYPHER_GET_USER, {alias});
     if (result.records.length !== 1) return null;
     return {
       id: result.records[0].get('id'),

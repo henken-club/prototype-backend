@@ -3,14 +3,13 @@ import {int} from 'neo4j-driver';
 
 import {OrderDirection} from '../common/common.entities';
 
-import {cypherAddBook} from './cypher/add-book.cypher';
-import {cypherGetById} from './cypher/get-by-id.cypher';
-import {BookEntity} from './books.entities';
 import {
-  cypherCountAuthors,
-  cypherGetAuthorsOrderByNameAsc,
-  cypherGetAuthorsOrderByNameDesc,
-} from './cypher/get-authors';
+  CYPHER_ADD_BOOK,
+  CYPHER_GET_BOOK,
+  CYPHER_GET_BOOK_AUTHORS_ORDER_BY_NAME_ASC,
+  CYPHER_GET_BOOK_AUTHORS_ORDER_BY_NAME_DESC,
+} from './books.cypher';
+import {BookEntity} from './books.entities';
 
 import {Neo4jService} from '~/neo4j/neo4j.service';
 import {IdService} from '~/id/id.service';
@@ -24,7 +23,7 @@ export class BooksService {
   ) {}
 
   async getById(id: string): Promise<BookEntity | null> {
-    const result = await this.neo4jService.read(cypherGetById, {id});
+    const result = await this.neo4jService.read(CYPHER_GET_BOOK, {id});
     if (result.records.length !== 1) return null;
     return {
       id: result.records[0].get('id'),
@@ -35,7 +34,7 @@ export class BooksService {
   async addBook({title}: {title: string}): Promise<BookEntity> {
     const id = this.idService.createId();
 
-    const result = await this.neo4jService.write(cypherAddBook, {id, title});
+    const result = await this.neo4jService.write(CYPHER_ADD_BOOK, {id, title});
     if (result.records.length === 0) throw new Error('Failed add book');
     return {
       id: result.records[0].get('id'),
@@ -44,8 +43,9 @@ export class BooksService {
   }
 
   getAuthorsQuery({direction, field}: AuthorOrder) {
-    if (direction === OrderDirection.ASC) return cypherGetAuthorsOrderByNameAsc;
-    else return cypherGetAuthorsOrderByNameDesc;
+    if (direction === OrderDirection.ASC)
+      return CYPHER_GET_BOOK_AUTHORS_ORDER_BY_NAME_ASC;
+    else return CYPHER_GET_BOOK_AUTHORS_ORDER_BY_NAME_DESC;
   }
 
   async getAuthors(

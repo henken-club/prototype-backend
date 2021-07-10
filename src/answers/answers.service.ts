@@ -1,7 +1,10 @@
 import {Injectable} from '@nestjs/common';
 import {int, isDateTime, temporal} from 'neo4j-driver';
 
-import {cypherGetAnswer, cypherGetAnswerToPrejudice} from './answers.cypher';
+import {
+  CYPHER_GET_ANSWER,
+  CYPHER_GET_ANSWER_TO_PREJUDICE,
+} from './answers.cypher';
 import {AnswerEntity} from './answers.entities';
 
 import {Neo4jService} from '~/neo4j/neo4j.service';
@@ -18,7 +21,7 @@ export class AnswersService {
   ) {}
 
   async getById(id: string): Promise<AnswerEntity | null> {
-    const result = await this.neo4jService.read(cypherGetAnswer, {
+    const result = await this.neo4jService.read(CYPHER_GET_ANSWER, {
       id,
     });
     if (result.records.length !== 1) return null;
@@ -32,9 +35,12 @@ export class AnswersService {
   }
 
   async getPrejudice(id: string): Promise<PrejudiceEntity> {
-    const result = await this.neo4jService.read(cypherGetAnswerToPrejudice, {
-      id,
-    });
+    const result = await this.neo4jService.read(
+      CYPHER_GET_ANSWER_TO_PREJUDICE,
+      {
+        id,
+      },
+    );
     if (result.records.length !== 1)
       throw new Error('Prejudice.userFrom broken');
 

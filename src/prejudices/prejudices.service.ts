@@ -2,10 +2,10 @@ import {Injectable} from '@nestjs/common';
 import {int, isDateTime, temporal} from 'neo4j-driver';
 
 import {
-  cypherGetPrejudice,
-  cypherGetPrejudiceAnswer,
-  cypherGetPrejudiceUserFrom,
-  cypherGetPrejudiceUserTo,
+  CYPHER_GET_PREJUDICE,
+  CYPHER_GET_PREJUDICE_ANSWER,
+  CYPHER_GET_PREJUDICE_USER_FROM,
+  CYPHER_GET_PREJUDICE_USER_TO,
 } from './prejudices.cypher';
 import {PrejudiceEntity} from './prejudices.entities';
 
@@ -23,7 +23,7 @@ export class PrejudicesService {
   ) {}
 
   async getById(id: string): Promise<PrejudiceEntity | null> {
-    const result = await this.neo4jService.read(cypherGetPrejudice, {
+    const result = await this.neo4jService.read(CYPHER_GET_PREJUDICE, {
       id,
     });
     if (result.records.length !== 1) return null;
@@ -36,9 +36,12 @@ export class PrejudicesService {
   }
 
   async getUserFrom(id: string): Promise<UserEntity> {
-    const result = await this.neo4jService.read(cypherGetPrejudiceUserFrom, {
-      id,
-    });
+    const result = await this.neo4jService.read(
+      CYPHER_GET_PREJUDICE_USER_FROM,
+      {
+        id,
+      },
+    );
     if (result.records.length !== 1)
       throw new Error('Prejudice.userFrom broken');
 
@@ -50,7 +53,7 @@ export class PrejudicesService {
   }
 
   async getUserTo(id: string): Promise<UserEntity> {
-    const result = await this.neo4jService.read(cypherGetPrejudiceUserTo, {
+    const result = await this.neo4jService.read(CYPHER_GET_PREJUDICE_USER_TO, {
       id,
     });
     if (result.records.length !== 1) throw new Error('Prejudice.userTo broken');
@@ -63,7 +66,7 @@ export class PrejudicesService {
   }
 
   async getAnswer(id: string): Promise<AnswerEntity> {
-    const result = await this.neo4jService.read(cypherGetPrejudiceAnswer, {
+    const result = await this.neo4jService.read(CYPHER_GET_PREJUDICE_ANSWER, {
       id,
     });
     if (result.records.length !== 1) throw new Error('Prejudice.answer broken');

@@ -1,4 +1,4 @@
-export const cypherGetAnswer = `
+export const CYPHER_GET_ANSWER = `
   MATCH (a:Answer {id: $id})
   RETURN
     a.id AS id,
@@ -7,7 +7,7 @@ export const cypherGetAnswer = `
     a.text AS text
 `;
 
-export const cypherGetAnswerToPrejudice = `
+export const CYPHER_GET_ANSWER_TO_PREJUDICE = `
   MATCH (:Answer {id: $id})-[:ANSWER_TO]->(p:Prejudice)
   RETURN
     p.id AS id,
