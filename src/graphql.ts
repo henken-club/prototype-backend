@@ -118,28 +118,22 @@ export interface PageInfo {
 
 export interface Prejudice {
     id: string;
+    title: string;
     createdAt: DateTime;
     book: Book;
-    userFrom: User;
-    userTo: User;
+    from: User;
+    to: User;
     answer?: Answer;
 }
 
-export interface PrejudiceEdge {
-    cursor: string;
-    node: Prejudice;
-}
-
 export interface PrejudiceConnection {
-    edges: PrejudiceEdge[];
     nodes: Prejudice[];
-    pageInfo?: PageInfo;
 }
 
 export interface User {
     id: string;
     alias: string;
-    name?: string;
+    displayName?: string;
     following?: UserConnection;
     followers?: UserConnection;
     postPreduices?: PrejudiceConnection;

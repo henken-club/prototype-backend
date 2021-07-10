@@ -1,24 +1,18 @@
 type Prejudice {
   id: ID!
+  title: String!
   createdAt: DateTime!
 
   book: Book!
 
-  userFrom: User!
-  userTo: User!
+  from: User!
+  to: User!
 
   answer: Answer
 }
 
-type PrejudiceEdge {
-  cursor: String!
-  node: Prejudice!
-}
-
 type PrejudiceConnection {
-  edges: [PrejudiceEdge!]!
   nodes: [Prejudice!]!
-  pageInfo: PageInfo
 }
 
 input PrejudiceOrder {

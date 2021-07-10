@@ -9,6 +9,8 @@ import {Neo4jConfig} from './neo4j/neo4j.config';
 import {Neo4jModule} from './neo4j/neo4j.module';
 import {BooksModule} from './books/books.module';
 import {AuthorsModule} from './authors/authors.module';
+import {UsersModule} from './users/users.module';
+import {PrejudicesModule} from './prejudices/prejudices.module';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import {AuthorsModule} from './authors/authors.module';
     }),
     AuthorsModule,
     BooksModule,
+    PrejudicesModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
