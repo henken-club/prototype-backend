@@ -66,15 +66,8 @@ export interface Answer {
     prejudice: Prejudice;
 }
 
-export interface AnswerEdge {
-    cursor: string;
-    node: Answer;
-}
-
 export interface AnswerConnection {
-    edges: AnswerEdge[];
     nodes: Answer[];
-    pageInfo?: PageInfo;
 }
 
 export interface IQuery {
@@ -136,21 +129,13 @@ export interface User {
     displayName?: string;
     following?: UserConnection;
     followers?: UserConnection;
-    postPreduices?: PrejudiceConnection;
-    recievedPreduices?: PrejudiceConnection;
+    postPreduices: PrejudiceConnection;
+    recievedPreduices: PrejudiceConnection;
     postAnswers?: AnswerConnection;
-    recievedAnswers?: AnswerConnection;
-}
-
-export interface UserEdge {
-    cursor: string;
-    node: User;
 }
 
 export interface UserConnection {
-    edges: UserEdge[];
     nodes: User[];
-    pageInfo?: PageInfo;
 }
 
 export type DateTime = Date;

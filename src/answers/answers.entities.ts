@@ -1,7 +1,7 @@
 import {Book, Answer, AuthorConnection, User, Prejudice} from '~/graphql';
 import {Connection} from '~/common/common.entities';
 
-export {Correctness} from '~/graphql';
+export {Correctness, AnswerOrder, AnswerOrderField} from '~/graphql';
 
 export type AnswerEntity = Omit<Answer, 'prejudice'>;
-export class PrejudiceConnection extends Connection<AnswerEntity> {}
+export class AnswerConnection extends Connection<AnswerEntity> {}

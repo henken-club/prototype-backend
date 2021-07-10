@@ -10,12 +10,60 @@ import {
 import {UserEntity} from './users.entities';
 import {UsersService} from './users.service';
 
-import {AnswerEntity} from '~/answers/answers.entities';
-import {PrejudiceEntity} from '~/prejudices/prejudices.entities';
+import {AnswerConnection, AnswerOrder} from '~/answers/answers.entities';
+import {
+  PrejudiceConnection,
+  PrejudiceOrder,
+} from '~/prejudices/prejudices.entities';
 
 @Resolver('User')
 export class UsersResolver {
   constructor(private usersService: UsersService) {}
+
+  @ResolveField('postPreduices')
+  async getPostPreduices(
+    @Parent() {id}: UserEntity,
+    @Args('skip') skip: number,
+    @Args('limit') limit: number,
+    @Args('orderBy') orderBy: PrejudiceOrder,
+  ): Promise<PrejudiceConnection> {
+    const nodes = await this.usersService.getPostPrejudices(id, {
+      skip,
+      limit,
+      orderBy,
+    });
+    return {nodes};
+  }
+
+  @ResolveField('recievedPreduices')
+  async getRecievedPreduices(
+    @Parent() {id}: UserEntity,
+    @Args('skip') skip: number,
+    @Args('limit') limit: number,
+    @Args('orderBy') orderBy: PrejudiceOrder,
+  ): Promise<PrejudiceConnection> {
+    const nodes = await this.usersService.getRecivedPrejudices(id, {
+      skip,
+      limit,
+      orderBy,
+    });
+    return {nodes};
+  }
+
+  @ResolveField('postAnswers')
+  async getPostAnswers(
+    @Parent() {id}: UserEntity,
+    @Args('skip') skip: number,
+    @Args('limit') limit: number,
+    @Args('orderBy') orderBy: AnswerOrder,
+  ): Promise<AnswerConnection> {
+    const nodes = await this.usersService.getPostAnswers(id, {
+      skip,
+      limit,
+      orderBy,
+    });
+    return {nodes};
+  }
 
   @Query('user')
   async getUser(@Args('alias') alias: string): Promise<UserEntity | null> {

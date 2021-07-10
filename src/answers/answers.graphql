@@ -14,15 +14,8 @@ enum Correctness {
   INCORRECT
 }
 
-type AnswerEdge {
-  cursor: String!
-  node: Answer!
-}
-
 type AnswerConnection {
-  edges: [AnswerEdge!]!
   nodes: [Answer!]!
-  pageInfo: PageInfo
 }
 
 input AnswerOrder {

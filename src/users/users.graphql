@@ -3,61 +3,30 @@ type User {
   alias: ID!
   displayName: String
 
-  following(
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): UserConnection
-  followers(
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): UserConnection
+  following(skip: Int = 0, limit: Int = 10): UserConnection
+  followers(skip: Int = 0, limit: Int = 10): UserConnection
 
   postPreduices(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    orderBy: PrejudiceOrder
-  ): PrejudiceConnection
+    skip: Int = 0
+    limit: Int = 10
+    orderBy: PrejudiceOrder = {direction: DESC, field: CREATED_AT}
+  ): PrejudiceConnection!
 
   recievedPreduices(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    orderBy: PrejudiceOrder
-  ): PrejudiceConnection
+    skip: Int = 0
+    limit: Int = 10
+    orderBy: PrejudiceOrder = {direction: DESC, field: CREATED_AT}
+  ): PrejudiceConnection!
 
   postAnswers(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    orderBy: AnswerOrder
-  ): AnswerConnection
-
-  recievedAnswers(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    orderBy: AnswerOrder
-  ): AnswerConnection
-}
-
-type UserEdge {
-  cursor: String!
-  node: User!
+    skip: Int = 0
+    limit: Int = 10
+    orderBy: AnswerOrder = {direction: DESC, field: CREATED_AT}
+  ): AnswerConnection!
 }
 
 type UserConnection {
-  edges: [UserEdge!]!
   nodes: [User!]!
-  pageInfo: PageInfo
 }
 
 type Query {
