@@ -2,16 +2,16 @@ type Answer {
   id: ID!
   createdAt: DateTime!
 
-  status: AnswerStatus!
-  text: String!
+  correctness: Correctness!
+  text: String
 
   prejudice: Prejudice!
 }
 
-enum AnswerStatus {
-  ALREADY_READ
-  READING
-  UNREAD
+enum Correctness {
+  CORRECT
+  PARTLY_CORRECT
+  INCORRECT
 }
 
 type AnswerEdge {
