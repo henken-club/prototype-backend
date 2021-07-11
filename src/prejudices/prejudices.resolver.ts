@@ -1,6 +1,13 @@
-import {Args, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 
-import {PrejudiceEntity} from './prejudices.entities';
+import {PrejudiceEntity, CreatePrejudiceInput} from './prejudices.entities';
 import {PrejudicesService} from './prejudices.service';
 
 import {UserEntity} from '~/users/users.entities';
@@ -22,7 +29,9 @@ export class PrejudicesResolver {
   }
 
   @ResolveField('answer')
-  async getAnswer(@Parent() {id}: PrejudiceEntity): Promise<AnswerEntity> {
+  async getAnswer(
+    @Parent() {id}: PrejudiceEntity,
+  ): Promise<AnswerEntity | null> {
     return this.prejudicesService.getAnswer(id);
   }
 
@@ -44,5 +53,13 @@ export class PrejudicesResolver {
   @Query('prejudice')
   async getPrejudice(@Args('id') id: string): Promise<PrejudiceEntity | null> {
     return this.prejudicesService.getById(id);
+  }
+
+  @Mutation('createPrejudice')
+  async createPrejudice(
+    from: string,
+    @Args('input') input: CreatePrejudiceInput,
+  ): Promise<PrejudiceEntity> {
+    return this.prejudicesService.createPrejudice({from, ...input});
   }
 }

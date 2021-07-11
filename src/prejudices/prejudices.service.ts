@@ -8,6 +8,7 @@ import {
   CYPHER_GET_PREJUDICE_ANSWER,
   CYPHER_GET_PREJUDICE_USER_FROM,
   CYPHER_GET_PREJUDICE_USER_TO,
+  CYPHER_CREATE_PREJUDICE,
 } from './prejudices.cypher';
 import {PrejudiceEntity} from './prejudices.entities';
 
@@ -68,12 +69,11 @@ export class PrejudicesService {
     };
   }
 
-  async getAnswer(id: string): Promise<AnswerEntity> {
+  async getAnswer(id: string): Promise<AnswerEntity | null> {
     const result = await this.neo4jService.read(CYPHER_GET_PREJUDICE_ANSWER, {
       id,
     });
-    if (result.records.length !== 1) throw new Error('Prejudice.answer broken');
-
+    if (result.records.length !== 1) return null;
     return {
       id: result.records[0].get('id'),
       createdAt: new Date(result.records[0].get('createdAt')),
@@ -101,5 +101,32 @@ export class PrejudicesService {
           title: record.get('title'),
         })),
       );
+  }
+
+  async createPrejudice({
+    from,
+    to,
+    title,
+    relatedBooks,
+  }: {
+    from: string;
+    to: string;
+    title: string;
+    relatedBooks: string[];
+  }): Promise<PrejudiceEntity> {
+    const id = this.idService.createId();
+    const result = await this.neo4jService.write(CYPHER_CREATE_PREJUDICE, {
+      id,
+      from,
+      to,
+      title,
+      relatedBooks,
+    });
+    if (result.records.length === 0) throw new Error('Failed create prejudice');
+    return {
+      id: result.records[0].get('id'),
+      title: result.records[0].get('title'),
+      createdAt: new Date(result.records[0].get('createdAt')),
+    };
   }
 }

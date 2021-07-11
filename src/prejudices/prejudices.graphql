@@ -33,3 +33,15 @@ enum PrejudiceOrderField {
 type Query {
   prejudice(id: ID!): Prejudice
 }
+
+type Mutation {
+  createPrejudice(input: CreatePrejudiceInput!): Prejudice!
+}
+
+input CreatePrejudiceInput {
+  to: ID!
+
+  title: String!
+
+  relatedBooks: [ID!]!
+}

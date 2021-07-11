@@ -58,6 +58,12 @@ export interface PrejudiceOrder {
     field: PrejudiceOrderField;
 }
 
+export interface CreatePrejudiceInput {
+    to: string;
+    title: string;
+    relatedBooks: string[];
+}
+
 export interface Answer {
     id: string;
     createdAt: DateTime;
@@ -100,6 +106,7 @@ export interface BookConnection {
 
 export interface IMutation {
     addBook(input: AddBookInput): Book | Promise<Book>;
+    createPrejudice(input: CreatePrejudiceInput): Prejudice | Promise<Prejudice>;
 }
 
 export interface PageInfo {

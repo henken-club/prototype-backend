@@ -37,3 +37,14 @@ export const CYPHER_GET_PREJUDICE_RELATED_BOOKS_ORDERBY_TITLE_AT_ASC =
   getRelatedBooks('title', 'ASC');
 export const CYPHER_GET_PREJUDICE_RELATED_BOOKS_ORDERBY_TITLE_AT_DESC =
   getRelatedBooks('title', 'DESC');
+
+export const CYPHER_CREATE_PREJUDICE = `
+  MATCH (from:User {id: $from})
+  MATCH (to:User {id: $to})
+  MATCH (b:Book) WHERE b.id IN $relatedBooks
+  MERGE (p:Prejudice {id: $id})
+  MERGE (from)-[:POST_PREJUDICE]->(p)-[:PREJUDICE_AGAINST]->(to)
+  MERGE (p)-[:RELATED_BOOK]->(b)
+  SET p.title = $title, p.createdAt = localdatetime()
+  RETURN p.id AS id, p.title AS title, p.createdAt AS createdAt
+`;
