@@ -6,12 +6,12 @@ import {Neo4jService} from '~/neo4j/neo4j.service';
 import {IdModule} from '~/id/id.module';
 import {PrejudicesService} from '~/prejudices/prejudices.service';
 
-describe('BooksService', () => {
+describe('PrejudicesService', () => {
   let app: INestApplication;
 
   let neo4jService: Neo4jService;
 
-  let booksService: PrejudicesService;
+  let prejudicesService: PrejudicesService;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
@@ -23,7 +23,7 @@ describe('BooksService', () => {
     await app.init();
 
     neo4jService = module.get<Neo4jService>(Neo4jService);
-    booksService = module.get<PrejudicesService>(PrejudicesService);
+    prejudicesService = module.get<PrejudicesService>(PrejudicesService);
   });
 
   beforeEach(async () => {
@@ -36,7 +36,7 @@ describe('BooksService', () => {
   });
 
   it('to be defined', () => {
-    expect(booksService).toBeDefined();
+    expect(prejudicesService).toBeDefined();
   });
 
   describe('addBook()', () => {
@@ -48,7 +48,7 @@ describe('BooksService', () => {
         CREATE (b2:Book {id: "book2"})
         RETURN *
       `);
-      const actual = await booksService.createPrejudice({
+      const actual = await prejudicesService.createPrejudice({
         from: 'from',
         to: 'to',
         title: 'title',
