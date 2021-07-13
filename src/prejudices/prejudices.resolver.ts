@@ -6,6 +6,7 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import {UseGuards} from '@nestjs/common';
 
 import {PrejudiceEntity, CreatePrejudiceInput} from './prejudices.entities';
 import {PrejudicesService} from './prejudices.service';
@@ -13,6 +14,8 @@ import {PrejudicesService} from './prejudices.service';
 import {UserEntity} from '~/users/users.entities';
 import {AnswerEntity} from '~/answers/answers.entities';
 import {BookConnection, BookOrder} from '~/books/books.entities';
+import {Viewer, ViewerType} from '~/auth/viewer.decorator';
+import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 
 @Resolver('Prejudice')
 export class PrejudicesResolver {
@@ -56,8 +59,9 @@ export class PrejudicesResolver {
   }
 
   @Mutation('createPrejudice')
+  @UseGuards(GraphQLJwtGuard)
   async createPrejudice(
-    from: string,
+    @Viewer() {id: from}: ViewerType,
     @Args('input') input: CreatePrejudiceInput,
   ): Promise<PrejudiceEntity> {
     return this.prejudicesService.createPrejudice({from, ...input});

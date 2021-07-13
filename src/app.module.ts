@@ -12,6 +12,7 @@ import {AuthorsModule} from './authors/authors.module';
 import {UsersModule} from './users/users.module';
 import {PrejudicesModule} from './prejudices/prejudices.module';
 import {AnswersModule} from './answers/answers.module';
+import {AuthModule} from './auth/auth.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import {AnswersModule} from './answers/answers.module';
       }),
     }),
     AnswersModule,
+    AuthModule,
     AuthorsModule,
     BooksModule,
     PrejudicesModule,

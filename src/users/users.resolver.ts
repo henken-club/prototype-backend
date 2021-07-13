@@ -1,8 +1,7 @@
 import {Args, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
-import {
-  InternalServerErrorException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import {InternalServerErrorException, UseGuards} from '@nestjs/common';
+
+import {Viewer, ViewerType} from '../auth/viewer.decorator';
 
 import {
   UserEntity,
@@ -16,6 +15,7 @@ import {
   PrejudiceConnection,
   PrejudiceOrder,
 } from '~/prejudices/prejudices.entities';
+import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 
 @Resolver('User')
 export class UsersResolver {
@@ -96,9 +96,10 @@ export class UsersResolver {
   }
 
   @Query('viewer')
-  async getViewer(id: string): Promise<UserEntity> {
+  @UseGuards(GraphQLJwtGuard)
+  async getViewer(@Viewer() {id}: ViewerType): Promise<UserEntity> {
     const result = await this.usersService.getById(id);
-    if (!result) throw new UnauthorizedException();
+    if (!result) throw new InternalServerErrorException();
     return result;
   }
 }

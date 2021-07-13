@@ -39,6 +39,11 @@ export interface AnswerOrder {
     field: AnswerOrderField;
 }
 
+export interface LoginInput {
+    alias: string;
+    password: string;
+}
+
 export interface AuthorOrder {
     direction: OrderDirection;
     field: AuthorOrderField;
@@ -93,6 +98,18 @@ export interface IQuery {
     viewer(): User | Promise<User>;
 }
 
+export interface IMutation {
+    login(input: LoginInput): LoginPayload | Promise<LoginPayload>;
+    addBook(input: AddBookInput): Book | Promise<Book>;
+    createPrejudice(input: CreatePrejudiceInput): Prejudice | Promise<Prejudice>;
+    followUser(input: FollowUserInput): FollowUserPayload | Promise<FollowUserPayload>;
+    unfollowUser(input: UnfollowUserInput): UnfollowUserPayload | Promise<UnfollowUserPayload>;
+}
+
+export interface LoginPayload {
+    accessToken: string;
+}
+
 export interface Author {
     id: string;
     name: string;
@@ -111,13 +128,6 @@ export interface Book {
 
 export interface BookConnection {
     nodes: Book[];
-}
-
-export interface IMutation {
-    addBook(input: AddBookInput): Book | Promise<Book>;
-    createPrejudice(input: CreatePrejudiceInput): Prejudice | Promise<Prejudice>;
-    followUser(input: FollowUserInput): FollowUserPayload | Promise<FollowUserPayload>;
-    unfollowUser(input: UnfollowUserInput): UnfollowUserPayload | Promise<UnfollowUserPayload>;
 }
 
 export interface PageInfo {

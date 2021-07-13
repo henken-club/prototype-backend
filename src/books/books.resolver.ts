@@ -6,11 +6,14 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import {UseGuards} from '@nestjs/common';
 
 import {BookEntity, AddBookInput} from './books.entities';
 import {BooksService} from './books.service';
 
 import {AuthorConnection, AuthorOrder} from '~/authors/authors.entities';
+import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
+import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 
 @Resolver('Book')
 export class BooksResolver {
@@ -37,7 +40,9 @@ export class BooksResolver {
   }
 
   @Mutation('addBook')
+  @UseGuards(GraphQLJwtGuard)
   async addBook(
+    @Viewer() {id}: ViewerType,
     @Args('input') {title}: AddBookInput,
   ): Promise<BookEntity | null> {
     return this.booksService.addBook({title});
