@@ -90,6 +90,7 @@ export interface IQuery {
     book(id: string): Book | Promise<Book>;
     prejudice(id: string): Prejudice | Promise<Prejudice>;
     user(alias: string): User | Promise<User>;
+    currentUser(): User | Promise<User>;
 }
 
 export interface Author {

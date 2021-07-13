@@ -1,5 +1,8 @@
 import {Args, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
-import {InternalServerErrorException} from '@nestjs/common';
+import {
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 
 import {
   UserEntity,
@@ -90,5 +93,12 @@ export class UsersResolver {
   @Query('user')
   async getUser(@Args('alias') alias: string): Promise<UserEntity | null> {
     return this.usersService.getByAlias(alias);
+  }
+
+  @Query('currentUser')
+  async getCurrentUser(id: string): Promise<UserEntity> {
+    const result = await this.usersService.getById(id);
+    if (!result) throw new UnauthorizedException();
+    return result;
   }
 }

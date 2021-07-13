@@ -1,4 +1,9 @@
-export const CYPHER_GET_USER = `
+export const CYPHER_GET_USER_BY_ID = `
+  MATCH (u:User {id: $id})
+  RETURN u.id AS id, u.alias AS alias, u.displayName AS displayName
+`;
+
+export const CYPHER_GET_USER_BY_ALIAS = `
   MATCH (u:User {alias: $alias})
   RETURN u.id AS id, u.alias AS alias, u.displayName AS displayName
 `;
