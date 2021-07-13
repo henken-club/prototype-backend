@@ -5,6 +5,10 @@ import {UserEntity} from './users.entities';
 import {
   CYPHER_FOLLOW_USER,
   CYPHER_GET_USER,
+  CYPHER_GET_USER_FOLLOWERS,
+  CYPHER_GET_USER_FOLLOWERS_COUNT,
+  CYPHER_GET_USER_FOLLOWING,
+  CYPHER_GET_USER_FOLLOWING_COUNT,
   CYPHER_GET_USER_POST_ANSWERS_ORDERBY_CREATED_AT_ASC,
   CYPHER_GET_USER_POST_ANSWERS_ORDERBY_CREATED_AT_DESC,
   CYPHER_GET_USER_POST_PREJUDICES_ORDERBY_CREATED_AT_ASC,
@@ -113,6 +117,56 @@ export class UsersService {
           correctness: record.get('correctness'),
           text: record.get('text'),
         })),
+      );
+  }
+
+  async getFollowing(
+    id: string,
+    {skip, limit}: {skip: number; limit: number},
+  ): Promise<{id: string; alias: string; displayName: string}[]> {
+    return this.neo4jService
+      .read(CYPHER_GET_USER_FOLLOWING, {id, skip: int(skip), limit: int(limit)})
+      .then((result) =>
+        result.records.map((record) => ({
+          id: record.get('id'),
+          alias: record.get('alias'),
+          displayName: record.get('displayName'),
+        })),
+      );
+  }
+
+  async getFollowingCount(id: string): Promise<number | null> {
+    return this.neo4jService
+      .read(CYPHER_GET_USER_FOLLOWING_COUNT, {id})
+      .then((result) =>
+        result.records.length === 1
+          ? result.records[0].get('count').toNumber()
+          : null,
+      );
+  }
+
+  async getFollowers(
+    id: string,
+    {skip, limit}: {skip: number; limit: number},
+  ): Promise<{id: string; alias: string; displayName: string}[]> {
+    return this.neo4jService
+      .read(CYPHER_GET_USER_FOLLOWERS, {id, skip: int(skip), limit: int(limit)})
+      .then((result) =>
+        result.records.map((record) => ({
+          id: record.get('id'),
+          alias: record.get('alias'),
+          displayName: record.get('displayName'),
+        })),
+      );
+  }
+
+  async getFollowersCount(id: string): Promise<number | null> {
+    return this.neo4jService
+      .read(CYPHER_GET_USER_FOLLOWERS_COUNT, {id})
+      .then((result) =>
+        result.records.length === 1
+          ? result.records[0].get('count').toNumber()
+          : null,
       );
   }
 

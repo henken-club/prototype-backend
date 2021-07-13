@@ -13,3 +13,11 @@ export type UserEntity = Omit<
   | 'recievedAnswers'
 >;
 export class UserConnection extends Connection<UserEntity> {}
+export class FollowingConnection {
+  nodes!: UserEntity[];
+  totalCount!: number;
+}
+export class FollowerConnection {
+  nodes!: UserEntity[];
+  totalCount!: number;
+}

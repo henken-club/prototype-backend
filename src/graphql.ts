@@ -145,14 +145,24 @@ export interface User {
     id: string;
     alias: string;
     displayName?: string;
-    following: UserConnection;
-    followers: UserConnection;
+    following: FollowingConnection;
+    followers: FollowerConnection;
     postPreduices: PrejudiceConnection;
     recievedPreduices: PrejudiceConnection;
     postAnswers: AnswerConnection;
 }
 
 export interface UserConnection {
+    nodes: User[];
+    totalCount: number;
+}
+
+export interface FollowingConnection {
+    nodes: User[];
+    totalCount: number;
+}
+
+export interface FollowerConnection {
     nodes: User[];
     totalCount: number;
 }

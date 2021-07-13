@@ -3,8 +3,8 @@ type User {
   alias: ID!
   displayName: String
 
-  following(skip: Int = 0, limit: Int = 10): UserConnection!
-  followers(skip: Int = 0, limit: Int = 10): UserConnection!
+  following(skip: Int = 0, limit: Int = 10): FollowingConnection!
+  followers(skip: Int = 0, limit: Int = 10): FollowerConnection!
 
   postPreduices(
     skip: Int = 0
@@ -26,6 +26,16 @@ type User {
 }
 
 type UserConnection {
+  nodes: [User!]!
+  totalCount: Int!
+}
+
+type FollowingConnection {
+  nodes: [User!]!
+  totalCount: Int!
+}
+
+type FollowerConnection {
   nodes: [User!]!
   totalCount: Int!
 }

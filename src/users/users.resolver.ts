@@ -1,6 +1,11 @@
 import {Args, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
+import {InternalServerErrorException} from '@nestjs/common';
 
-import {UserEntity} from './users.entities';
+import {
+  UserEntity,
+  FollowingConnection,
+  FollowerConnection,
+} from './users.entities';
 import {UsersService} from './users.service';
 
 import {AnswerConnection, AnswerOrder} from '~/answers/answers.entities';
@@ -56,6 +61,30 @@ export class UsersResolver {
       orderBy,
     });
     return {nodes};
+  }
+
+  @ResolveField('following')
+  async getFollowing(
+    @Parent() {id}: UserEntity,
+    @Args('skip') skip: number,
+    @Args('limit') limit: number,
+  ): Promise<FollowingConnection> {
+    const nodes = await this.usersService.getFollowing(id, {skip, limit});
+    const totalCount = await this.usersService.getFollowingCount(id);
+    if (totalCount === null) throw new InternalServerErrorException();
+    return {nodes, totalCount};
+  }
+
+  @ResolveField('followers')
+  async getFollowers(
+    @Parent() {id}: UserEntity,
+    @Args('skip') skip: number,
+    @Args('limit') limit: number,
+  ): Promise<FollowerConnection> {
+    const nodes = await this.usersService.getFollowers(id, {skip, limit});
+    const totalCount = await this.usersService.getFollowersCount(id);
+    if (totalCount === null) throw new InternalServerErrorException();
+    return {nodes, totalCount};
   }
 
   @Query('user')

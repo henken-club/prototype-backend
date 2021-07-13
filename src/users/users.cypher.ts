@@ -63,18 +63,31 @@ export const CYPHER_UNFOLLOW_USER = `
   RETURN from.id AS fromId, to.id AS toId
 `;
 
-const getFollowers = (property: 'createdAt', order: 'ASC' | 'DESC') =>
-  `
-  MATCH (:User {id: $id})-[:POST_ANSWER]->(a:Answer)
+export const CYPHER_GET_USER_FOLLOWERS = `
+  MATCH (u:User)-[r:FOLLOWS]->(:User {id: $id})
   RETURN
-    a.id AS id,
-    a.createdAt AS createdAt,
-    a.correctness AS correctness,
-    a.text AS text
-  ORDER BY ${property} ${order}
-  SKIP $skip LIMIT $limit` as const;
-export const CYPHER_GET_USER_FOLLOWERS_ASC = getPostAnswers('createdAt', 'ASC');
-export const CYPHER_GET_USER_FOLLOWERS_DESC = getPostAnswers(
-  'createdAt',
-  'DESC',
-);
+    u.id AS id,
+    u.alias AS alias,
+    u.displayName AS displayName
+  ORDER BY r.followedAt DESC
+  SKIP $skip LIMIT $limit
+`;
+export const CYPHER_GET_USER_FOLLOWERS_COUNT = `
+  MATCH p=(:User)-[:FOLLOWS]->(:User {id: $id})
+  RETURN count(p) AS count
+`;
+
+export const CYPHER_GET_USER_FOLLOWING = `
+  MATCH (:User {id: $id})-[r:FOLLOWS]->(u:User)
+  RETURN
+    u.id AS id,
+    u.alias AS alias,
+    u.displayName AS displayName
+  ORDER BY r.followedAt DESC
+  SKIP $skip LIMIT $limit
+`;
+
+export const CYPHER_GET_USER_FOLLOWING_COUNT = `
+  MATCH p=(:User {id: $id})-[:FOLLOWS]->(u:User)
+  RETURN count(p) AS count
+`;
