@@ -52,7 +52,7 @@ type Unfollow {
 
 type Query {
   user(alias: ID!): User
-  currentUser: User!
+  viewer: User!
 }
 
 type Mutation {

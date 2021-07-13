@@ -95,8 +95,8 @@ export class UsersResolver {
     return this.usersService.getByAlias(alias);
   }
 
-  @Query('currentUser')
-  async getCurrentUser(id: string): Promise<UserEntity> {
+  @Query('viewer')
+  async getViewer(id: string): Promise<UserEntity> {
     const result = await this.usersService.getById(id);
     if (!result) throw new UnauthorizedException();
     return result;
