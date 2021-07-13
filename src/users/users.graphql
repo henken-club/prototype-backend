@@ -3,8 +3,8 @@ type User {
   alias: ID!
   displayName: String
 
-  following(skip: Int = 0, limit: Int = 10): UserConnection
-  followers(skip: Int = 0, limit: Int = 10): UserConnection
+  following(skip: Int = 0, limit: Int = 10): UserConnection!
+  followers(skip: Int = 0, limit: Int = 10): UserConnection!
 
   postPreduices(
     skip: Int = 0
@@ -27,8 +27,40 @@ type User {
 
 type UserConnection {
   nodes: [User!]!
+  totalCount: Int!
+}
+
+type Follow {
+  from: User!
+  to: User!
+}
+
+type Unfollow {
+  from: User!
+  to: User!
 }
 
 type Query {
   user(alias: ID!): User
+}
+
+type Mutation {
+  followUser(input: FollowUserInput!): FollowUserPayload!
+  unfollowUser(input: UnfollowUserInput!): UnfollowUserPayload!
+}
+
+input FollowUserInput {
+  userId: ID!
+}
+
+type FollowUserPayload {
+  follow: Follow!
+}
+
+input UnfollowUserInput {
+  userId: ID!
+}
+
+type UnfollowUserPayload {
+  unfollow: Unfollow!
 }

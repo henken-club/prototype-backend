@@ -45,3 +45,36 @@ export const CYPHER_GET_USER_POST_ANSWERS_ORDERBY_CREATED_AT_ASC =
   getPostAnswers('createdAt', 'ASC');
 export const CYPHER_GET_USER_POST_ANSWERS_ORDERBY_CREATED_AT_DESC =
   getPostAnswers('createdAt', 'DESC');
+
+export const CYPHER_FOLLOW_USER = `
+  MATCH (from:User {id: $from})
+  MATCH (to:User {id: $to})
+  MERGE (from)-[r:FOLLOWS]->(to)
+  ON CREATE
+    SET r.followedAt = localdatetime()
+  RETURN from.id AS fromId, to.id AS toId
+`;
+
+export const CYPHER_UNFOLLOW_USER = `
+  MATCH (from:User {id: $from})
+  MATCH (to:User {id: $to})
+  MATCH (from)-[r:FOLLOWS]->(to)
+  DELETE r
+  RETURN from.id AS fromId, to.id AS toId
+`;
+
+const getFollowers = (property: 'createdAt', order: 'ASC' | 'DESC') =>
+  `
+  MATCH (:User {id: $id})-[:POST_ANSWER]->(a:Answer)
+  RETURN
+    a.id AS id,
+    a.createdAt AS createdAt,
+    a.correctness AS correctness,
+    a.text AS text
+  ORDER BY ${property} ${order}
+  SKIP $skip LIMIT $limit` as const;
+export const CYPHER_GET_USER_FOLLOWERS_ASC = getPostAnswers('createdAt', 'ASC');
+export const CYPHER_GET_USER_FOLLOWERS_DESC = getPostAnswers(
+  'createdAt',
+  'DESC',
+);

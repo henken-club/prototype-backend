@@ -64,6 +64,14 @@ export interface CreatePrejudiceInput {
     relatedBooks: string[];
 }
 
+export interface FollowUserInput {
+    userId: string;
+}
+
+export interface UnfollowUserInput {
+    userId: string;
+}
+
 export interface Answer {
     id: string;
     createdAt: DateTime;
@@ -107,6 +115,8 @@ export interface BookConnection {
 export interface IMutation {
     addBook(input: AddBookInput): Book | Promise<Book>;
     createPrejudice(input: CreatePrejudiceInput): Prejudice | Promise<Prejudice>;
+    followUser(input: FollowUserInput): FollowUserPayload | Promise<FollowUserPayload>;
+    unfollowUser(input: UnfollowUserInput): UnfollowUserPayload | Promise<UnfollowUserPayload>;
 }
 
 export interface PageInfo {
@@ -135,8 +145,8 @@ export interface User {
     id: string;
     alias: string;
     displayName?: string;
-    following?: UserConnection;
-    followers?: UserConnection;
+    following: UserConnection;
+    followers: UserConnection;
     postPreduices: PrejudiceConnection;
     recievedPreduices: PrejudiceConnection;
     postAnswers: AnswerConnection;
@@ -144,6 +154,25 @@ export interface User {
 
 export interface UserConnection {
     nodes: User[];
+    totalCount: number;
+}
+
+export interface Follow {
+    from: User;
+    to: User;
+}
+
+export interface Unfollow {
+    from: User;
+    to: User;
+}
+
+export interface FollowUserPayload {
+    follow: Follow;
+}
+
+export interface UnfollowUserPayload {
+    unfollow: Unfollow;
 }
 
 export type DateTime = Date;

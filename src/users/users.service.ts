@@ -3,6 +3,7 @@ import {int} from 'neo4j-driver';
 
 import {UserEntity} from './users.entities';
 import {
+  CYPHER_FOLLOW_USER,
   CYPHER_GET_USER,
   CYPHER_GET_USER_POST_ANSWERS_ORDERBY_CREATED_AT_ASC,
   CYPHER_GET_USER_POST_ANSWERS_ORDERBY_CREATED_AT_DESC,
@@ -10,6 +11,7 @@ import {
   CYPHER_GET_USER_POST_PREJUDICES_ORDERBY_CREATED_AT_DESC,
   CYPHER_GET_USER_RECIVED_PREJUDICES_ORDERBY_CREATED_AT_ASC,
   CYPHER_GET_USER_RECIVED_PREJUDICES_ORDERBY_CREATED_AT_DESC,
+  CYPHER_UNFOLLOW_USER,
 } from './users.cypher';
 
 import {Neo4jService} from '~/neo4j/neo4j.service';
@@ -112,5 +114,35 @@ export class UsersService {
           text: record.get('text'),
         })),
       );
+  }
+
+  async followUser(
+    from: string,
+    to: string,
+  ): Promise<{fromId: string; toId: string} | null> {
+    const result = await this.neo4jService.write(CYPHER_FOLLOW_USER, {
+      from,
+      to,
+    });
+    if (result.records.length !== 1) return null;
+    return {
+      fromId: result.records[0].get('fromId'),
+      toId: result.records[0].get('toId'),
+    };
+  }
+
+  async unfollowUser(
+    from: string,
+    to: string,
+  ): Promise<{fromId: string; toId: string} | null> {
+    const result = await this.neo4jService.write(CYPHER_UNFOLLOW_USER, {
+      from,
+      to,
+    });
+    if (result.records.length !== 1) return null;
+    return {
+      fromId: result.records[0].get('fromId'),
+      toId: result.records[0].get('toId'),
+    };
   }
 }
