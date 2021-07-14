@@ -8,7 +8,7 @@ import {
 } from '@nestjs/graphql';
 import {UseGuards} from '@nestjs/common';
 
-import {BookEntity, AddBookInput} from './books.entities';
+import {BookEntity, AddBookInput, AddBookPayload} from './books.entities';
 import {BooksService} from './books.service';
 
 import {AuthorConnection, AuthorOrder} from '~/authors/authors.entities';
@@ -44,7 +44,8 @@ export class BooksResolver {
   async addBook(
     @Viewer() {id}: ViewerType,
     @Args('input') {title}: AddBookInput,
-  ): Promise<BookEntity | null> {
-    return this.booksService.addBook({title});
+  ): Promise<AddBookPayload> {
+    const book = await this.booksService.addBook({title});
+    return {book};
   }
 }

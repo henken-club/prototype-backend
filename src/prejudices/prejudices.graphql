@@ -5,10 +5,10 @@ type Prejudice {
 
   book: Book!
 
-  from: User!
-  to: User!
+  userFrom: User!
+  userTo: User!
 
-  answer: Answer
+  answeredBy: Answer
 
   relatedBooks(
     skip: Int = 0
@@ -35,13 +35,17 @@ type Query {
 }
 
 type Mutation {
-  createPrejudice(input: CreatePrejudiceInput!): Prejudice!
+  postPrejudice(input: PostPrejudiceInput!): PostPrejudicePayload!
 }
 
-input CreatePrejudiceInput {
-  to: ID!
+input PostPrejudiceInput {
+  userId: ID!
 
   title: String!
 
   relatedBooks: [ID!]!
+}
+
+type PostPrejudicePayload {
+  prejudice: Prejudice!
 }

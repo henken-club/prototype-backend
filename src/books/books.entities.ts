@@ -5,3 +5,7 @@ export {BookOrder, BookOrderField, AddBookInput} from '~/graphql';
 
 export type BookEntity = Omit<Book, 'authors'>;
 export class BookConnection extends Connection<BookEntity> {}
+
+export class AddBookPayload {
+  book!: BookEntity;
+}

@@ -9,7 +9,7 @@ import {PrejudiceEntity} from '~/prejudices/prejudices.entities';
 export class AnswersResolver {
   constructor(private prejudicesService: AnswersService) {}
 
-  @ResolveField('prejudice')
+  @ResolveField('prejudiceTo')
   async getPrejudice(@Parent() {id}: AnswerEntity): Promise<PrejudiceEntity> {
     return this.prejudicesService.getPrejudice(id);
   }

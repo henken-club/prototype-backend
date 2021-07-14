@@ -5,7 +5,7 @@ type Answer {
   correctness: Correctness!
   text: String
 
-  prejudice: Prejudice!
+  prejudiceTo: Prejudice!
 }
 
 enum Correctness {
@@ -29,4 +29,16 @@ enum AnswerOrderField {
 
 type Query {
   answer(id: ID!): Answer
+}
+
+type Mutation {
+  postAnswer(input: PostAnswerInput!): PostAnswerPayload!
+}
+
+input PostAnswerInput {
+  prejudiceId: ID!
+}
+
+type PostAnswerPayload {
+  answer: Answer!
 }

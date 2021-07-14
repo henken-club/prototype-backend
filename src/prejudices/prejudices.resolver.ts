@@ -8,7 +8,11 @@ import {
 } from '@nestjs/graphql';
 import {UseGuards} from '@nestjs/common';
 
-import {PrejudiceEntity, CreatePrejudiceInput} from './prejudices.entities';
+import {
+  PrejudiceEntity,
+  PostPrejudiceInput,
+  PostPrejudicePayload,
+} from './prejudices.entities';
 import {PrejudicesService} from './prejudices.service';
 
 import {UserEntity} from '~/users/users.entities';
@@ -21,17 +25,17 @@ import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 export class PrejudicesResolver {
   constructor(private prejudicesService: PrejudicesService) {}
 
-  @ResolveField('from')
+  @ResolveField('userFrom')
   async getUserFrom(@Parent() {id}: PrejudiceEntity): Promise<UserEntity> {
     return this.prejudicesService.getUserFrom(id);
   }
 
-  @ResolveField('to')
+  @ResolveField('userTo')
   async getUserTo(@Parent() {id}: PrejudiceEntity): Promise<UserEntity> {
     return this.prejudicesService.getUserTo(id);
   }
 
-  @ResolveField('answer')
+  @ResolveField('answeredBy')
   async getAnswer(
     @Parent() {id}: PrejudiceEntity,
   ): Promise<AnswerEntity | null> {
@@ -58,12 +62,18 @@ export class PrejudicesResolver {
     return this.prejudicesService.getById(id);
   }
 
-  @Mutation('createPrejudice')
+  @Mutation('postPrejudice')
   @UseGuards(GraphQLJwtGuard)
   async createPrejudice(
     @Viewer() {id: from}: ViewerType,
-    @Args('input') input: CreatePrejudiceInput,
-  ): Promise<PrejudiceEntity> {
-    return this.prejudicesService.createPrejudice({from, ...input});
+    @Args('input') {userId: to, title, relatedBooks}: PostPrejudiceInput,
+  ): Promise<PostPrejudicePayload> {
+    const prejudice = await this.prejudicesService.createPrejudice({
+      from,
+      to,
+      title,
+      relatedBooks,
+    });
+    return {prejudice};
   }
 }

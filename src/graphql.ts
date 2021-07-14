@@ -39,6 +39,10 @@ export interface AnswerOrder {
     field: AnswerOrderField;
 }
 
+export interface PostAnswerInput {
+    prejudiceId: string;
+}
+
 export interface LoginInput {
     alias: string;
     password: string;
@@ -63,8 +67,8 @@ export interface PrejudiceOrder {
     field: PrejudiceOrderField;
 }
 
-export interface CreatePrejudiceInput {
-    to: string;
+export interface PostPrejudiceInput {
+    userId: string;
     title: string;
     relatedBooks: string[];
 }
@@ -82,7 +86,7 @@ export interface Answer {
     createdAt: DateTime;
     correctness: Correctness;
     text?: string;
-    prejudice: Prejudice;
+    prejudiceTo: Prejudice;
 }
 
 export interface AnswerConnection {
@@ -99,11 +103,16 @@ export interface IQuery {
 }
 
 export interface IMutation {
+    postAnswer(input: PostAnswerInput): PostAnswerPayload | Promise<PostAnswerPayload>;
     login(input: LoginInput): LoginPayload | Promise<LoginPayload>;
-    addBook(input: AddBookInput): Book | Promise<Book>;
-    createPrejudice(input: CreatePrejudiceInput): Prejudice | Promise<Prejudice>;
+    addBook(input: AddBookInput): AddBookPayload | Promise<AddBookPayload>;
+    postPrejudice(input: PostPrejudiceInput): PostPrejudicePayload | Promise<PostPrejudicePayload>;
     followUser(input: FollowUserInput): FollowUserPayload | Promise<FollowUserPayload>;
     unfollowUser(input: UnfollowUserInput): UnfollowUserPayload | Promise<UnfollowUserPayload>;
+}
+
+export interface PostAnswerPayload {
+    answer: Answer;
 }
 
 export interface LoginPayload {
@@ -130,6 +139,10 @@ export interface BookConnection {
     nodes: Book[];
 }
 
+export interface AddBookPayload {
+    book: Book;
+}
+
 export interface PageInfo {
     startCursor?: string;
     endCursor?: string;
@@ -142,14 +155,18 @@ export interface Prejudice {
     title: string;
     createdAt: DateTime;
     book: Book;
-    from: User;
-    to: User;
-    answer?: Answer;
+    userFrom: User;
+    userTo: User;
+    answeredBy?: Answer;
     relatedBooks: BookConnection;
 }
 
 export interface PrejudiceConnection {
     nodes: Prejudice[];
+}
+
+export interface PostPrejudicePayload {
+    prejudice: Prejudice;
 }
 
 export interface User {

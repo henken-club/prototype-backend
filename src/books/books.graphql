@@ -26,9 +26,13 @@ type Query {
 }
 
 type Mutation {
-  addBook(input: AddBookInput!): Book!
+  addBook(input: AddBookInput!): AddBookPayload!
 }
 
 input AddBookInput {
   title: String!
+}
+
+type AddBookPayload {
+  book: Book!
 }

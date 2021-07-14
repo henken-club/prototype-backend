@@ -4,11 +4,15 @@ import {Connection} from '~/common/common.entities';
 export {
   PrejudiceOrder,
   PrejudiceOrderField,
-  CreatePrejudiceInput,
+  PostPrejudiceInput,
 } from '~/graphql';
 
 export type PrejudiceEntity = Omit<
   Prejudice,
-  'book' | 'from' | 'to' | 'answer' | 'relatedBooks'
+  'book' | 'userFrom' | 'userTo' | 'answeredBy' | 'relatedBooks'
 >;
 export class PrejudiceConnection extends Connection<PrejudiceEntity> {}
+
+export class PostPrejudicePayload {
+  prejudice!: PrejudiceEntity;
+}
