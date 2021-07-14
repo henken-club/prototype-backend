@@ -71,7 +71,7 @@ describe('UsersService', () => {
   });
 
   describe('getByAlias', () => {
-    it('return object if success', async () => {
+    it('return object if alias exactly', async () => {
       await prismaService.user.create({
         data: {
           id: 'id',
@@ -82,6 +82,24 @@ describe('UsersService', () => {
       });
 
       const actual = await usersService.getByAlias('alias');
+      expect(actual).toStrictEqual({
+        id: 'id',
+        alias: 'alias',
+        displayName: 'DisplayName',
+      });
+    });
+
+    it('return object if alias ignorecase', async () => {
+      await prismaService.user.create({
+        data: {
+          id: 'id',
+          alias: 'alias',
+          displayName: 'DisplayName',
+          password: 'password',
+        },
+      });
+
+      const actual = await usersService.getByAlias('AliAS');
       expect(actual).toStrictEqual({
         id: 'id',
         alias: 'alias',
