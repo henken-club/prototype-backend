@@ -10,14 +10,11 @@ export class AuthService {
     private usersService: UsersService,
   ) {}
 
-  async validateUser({
-    alias,
-    password,
-  }: {
+  async verifyUser(input: {
     alias: string;
     password: string;
   }): Promise<{uid: string} | null> {
-    const result = await this.usersService.getByAlias(alias);
+    const result = await this.usersService.verifyPassword(input);
     if (result === null) return null;
     return {uid: result.id};
   }

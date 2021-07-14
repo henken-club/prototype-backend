@@ -5,6 +5,7 @@
     "esbenp.prettier-vscode",
     "christian-kohler.path-intellisense",
     "ms-azuretools.vscode-docker",
-    "graphql.vscode-graphql"
+    "graphql.vscode-graphql",
+    "prisma.prisma"
   ]
 }

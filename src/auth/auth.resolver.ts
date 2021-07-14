@@ -12,7 +12,7 @@ export class AuthResolver {
   async login(
     @Args('input') {alias, password}: LoginInput,
   ): Promise<LoginPayload> {
-    const validated = await this.authServer.validateUser({alias, password});
+    const validated = await this.authServer.verifyUser({alias, password});
     if (!validated) throw new UnauthorizedException();
 
     const accessToken = this.authServer.getAccessToken(validated);

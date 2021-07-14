@@ -28,11 +28,13 @@ import {
 import {OrderDirection} from '~/common/common.entities';
 import {AnswerOrder} from '~/graphql';
 import {AnswerEntity} from '~/answers/answers.entities';
+import {PrismaService} from '~/prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly neo4jService: Neo4jService,
+    private readonly prismaService: PrismaService,
     private readonly idService: IdService,
   ) {}
 
@@ -56,6 +58,20 @@ export class UsersService {
       alias: result.records[0].get('alias'),
       displayName: result.records[0].get('displayName'),
     };
+  }
+
+  async verifyPassword({
+    password,
+    ...where
+  }: {
+    alias: string;
+    password: string;
+  }): Promise<{id: string} | null> {
+    return this.prismaService.user
+      .findUnique({where, select: {id: true, password: true}})
+      .then((result) =>
+        result?.password === password ? {id: result.id} : null,
+      );
   }
 
   getPostPrejudicesQuery({direction, field}: PrejudiceOrder) {

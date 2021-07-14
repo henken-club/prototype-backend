@@ -11,3 +11,11 @@ services:
     environment:
       NEO4J_AUTH: none
       NEO4JLABS_PLUGINS: '["apoc"]'
+  test-mysql:
+    image: mysql:8
+    ports:
+      - published: $TEST_MYSQL_PORT
+        target: 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: $TEST_MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: $TEST_MYSQL_DATABASE

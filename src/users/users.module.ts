@@ -4,9 +4,10 @@ import {UsersResolver} from './users.resolver';
 import {UsersService} from './users.service';
 
 import {IdModule} from '~/id/id.module';
+import {PrismaModule} from '~/prisma/prisma.module';
 
 @Module({
-  imports: [IdModule],
+  imports: [PrismaModule, IdModule],
   providers: [UsersResolver, UsersService],
   exports: [UsersService],
 })
