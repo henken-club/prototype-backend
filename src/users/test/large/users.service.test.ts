@@ -6,10 +6,13 @@ import {Neo4jService} from '~/neo4j/neo4j.service';
 import {IdModule} from '~/id/id.module';
 import {UsersService} from '~/users/users.service';
 import {PrismaModule} from '~/prisma/prisma.module';
+import {PrismaService} from '~/prisma/prisma.service';
+import {cleanPrisma} from '~/prisma/prisma.utils';
 
 describe('UsersService', () => {
   let app: INestApplication;
 
+  let prismaService: PrismaService;
   let neo4jService: Neo4jService;
 
   let usersService: UsersService;
@@ -23,6 +26,7 @@ describe('UsersService', () => {
     app = module.createNestApplication();
     await app.init();
 
+    prismaService = module.get<PrismaService>(PrismaService);
     neo4jService = module.get<Neo4jService>(Neo4jService);
     usersService = module.get<UsersService>(UsersService);
   });
@@ -30,6 +34,7 @@ describe('UsersService', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     await neo4jService.write(`MATCH (n) DETACH DELETE n`);
+    await cleanPrisma();
   });
 
   afterAll(async () => {
@@ -38,6 +43,56 @@ describe('UsersService', () => {
 
   it('to be defined', () => {
     expect(usersService).toBeDefined();
+  });
+
+  describe('getById', () => {
+    it('return object if success', async () => {
+      await prismaService.user.create({
+        data: {
+          id: 'id',
+          alias: 'alias',
+          displayName: 'DisplayName',
+          password: 'password',
+        },
+      });
+
+      const actual = await usersService.getById('id');
+      expect(actual).toStrictEqual({
+        id: 'id',
+        alias: 'alias',
+        displayName: 'DisplayName',
+      });
+    });
+
+    it('return null if user does not exist', async () => {
+      const actual = await usersService.getById('id');
+      expect(actual).toBeNull();
+    });
+  });
+
+  describe('getByAlias', () => {
+    it('return object if success', async () => {
+      await prismaService.user.create({
+        data: {
+          id: 'id',
+          alias: 'alias',
+          displayName: 'DisplayName',
+          password: 'password',
+        },
+      });
+
+      const actual = await usersService.getByAlias('alias');
+      expect(actual).toStrictEqual({
+        id: 'id',
+        alias: 'alias',
+        displayName: 'DisplayName',
+      });
+    });
+
+    it('return null if user does not exist', async () => {
+      const actual = await usersService.getByAlias('alias');
+      expect(actual).toBeNull();
+    });
   });
 
   describe('getFollowing', () => {

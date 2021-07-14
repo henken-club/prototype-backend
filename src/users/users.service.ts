@@ -4,8 +4,6 @@ import {int} from 'neo4j-driver';
 import {UserEntity} from './users.entities';
 import {
   CYPHER_FOLLOW_USER,
-  CYPHER_GET_USER_BY_ALIAS,
-  CYPHER_GET_USER_BY_ID,
   CYPHER_GET_USER_FOLLOWERS,
   CYPHER_GET_USER_FOLLOWERS_COUNT,
   CYPHER_GET_USER_FOLLOWING,
@@ -39,25 +37,17 @@ export class UsersService {
   ) {}
 
   async getById(id: string): Promise<UserEntity | null> {
-    const result = await this.neo4jService.read(CYPHER_GET_USER_BY_ID, {id});
-    if (result.records.length !== 1) return null;
-    return {
-      id: result.records[0].get('id'),
-      alias: result.records[0].get('alias'),
-      displayName: result.records[0].get('displayName'),
-    };
+    return this.prismaService.user.findUnique({
+      where: {id},
+      select: {id: true, alias: true, displayName: true},
+    });
   }
 
   async getByAlias(alias: string): Promise<UserEntity | null> {
-    const result = await this.neo4jService.read(CYPHER_GET_USER_BY_ALIAS, {
-      alias,
+    return this.prismaService.user.findUnique({
+      where: {alias},
+      select: {id: true, alias: true, displayName: true},
     });
-    if (result.records.length !== 1) return null;
-    return {
-      id: result.records[0].get('id'),
-      alias: result.records[0].get('alias'),
-      displayName: result.records[0].get('displayName'),
-    };
   }
 
   async verifyPassword({

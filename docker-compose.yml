@@ -21,13 +21,14 @@ services:
       - henken-club-backend-prototype-neo4j-logs:/logs
       - henken-club-backend-prototype-neo4j-import:/var/lib/neo4j/import
       - henken-club-backend-prototype-neo4j-plugins:/plugins
+
   mysql:
     image: mysql:8
     ports:
       - published: $MYSQL_PORT
         target: 3306
     environment:
-      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
       MYSQL_DATABASE: $MYSQL_DATABASE
     volumes:
       - henken-club-backend-prototype-mysql-data:/var/lib/mysql
