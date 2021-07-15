@@ -11,19 +11,65 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: bahmutov/npm-install@v1
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - run: yarn install --frozen-lockfile
       - run: yarn run ts-check
 
   eslint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: bahmutov/npm-install@v1
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - run: yarn install --frozen-lockfile
       - run: yarn run lint:eslint
 
   prettier:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: bahmutov/npm-install@v1
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - run: yarn install --frozen-lockfile
       - run: yarn run lint:prettier
+
+  test-large:
+    runs-on: ubuntu-latest
+    services:
+      neo4j:
+        image: neo4j:4.2
+        env:
+          NEO4J_AUTH: none
+          NEO4JLABS_PLUGINS: '["apoc"]'
+        options: >-
+          --health-cmd "wget http://localhost:7474/browser -O-"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: test
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+
+    env:
+      TEST_NEO4J_URL: bolt://neo4j:7687
+      TEST_PRISMA_DATABASE_URL: mysql://root:password@mysql:3306/test
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - run: yarn install --frozen-lockfile
+      - run: yarn run test:large
