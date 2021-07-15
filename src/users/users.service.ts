@@ -18,7 +18,6 @@ import {
 } from './users.cypher';
 
 import {Neo4jService} from '~/neo4j/neo4j.service';
-import {IdService} from '~/id/id.service';
 import {
   PrejudiceEntity,
   PrejudiceOrder,
@@ -33,35 +32,32 @@ export class UsersService {
   constructor(
     private readonly neo4jService: Neo4jService,
     private readonly prismaService: PrismaService,
-    private readonly idService: IdService,
   ) {}
 
   async getById(id: string): Promise<UserEntity | null> {
     return this.prismaService.user.findUnique({
       where: {id},
-      select: {id: true, alias: true, displayName: true},
+      select: {id: true},
     });
   }
 
   async getByAlias(alias: string): Promise<UserEntity | null> {
     return this.prismaService.user.findUnique({
       where: {alias},
-      select: {id: true, alias: true, displayName: true},
+      select: {id: true},
     });
   }
 
-  async verifyPassword({
-    password,
-    ...where
-  }: {
-    alias: string;
-    password: string;
-  }): Promise<{id: string} | null> {
+  async getAlias(id: string) {
     return this.prismaService.user
-      .findUnique({where, select: {id: true, password: true}})
-      .then((result) =>
-        result?.password === password ? {id: result.id} : null,
-      );
+      .findUnique({where: {id}, select: {alias: true}})
+      .then((user) => user?.alias || null);
+  }
+
+  async getDisplayName(id: string) {
+    return this.prismaService.user
+      .findUnique({where: {id}, select: {displayName: true}})
+      .then((user) => user?.displayName || null);
   }
 
   getPostPrejudicesQuery({direction, field}: PrejudiceOrder) {

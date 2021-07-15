@@ -1,17 +1,8 @@
-import {User} from '~/graphql';
 import {Connection} from '~/common/common.entities';
 
 export {BookOrder, BookOrderField, AddBookInput} from '~/graphql';
 
-export type UserEntity = Omit<
-  User,
-  | 'following'
-  | 'followers'
-  | 'postPreduices'
-  | 'recievedPreduices'
-  | 'postAnswers'
-  | 'recievedAnswers'
->;
+export type UserEntity = {id: string};
 export class UserConnection extends Connection<UserEntity> {}
 export class FollowingConnection {
   nodes!: UserEntity[];

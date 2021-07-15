@@ -21,6 +21,20 @@ import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 export class UsersResolver {
   constructor(private usersService: UsersService) {}
 
+  @ResolveField('alias')
+  async resolveAlias(@Parent() {id}: UserEntity): Promise<string> {
+    const alias = await this.usersService.getAlias(id);
+    if (!alias) throw new InternalServerErrorException();
+    return alias;
+  }
+
+  @ResolveField('displayName')
+  async resolveDisplayName(@Parent() {id}: UserEntity): Promise<string> {
+    const displayName = await this.usersService.getDisplayName(id);
+    if (!displayName) throw new InternalServerErrorException();
+    return displayName;
+  }
+
   @ResolveField('postPreduices')
   async getPostPreduices(
     @Parent() {id}: UserEntity,

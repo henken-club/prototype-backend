@@ -51,8 +51,6 @@ export class PrejudicesService {
 
     return {
       id: result.records[0].get('id'),
-      alias: result.records[0].get('alias'),
-      displayName: result.records[0].get('displayName'),
     };
   }
 
@@ -64,8 +62,6 @@ export class PrejudicesService {
 
     return {
       id: result.records[0].get('id'),
-      alias: result.records[0].get('alias'),
-      displayName: result.records[0].get('displayName'),
     };
   }
 

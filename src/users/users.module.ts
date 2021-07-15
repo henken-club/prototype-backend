@@ -3,11 +3,10 @@ import {Module} from '@nestjs/common';
 import {UsersResolver} from './users.resolver';
 import {UsersService} from './users.service';
 
-import {IdModule} from '~/id/id.module';
 import {PrismaModule} from '~/prisma/prisma.module';
 
 @Module({
-  imports: [PrismaModule, IdModule],
+  imports: [PrismaModule],
   providers: [UsersResolver, UsersService],
   exports: [UsersService],
 })
