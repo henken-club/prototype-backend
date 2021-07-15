@@ -48,6 +48,12 @@ export interface LoginInput {
     password: string;
 }
 
+export interface SignupInput {
+    alias: string;
+    displayName: string;
+    password: string;
+}
+
 export interface AuthorOrder {
     direction: OrderDirection;
     field: AuthorOrderField;
@@ -105,6 +111,7 @@ export interface IQuery {
 export interface IMutation {
     postAnswer(input: PostAnswerInput): PostAnswerPayload | Promise<PostAnswerPayload>;
     login(input: LoginInput): LoginPayload | Promise<LoginPayload>;
+    signup(input: SignupInput): SignupPayload | Promise<SignupPayload>;
     addBook(input: AddBookInput): AddBookPayload | Promise<AddBookPayload>;
     postPrejudice(input: PostPrejudiceInput): PostPrejudicePayload | Promise<PostPrejudicePayload>;
     followUser(input: FollowUserInput): FollowUserPayload | Promise<FollowUserPayload>;
@@ -116,6 +123,10 @@ export interface PostAnswerPayload {
 }
 
 export interface LoginPayload {
+    accessToken: string;
+}
+
+export interface SignupPayload {
     accessToken: string;
 }
 

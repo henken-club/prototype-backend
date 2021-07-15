@@ -8,7 +8,7 @@ import {AuthConfig} from './auth.config';
 import {AuthResolver} from './auth.resolver';
 import {JwtStrategy} from './jwt.strategy';
 
-import {UsersModule} from '~/users/users.module';
+import {PrismaModule} from '~/prisma/prisma.module';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import {UsersModule} from '~/users/users.module';
         signOptions: {expiresIn: '600s'},
       }),
     }),
-    UsersModule,
+    PrismaModule,
   ],
   providers: [AuthService, AuthResolver, JwtStrategy],
   exports: [AuthService],
