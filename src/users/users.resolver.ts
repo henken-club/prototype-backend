@@ -1,5 +1,16 @@
-import {Args, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
-import {InternalServerErrorException, UseGuards} from '@nestjs/common';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+  UseGuards,
+} from '@nestjs/common';
 
 import {Viewer, ViewerType} from '../auth/viewer.decorator';
 
@@ -7,6 +18,9 @@ import {
   UserEntity,
   FollowingConnection,
   FollowerConnection,
+  FollowUserInput,
+  FollowEntity,
+  UnfollowEntity,
 } from './users.entities';
 import {UsersService} from './users.service';
 
@@ -115,5 +129,45 @@ export class UsersResolver {
     const result = await this.usersService.getById(id);
     if (!result) throw new InternalServerErrorException();
     return result;
+  }
+
+  @Mutation('followUser')
+  @UseGuards(GraphQLJwtGuard)
+  async follow(
+    @Viewer() {id: fromId}: ViewerType,
+    @Args('input') {userId: toId}: FollowUserInput,
+  ): Promise<FollowEntity> {
+    if (await this.usersService.checkExists({id: fromId}))
+      throw new BadRequestException();
+    if (await this.usersService.checkExists({id: toId}))
+      throw new BadRequestException();
+
+    const result = await this.usersService.followUser(fromId, toId);
+    if (!result) throw new InternalServerErrorException();
+
+    return {
+      from: {id: result.fromId},
+      to: {id: result.toId},
+    };
+  }
+
+  @Mutation('unfollowUser')
+  @UseGuards(GraphQLJwtGuard)
+  async unfollow(
+    @Viewer() {id: fromId}: ViewerType,
+    @Args('input') {userId: toId}: FollowUserInput,
+  ): Promise<UnfollowEntity> {
+    if (await this.usersService.checkExists({id: fromId}))
+      throw new BadRequestException();
+    if (await this.usersService.checkExists({id: toId}))
+      throw new BadRequestException();
+
+    const result = await this.usersService.unfollowUser(fromId, toId);
+    if (!result) throw new InternalServerErrorException();
+
+    return {
+      from: {id: result.fromId},
+      to: {id: result.toId},
+    };
   }
 }

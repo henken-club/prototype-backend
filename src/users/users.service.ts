@@ -34,6 +34,12 @@ export class UsersService {
     private readonly prismaService: PrismaService,
   ) {}
 
+  async checkExists(where: {id: string}): Promise<boolean> {
+    return this.prismaService.user
+      .findUnique({where})
+      .then((user) => Boolean(user));
+  }
+
   async getById(id: string): Promise<UserEntity | null> {
     return this.prismaService.user.findUnique({
       where: {id},

@@ -57,11 +57,7 @@ describe('UsersService', () => {
       });
 
       const actual = await usersService.getById('id');
-      expect(actual).toStrictEqual({
-        id: 'id',
-        alias: 'alias',
-        displayName: 'DisplayName',
-      });
+      expect(actual).toStrictEqual({id: 'id'});
     });
 
     it('return null if user does not exist', async () => {
@@ -82,11 +78,7 @@ describe('UsersService', () => {
       });
 
       const actual = await usersService.getByAlias('alias');
-      expect(actual).toStrictEqual({
-        id: 'id',
-        alias: 'alias',
-        displayName: 'DisplayName',
-      });
+      expect(actual).toStrictEqual({id: 'id'});
     });
 
     it('return object if alias ignorecase', async () => {
@@ -100,11 +92,7 @@ describe('UsersService', () => {
       });
 
       const actual = await usersService.getByAlias('AliAS');
-      expect(actual).toStrictEqual({
-        id: 'id',
-        alias: 'alias',
-        displayName: 'DisplayName',
-      });
+      expect(actual).toStrictEqual({id: 'id'});
     });
 
     it('return null if user does not exist', async () => {
@@ -142,8 +130,10 @@ describe('UsersService', () => {
         ],
       ],
       [3, 3, []],
-    ])('success skip:%i limit:%i', async (skip, limit, expected) => {
-      await neo4jService.write(`
+    ])(
+      'success skip:%i limit:%i if user already exists in neo4j',
+      async (skip, limit, expected) => {
+        await neo4jService.write(`
           CREATE
                 (u1:User {id: "user1", alias: "alias1", displayName: "Display1"}),
                 (u2:User {id: "user2", alias: "alias2", displayName: "Display2"}),
@@ -154,9 +144,10 @@ describe('UsersService', () => {
           CREATE (u1)-[:FOLLOWS {followedAt: localdatetime({year: 2000})}]->(u4)
           RETURN *
         `);
-      const actual = await usersService.getFollowing('user1', {skip, limit});
-      expect(actual).toStrictEqual(expected);
-    });
+        const actual = await usersService.getFollowing('user1', {skip, limit});
+        expect(actual).toStrictEqual(expected);
+      },
+    );
 
     it('return empty array if user does not exist', async () => {
       const actual = await usersService.getFollowing('user1', {
@@ -220,8 +211,10 @@ describe('UsersService', () => {
         ],
       ],
       [3, 3, []],
-    ])('success skip:%i limit:%i', async (skip, limit, expected) => {
-      await neo4jService.write(`
+    ])(
+      'success skip:%i limit:%i if user already exists in neo4j',
+      async (skip, limit, expected) => {
+        await neo4jService.write(`
           CREATE
                 (u1:User {id: "user1", alias: "alias1", displayName: "Display1"}),
                 (u2:User {id: "user2", alias: "alias2", displayName: "Display2"}),
@@ -232,9 +225,10 @@ describe('UsersService', () => {
           CREATE (u4)-[:FOLLOWS {followedAt: localdatetime({year: 2000})}]->(u1)
           RETURN *
         `);
-      const actual = await usersService.getFollowers('user1', {skip, limit});
-      expect(actual).toStrictEqual(expected);
-    });
+        const actual = await usersService.getFollowers('user1', {skip, limit});
+        expect(actual).toStrictEqual(expected);
+      },
+    );
 
     it('return empty array if user does not exist', async () => {
       const actual = await usersService.getFollowers('user1', {
@@ -303,34 +297,36 @@ describe('UsersService', () => {
       expect(neo4jResult.records[0].get('toId')).toBe('user2');
     });
 
-    it('return null if from user not exist', async () => {
+    it('return object if from user not exist in neo4j', async () => {
       await neo4jService.write(`
         CREATE (from:User {id: "user1"})
         RETURN *
       `);
       const actual = await usersService.followUser('user1', 'user2');
-      expect(actual).toBeNull();
+      expect(actual).toStrictEqual({fromId: 'user1', toId: 'user2'});
 
       const neo4jResult = await neo4jService.read(
-        `MATCH p=()-[r:FOLLOWS]->() RETURN count(p) AS count`,
+        `MATCH (f)-[r:FOLLOWS]->(t) RETURN f.id AS fromId, t.id AS toId`,
       );
       expect(neo4jResult.records).toHaveLength(1);
-      expect(neo4jResult.records[0].get('count').toNumber()).toBe(0);
+      expect(neo4jResult.records[0].get('fromId')).toBe('user1');
+      expect(neo4jResult.records[0].get('toId')).toBe('user2');
     });
 
-    it('return null if to user not exist', async () => {
+    it('return object if to user not exist in neo4j', async () => {
       await neo4jService.write(`
         CREATE (to:User {id: "user2"})
         RETURN *
       `);
       const actual = await usersService.followUser('user1', 'user2');
-      expect(actual).toBeNull();
+      expect(actual).toStrictEqual({fromId: 'user1', toId: 'user2'});
 
       const neo4jResult = await neo4jService.read(
-        `MATCH p=()-[r:FOLLOWS]->() RETURN count(p) AS count`,
+        `MATCH (f)-[r:FOLLOWS]->(t) RETURN f.id AS fromId, t.id AS toId`,
       );
       expect(neo4jResult.records).toHaveLength(1);
-      expect(neo4jResult.records[0].get('count').toNumber()).toBe(0);
+      expect(neo4jResult.records[0].get('fromId')).toBe('user1');
+      expect(neo4jResult.records[0].get('toId')).toBe('user2');
     });
   });
 
@@ -366,7 +362,7 @@ describe('UsersService', () => {
       expect(neo4jResult.records[0].get('count').toNumber()).toBe(0);
     });
 
-    it('return null if from user not exist', async () => {
+    it('return null if from user not exist in neo4j', async () => {
       await neo4jService.write(`
         CREATE (from:User {id: "user1"})
         RETURN *
@@ -381,7 +377,7 @@ describe('UsersService', () => {
       expect(neo4jResult.records[0].get('count').toNumber()).toBe(0);
     });
 
-    it('return null if to user not exist', async () => {
+    it('return null if to user not exist in neo4j', async () => {
       await neo4jService.write(`
         CREATE (to:User {id: "user2"})
         RETURN *

@@ -1,13 +1,3 @@
-export const CYPHER_GET_USER_BY_ID = `
-  MATCH (u:User {id: $id})
-  RETURN u.id AS id, u.alias AS alias, u.displayName AS displayName
-`;
-
-export const CYPHER_GET_USER_BY_ALIAS = `
-  MATCH (u:User {alias: $alias})
-  RETURN u.id AS id, u.alias AS alias, u.displayName AS displayName
-`;
-
 const getPostPrejudices = (property: 'createdAt', order: 'ASC' | 'DESC') =>
   `
   MATCH (:User {id: $id})-[:POST_PREJUDICE]->(p:Prejudice)
@@ -52,9 +42,7 @@ export const CYPHER_GET_USER_POST_ANSWERS_ORDERBY_CREATED_AT_DESC =
   getPostAnswers('createdAt', 'DESC');
 
 export const CYPHER_FOLLOW_USER = `
-  MATCH (from:User {id: $from})
-  MATCH (to:User {id: $to})
-  MERGE (from)-[r:FOLLOWS]->(to)
+  MERGE (from {id: $from})-[r:FOLLOWS]->(to {id: $to})
   ON CREATE
     SET r.followedAt = localdatetime()
   RETURN from.id AS fromId, to.id AS toId
