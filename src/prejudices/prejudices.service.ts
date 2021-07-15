@@ -15,7 +15,6 @@ import {PrejudiceEntity} from './prejudices.entities';
 import {OrderDirection} from '~/common/common.entities';
 import {Neo4jService} from '~/neo4j/neo4j.service';
 import {IdService} from '~/id/id.service';
-import {UserEntity} from '~/users/users.entities';
 import {AnswerEntity} from '~/answers/answers.entities';
 import {BookEntity, BookOrder} from '~/books/books.entities';
 
@@ -39,30 +38,21 @@ export class PrejudicesService {
     };
   }
 
-  async getUserFrom(id: string): Promise<UserEntity> {
+  async getUserFrom(id: string): Promise<string | null> {
     const result = await this.neo4jService.read(
       CYPHER_GET_PREJUDICE_USER_FROM,
-      {
-        id,
-      },
+      {id},
     );
-    if (result.records.length !== 1)
-      throw new Error('Prejudice.userFrom broken');
-
-    return {
-      id: result.records[0].get('id'),
-    };
+    if (result.records.length !== 1) return null;
+    return result.records[0].get('id');
   }
 
-  async getUserTo(id: string): Promise<UserEntity> {
+  async getUserTo(id: string): Promise<string | null> {
     const result = await this.neo4jService.read(CYPHER_GET_PREJUDICE_USER_TO, {
       id,
     });
-    if (result.records.length !== 1) throw new Error('Prejudice.userTo broken');
-
-    return {
-      id: result.records[0].get('id'),
-    };
+    if (result.records.length !== 1) return null;
+    return result.records[0].get('id');
   }
 
   async getAnswer(id: string): Promise<AnswerEntity | null> {
@@ -109,7 +99,7 @@ export class PrejudicesService {
     to: string;
     title: string;
     relatedBooks: string[];
-  }): Promise<PrejudiceEntity> {
+  }): Promise<PrejudiceEntity | null> {
     const id = this.idService.createId();
     const result = await this.neo4jService.write(CYPHER_CREATE_PREJUDICE, {
       id,
@@ -118,7 +108,7 @@ export class PrejudicesService {
       title,
       relatedBooks,
     });
-    if (result.records.length === 0) throw new Error('Failed create prejudice');
+    if (result.records.length !== 1) return null;
     return {
       id: result.records[0].get('id'),
       title: result.records[0].get('title'),

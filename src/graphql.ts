@@ -168,7 +168,7 @@ export interface Prejudice {
     book: Book;
     userFrom: User;
     userTo: User;
-    answeredBy?: Answer;
+    answer?: Answer;
     relatedBooks: BookConnection;
 }
 

@@ -8,7 +8,7 @@ type Prejudice {
   userFrom: User!
   userTo: User!
 
-  answeredBy: Answer
+  answer: Answer
 
   relatedBooks(
     skip: Int = 0

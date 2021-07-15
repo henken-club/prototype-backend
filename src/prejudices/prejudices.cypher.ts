@@ -8,12 +8,12 @@ export const CYPHER_GET_PREJUDICE = `
 
 export const CYPHER_GET_PREJUDICE_USER_FROM = `
   MATCH (u:User)-[:POST_PREJUDICE]->(:Prejudice {id: $id})
-  RETURN u.id AS id, u.alias AS alias, u.displayName AS displayName
+  RETURN u.id AS id
 `;
 
 export const CYPHER_GET_PREJUDICE_USER_TO = `
   MATCH (:Prejudice {id: $id})-[:PREJUDICE_AGAINST]->(u:User)
-  RETURN u.id AS id, u.alias AS alias, u.displayName AS displayName
+  RETURN u.id AS id
 `;
 
 export const CYPHER_GET_PREJUDICE_ANSWER = `
@@ -39,12 +39,10 @@ export const CYPHER_GET_PREJUDICE_RELATED_BOOKS_ORDERBY_TITLE_AT_DESC =
   getRelatedBooks('title', 'DESC');
 
 export const CYPHER_CREATE_PREJUDICE = `
-  MATCH (from:User {id: $from})
-  MATCH (to:User {id: $to})
   MATCH (b:Book) WHERE b.id IN $relatedBooks
   MERGE (p:Prejudice {id: $id})
-  MERGE (from)-[:POST_PREJUDICE]->(p)-[:PREJUDICE_AGAINST]->(to)
+  MERGE (:User {id: $from})-[:POST_PREJUDICE]->(p)-[:PREJUDICE_AGAINST]->(:User {id: $to})
   MERGE (p)-[:RELATED_BOOK]->(b)
   SET p.title = $title, p.createdAt = localdatetime()
-  RETURN p.id AS id, p.title AS title, p.createdAt AS createdAt
+  RETURN DISTINCT p.id AS id, p.title AS title, p.createdAt AS createdAt
 `;

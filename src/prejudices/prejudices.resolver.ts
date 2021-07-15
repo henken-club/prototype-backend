@@ -6,7 +6,11 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import {UseGuards} from '@nestjs/common';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+  UseGuards,
+} from '@nestjs/common';
 
 import {
   PrejudiceEntity,
@@ -20,22 +24,34 @@ import {AnswerEntity} from '~/answers/answers.entities';
 import {BookConnection, BookOrder} from '~/books/books.entities';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
+import {UsersService} from '~/users/users.service';
 
 @Resolver('Prejudice')
 export class PrejudicesResolver {
-  constructor(private prejudicesService: PrejudicesService) {}
+  constructor(
+    private readonly prejudicesService: PrejudicesService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @ResolveField('userFrom')
   async getUserFrom(@Parent() {id}: PrejudiceEntity): Promise<UserEntity> {
-    return this.prejudicesService.getUserFrom(id);
+    const user = await this.prejudicesService
+      .getUserFrom(id)
+      .then((id) => (id ? this.usersService.getById(id) : null));
+    if (!user) throw new InternalServerErrorException();
+    return user;
   }
 
   @ResolveField('userTo')
   async getUserTo(@Parent() {id}: PrejudiceEntity): Promise<UserEntity> {
-    return this.prejudicesService.getUserTo(id);
+    const user = await this.prejudicesService
+      .getUserTo(id)
+      .then((id) => (id ? this.usersService.getById(id) : null));
+    if (!user) throw new InternalServerErrorException();
+    return user;
   }
 
-  @ResolveField('answeredBy')
+  @ResolveField('answer')
   async getAnswer(
     @Parent() {id}: PrejudiceEntity,
   ): Promise<AnswerEntity | null> {
@@ -68,12 +84,16 @@ export class PrejudicesResolver {
     @Viewer() {id: from}: ViewerType,
     @Args('input') {userId: to, title, relatedBooks}: PostPrejudiceInput,
   ): Promise<PostPrejudicePayload> {
+    if (!(await this.usersService.checkExists({id: to})))
+      throw new BadRequestException();
+
     const prejudice = await this.prejudicesService.createPrejudice({
       from,
       to,
       title,
       relatedBooks,
     });
+    if (!prejudice) throw new InternalServerErrorException();
     return {prejudice};
   }
 }
