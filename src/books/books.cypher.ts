@@ -24,7 +24,7 @@ export const CYPHER_ADD_BOOK = `
   MERGE (u:User {id: $userId})
   CREATE (b:Book {id: $id})
   SET b.title=$title
-  CREATE (u)-[:RESPONSIBLE_FOR]->(b)
+  CREATE (u)-[:RESPONSIBLE_FOR {updatedAt: localdatetime()}]->(b)
   RETURN b.id AS id, b.title AS title
 `;
 
