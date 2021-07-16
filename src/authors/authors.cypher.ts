@@ -17,3 +17,11 @@ export const CYPHER_GET_AUTHOR_WRITED_BOOKS_ORDER_BY_TITLE_ASC = getWritedBooks(
 );
 export const CYPHER_GET_AUTHOR_WRITED_BOOKS_ORDER_BY_TITLE_DESC =
   getWritedBooks('title', 'DESC');
+
+export const CYPHER_ADD_AUTHOR = `
+  MERGE (u:User {id: $userId})
+  CREATE (a:Author {id: $id})
+  SET a.name=$name
+  CREATE (u)-[:RESPONSIBLE_FOR]->(a)
+  RETURN a.id AS id, a.name AS name
+`;

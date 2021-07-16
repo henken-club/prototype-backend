@@ -24,3 +24,15 @@ enum AuthorOrderField {
 type Query {
   author(id: ID!): Author
 }
+
+type Mutation {
+  addAuthor(input: AddAuthorInput!): AddAuthorPayload!
+}
+
+input AddAuthorInput {
+  name: String!
+}
+
+type AddAuthorPayload {
+  author: Author!
+}

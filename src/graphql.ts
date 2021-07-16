@@ -59,6 +59,10 @@ export interface AuthorOrder {
     field: AuthorOrderField;
 }
 
+export interface AddAuthorInput {
+    name: string;
+}
+
 export interface BookOrder {
     direction: OrderDirection;
     field: BookOrderField;
@@ -112,6 +116,7 @@ export interface IMutation {
     postAnswer(input: PostAnswerInput): PostAnswerPayload | Promise<PostAnswerPayload>;
     login(input: LoginInput): LoginPayload | Promise<LoginPayload>;
     signup(input: SignupInput): SignupPayload | Promise<SignupPayload>;
+    addAuthor(input: AddAuthorInput): AddAuthorPayload | Promise<AddAuthorPayload>;
     addBook(input: AddBookInput): AddBookPayload | Promise<AddBookPayload>;
     postPrejudice(input: PostPrejudiceInput): PostPrejudicePayload | Promise<PostPrejudicePayload>;
     followUser(input: FollowUserInput): FollowUserPayload | Promise<FollowUserPayload>;
@@ -138,6 +143,10 @@ export interface Author {
 
 export interface AuthorConnection {
     nodes: Author[];
+}
+
+export interface AddAuthorPayload {
+    author: Author;
 }
 
 export interface Book {
