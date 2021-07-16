@@ -14,6 +14,6 @@ const config: Config.InitialOptions = {
   }),
   collectCoverage: true,
   coverageDirectory: './coverage/large',
-  reporters: ['default', ['jest-junit', {outputDirectory: 'coverage/large'}]],
+  reporters: ['default'],
 };
 export default config;
