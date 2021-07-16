@@ -123,19 +123,20 @@ describe('AuthorsService', () => {
     it('return object if success', async () => {
       await neo4jService.write(
         `
-        CREATE (a:Author {id: "author1"}), (u:User {id: "user1"})
-        CREATE (u)-[:RESPONSIBLE_FOR]->(a)
+        CREATE (a:Author {id: "author1"}), (u1:User {id: "user1"}), (u2:User {id: "user2"})
+        CREATE (u1)-[:RESPONSIBLE_FOR {updatedAt: localdatetime({year: 2021})}]->(a)
+        CREATE (u2)-[:RESPONSIBLE_FOR {updatedAt: localdatetime({year: 2020})}]->(a)
         RETURN *
         `,
       );
 
       const actual = await authorsService.getUserResponsibleFor('author1');
-      expect(actual).toStrictEqual({id: 'user1'});
+      expect(actual).toStrictEqual([{id: 'user1'}, {id: 'user2'}]);
     });
 
-    it('return null if author does not exist', async () => {
+    it('return empty array if author does not exist', async () => {
       const actual = await authorsService.getUserResponsibleFor('author1');
-      expect(actual).toBeNull();
+      expect(actual).toStrictEqual([]);
     });
   });
 });

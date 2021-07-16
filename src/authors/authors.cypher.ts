@@ -22,11 +22,12 @@ export const CYPHER_ADD_AUTHOR = `
   MERGE (u:User {id: $userId})
   CREATE (a:Author {id: $id})
   SET a.name=$name
-  CREATE (u)-[:RESPONSIBLE_FOR]->(a)
+  CREATE (u)-[r:RESPONSIBLE_FOR {updatedAt: localdatetime()}]->(a)
   RETURN a.id AS id, a.name AS name
 `;
 
 export const CYPHER_GET_USER_RESPONSIBLE_FOR_AUTHOR = `
-  MATCH (u:User)-[:RESPONSIBLE_FOR]->(:Author {id: $id})
+  MATCH (u:User)-[r:RESPONSIBLE_FOR]->(:Author {id: $id})
   RETURN u.id AS id
+  ORDER BY r.updatedAt DESC
 `;

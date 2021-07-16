@@ -42,9 +42,8 @@ export class AuthorsResolver {
   @ResolveField('userResponsibleFor')
   async resolveUserResponsibleFor(
     @Parent() {id}: AuthorEntity,
-  ): Promise<UserEntity> {
+  ): Promise<UserEntity[]> {
     const user = await this.authorsService.getUserResponsibleFor(id);
-    if (!user) throw new InternalServerErrorException();
     return user;
   }
 

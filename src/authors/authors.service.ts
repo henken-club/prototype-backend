@@ -54,15 +54,14 @@ export class AuthorsService {
     return books;
   }
 
-  async getUserResponsibleFor(id: string): Promise<UserEntity | null> {
-    const result = await this.neo4jService.read(
-      CYPHER_GET_USER_RESPONSIBLE_FOR_AUTHOR,
-      {id},
-    );
-    if (result.records.length !== 1) return null;
-    return {
-      id: result.records[0].get('id'),
-    };
+  async getUserResponsibleFor(id: string): Promise<UserEntity[]> {
+    return this.neo4jService
+      .read(CYPHER_GET_USER_RESPONSIBLE_FOR_AUTHOR, {id})
+      .then((result) =>
+        result.records.map((record) => ({
+          id: record.get('id'),
+        })),
+      );
   }
 
   async addAuthor({
