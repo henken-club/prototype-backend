@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      TEST_NEO4J_URL: bolt://localhost:7474
+      TEST_NEO4J_URL: bolt://localhost:7687
       TEST_PRISMA_DATABASE_URL: mysql://root:@localhost:3306/testdb
 
     services:
@@ -55,6 +55,7 @@ jobs:
           NEO4JLABS_PLUGINS: '["apoc"]'
         ports:
           - 7474:7474
+          - 7687:7687
         options: >-
           --health-cmd "wget http://localhost:7474/browser -O-"
           --health-interval 5s
