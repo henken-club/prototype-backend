@@ -52,9 +52,9 @@ export class BooksResolver {
   @UseGuards(GraphQLJwtGuard)
   async addBook(
     @Viewer() {id: userId}: ViewerType,
-    @Args('input') {title}: AddBookInput,
+    @Args('input') {title, authors}: AddBookInput,
   ): Promise<AddBookPayload> {
-    const book = await this.booksService.addBook({title, userId});
+    const book = await this.booksService.addBook({title, authors, userId});
     if (!book) throw new InternalServerErrorException();
     return {book};
   }

@@ -70,6 +70,7 @@ export interface BookOrder {
 
 export interface AddBookInput {
     title: string;
+    authors: string[];
 }
 
 export interface PrejudiceOrder {

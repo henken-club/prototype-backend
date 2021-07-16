@@ -61,12 +61,20 @@ describe('BooksService', () => {
 
   describe('addBook()', () => {
     it('return object if user exist in neo4j', async () => {
-      await neo4jService.write(`CREATE (u:User {id: "1"}) RETURN *`);
+      await neo4jService.write(
+        `
+        CREATE (u:User {id: "user1"})
+        CREATE (a1:Author {id: "author1"}), (a2:Author {id: "author2"})
+        RETURN *
+        `,
+      );
 
       const actual = await booksService.addBook({
         title: 'Title',
-        userId: '1',
+        userId: 'user1',
+        authors: ['author1', 'author2'],
       });
+
       expect(actual).toStrictEqual({
         id: expect.any(String),
         title: 'Title',
@@ -88,12 +96,24 @@ describe('BooksService', () => {
         )
         .then((result) => result.records[0].get('count').toNumber());
       expect(responsibleCount).toBe(1);
+
+      const writedBookCount = await neo4jService
+        .read(
+          `MATCH (:Author)-[r:WRITED_BOOK]->(:Book) RETURN count(r) AS count`,
+        )
+        .then((result) => result.records[0].get('count').toNumber());
+      expect(writedBookCount).toBe(2);
     });
 
     it('return object if user does not exist in neo4j', async () => {
+      await neo4jService.write(
+        `CREATE (a1:Author {id: "author1"}), (a2:Author {id: "author2"}) RETURN *`,
+      );
+
       const actual = await booksService.addBook({
         title: 'Title',
         userId: '1',
+        authors: ['author1', 'author2'],
       });
       expect(actual).toStrictEqual({
         id: expect.any(String),
@@ -116,6 +136,13 @@ describe('BooksService', () => {
         )
         .then((result) => result.records[0].get('count').toNumber());
       expect(responsibleCount).toBe(1);
+
+      const writedBookCount = await neo4jService
+        .read(
+          `MATCH (:Author)-[r:WRITED_BOOK]->(:Book) RETURN count(r) AS count`,
+        )
+        .then((result) => result.records[0].get('count').toNumber());
+      expect(writedBookCount).toBe(2);
     });
   });
 

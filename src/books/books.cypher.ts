@@ -21,11 +21,13 @@ export const CYPHER_GET_BOOK_AUTHORS_ORDER_BY_NAME_DESC = getAuthors(
 );
 
 export const CYPHER_ADD_BOOK = `
+  MATCH (a:Author) WHERE a.id IN $authors
   MERGE (u:User {id: $userId})
-  CREATE (b:Book {id: $id})
+  MERGE (b:Book {id: $id})
+  MERGE (a)-[:WRITED_BOOK]->(b)
+  MERGE (u)-[:RESPONSIBLE_FOR {updatedAt: localdatetime()}]->(b)
   SET b.title=$title
-  CREATE (u)-[:RESPONSIBLE_FOR {updatedAt: localdatetime()}]->(b)
-  RETURN b.id AS id, b.title AS title
+  RETURN DISTINCT b.id AS id, b.title AS title
 `;
 
 export const CYPHER_GET_USER_RESPONSIBLE_FOR_BOOK = `

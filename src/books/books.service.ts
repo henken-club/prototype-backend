@@ -36,9 +36,11 @@ export class BooksService {
   async addBook({
     title,
     userId,
+    authors,
   }: {
-    title: string;
     userId: string;
+    title: string;
+    authors: string[];
   }): Promise<BookEntity | null> {
     const id = this.idService.createId();
 
@@ -46,6 +48,7 @@ export class BooksService {
       id,
       title,
       userId,
+      authors,
     });
     if (result.records.length !== 1) return null;
     return {
