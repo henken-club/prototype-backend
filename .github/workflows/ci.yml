@@ -57,8 +57,7 @@ jobs:
           NEO4J_AUTH: none
           NEO4JLABS_PLUGINS: '["apoc"]'
         ports:
-          - published: $TEST_NEO4J_BOLT_PORT
-            target: 7474
+          - $TEST_NEO4J_BOLT_PORT:7474
         options: >-
           --health-cmd "wget http://localhost:7474/browser -O-"
           --health-interval 5s
@@ -70,8 +69,7 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
           MYSQL_DATABASE: $TEST_MYSQL_DATABASE
         ports:
-          - published: $TEST_MYSQL_PORT
-            target: 3306
+          - $TEST_MYSQL_PORT:3306
         options: >-
           --health-cmd "mysqladmin ping -h localhost"
           --health-interval 5s
