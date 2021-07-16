@@ -24,7 +24,7 @@ import {UserEntity} from '~/users/users.entities';
 export class AuthorsResolver {
   constructor(private authorsService: AuthorsService) {}
 
-  @ResolveField('writedBooks')
+  @ResolveField('booksWrited')
   async authors(
     @Parent() {id}: AuthorEntity,
     @Args('skip') skip: number,

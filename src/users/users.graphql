@@ -6,19 +6,19 @@ type User {
   following(skip: Int = 0, limit: Int = 10): FollowingConnection!
   followers(skip: Int = 0, limit: Int = 10): FollowerConnection!
 
-  postPreduices(
+  prejudicesPosted(
     skip: Int = 0
     limit: Int = 10
     orderBy: PrejudiceOrder = {direction: DESC, field: CREATED_AT}
   ): PrejudiceConnection!
 
-  recievedPreduices(
+  preduicesRecieved(
     skip: Int = 0
     limit: Int = 10
     orderBy: PrejudiceOrder = {direction: DESC, field: CREATED_AT}
   ): PrejudiceConnection!
 
-  postAnswers(
+  answersPosted(
     skip: Int = 0
     limit: Int = 10
     orderBy: AnswerOrder = {direction: DESC, field: CREATED_AT}

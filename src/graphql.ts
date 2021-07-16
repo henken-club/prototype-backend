@@ -139,7 +139,7 @@ export interface Author {
     id: string;
     name: string;
     userResponsibleFor: User;
-    writedBooks: BookConnection;
+    booksWrited: BookConnection;
 }
 
 export interface AuthorConnection {
@@ -196,9 +196,9 @@ export interface User {
     displayName?: string;
     following: FollowingConnection;
     followers: FollowerConnection;
-    postPreduices: PrejudiceConnection;
-    recievedPreduices: PrejudiceConnection;
-    postAnswers: AnswerConnection;
+    prejudicesPosted: PrejudiceConnection;
+    preduicesRecieved: PrejudiceConnection;
+    answersPosted: AnswerConnection;
 }
 
 export interface UserConnection {
