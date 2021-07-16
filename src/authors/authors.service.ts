@@ -6,6 +6,7 @@ import {
   CYPHER_GET_AUTHOR,
   CYPHER_GET_AUTHOR_WRITED_BOOKS_ORDER_BY_TITLE_ASC,
   CYPHER_GET_AUTHOR_WRITED_BOOKS_ORDER_BY_TITLE_DESC,
+  CYPHER_GET_USER_RESPONSIBLE_FOR,
 } from './authors.cypher';
 
 import {OrderDirection} from '~/common/common.entities';
@@ -13,6 +14,7 @@ import {Neo4jService} from '~/neo4j/neo4j.service';
 import {AuthorEntity} from '~/authors/authors.entities';
 import {BookEntity, BookOrder} from '~/books/books.entities';
 import {IdService} from '~/id/id.service';
+import {UserEntity} from '~/users/users.entities';
 
 @Injectable()
 export class AuthorsService {
@@ -50,6 +52,17 @@ export class AuthorsService {
         })),
       );
     return books;
+  }
+
+  async getUserResponsibleFor(id: string): Promise<UserEntity | null> {
+    const result = await this.neo4jService.read(
+      CYPHER_GET_USER_RESPONSIBLE_FOR,
+      {id},
+    );
+    if (result.records.length !== 1) return null;
+    return {
+      id: result.records[0].get('id'),
+    };
   }
 
   async addAuthor({

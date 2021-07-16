@@ -18,6 +18,7 @@ import {
 import {BookConnection, BookOrder} from '~/books/books.entities';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
+import {UserEntity} from '~/users/users.entities';
 
 @Resolver('Author')
 export class AuthorsResolver {
@@ -36,6 +37,15 @@ export class AuthorsResolver {
       orderBy,
     });
     return {nodes};
+  }
+
+  @ResolveField('userResponsibleFor')
+  async resolveUserResponsibleFor(
+    @Parent() {id}: AuthorEntity,
+  ): Promise<UserEntity> {
+    const user = await this.authorsService.getUserResponsibleFor(id);
+    if (!user) throw new InternalServerErrorException();
+    return user;
   }
 
   @Query('author')

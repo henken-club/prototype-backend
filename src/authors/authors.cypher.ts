@@ -25,3 +25,8 @@ export const CYPHER_ADD_AUTHOR = `
   CREATE (u)-[:RESPONSIBLE_FOR]->(a)
   RETURN a.id AS id, a.name AS name
 `;
+
+export const CYPHER_GET_USER_RESPONSIBLE_FOR = `
+  MATCH (u:User)-[:RESPONSIBLE_FOR]->(:Author {id: $id})
+  RETURN u.id AS id
+`;

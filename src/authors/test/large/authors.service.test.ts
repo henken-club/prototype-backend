@@ -118,4 +118,24 @@ describe('AuthorsService', () => {
       expect(responsibleCount).toBe(1);
     });
   });
+
+  describe('getUserResponsibleFor', () => {
+    it('return object if success', async () => {
+      await neo4jService.write(
+        `
+        CREATE (a:Author {id: "author1"}), (u:User {id: "user1"})
+        CREATE (u)-[:RESPONSIBLE_FOR]->(a)
+        RETURN *
+        `,
+      );
+
+      const actual = await authorsService.getUserResponsibleFor('author1');
+      expect(actual).toStrictEqual({id: 'user1'});
+    });
+
+    it('return null if author does not exist', async () => {
+      const actual = await authorsService.getUserResponsibleFor('author1');
+      expect(actual).toBeNull();
+    });
+  });
 });

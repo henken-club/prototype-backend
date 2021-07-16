@@ -138,6 +138,7 @@ export interface SignupPayload {
 export interface Author {
     id: string;
     name: string;
+    userResponsibleFor: User;
     writedBooks: BookConnection;
 }
 
