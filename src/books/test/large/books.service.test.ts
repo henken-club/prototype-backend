@@ -1,10 +1,10 @@
 import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
 
-import {Neo4jTestModule} from '~/neo4j/neo4j-test.module';
 import {Neo4jService} from '~/neo4j/neo4j.service';
 import {BooksService} from '~/books/books.service';
 import {IdModule} from '~/id/id.module';
+import {Neo4jModule} from '~/neo4j/neo4j.module';
 
 describe('BooksService', () => {
   let app: INestApplication;
@@ -15,7 +15,7 @@ describe('BooksService', () => {
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      imports: [Neo4jTestModule, IdModule],
+      imports: [Neo4jModule, IdModule],
       providers: [BooksService],
     }).compile();
 

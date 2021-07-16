@@ -42,6 +42,14 @@ jobs:
 
   test-large:
     runs-on: ubuntu-latest
+
+    env:
+      TEST_NEO4J_BOLT_PORT: 7474
+      TEST_NEO4J_URL: bolt://localhost:$TEST_NEO4J_BOLT_PORT
+      TEST_MYSQL_DATABASE: test
+      TEST_MYSQL_PORT: 3306
+      TEST_PRISMA_DATABASE_URL: mysql://root:@localhost:$TEST_MYSQL_PORT/$TEST_MYSQL_DATABASE
+
     services:
       neo4j:
         image: neo4j:4.2
@@ -49,30 +57,26 @@ jobs:
           NEO4J_AUTH: none
           NEO4JLABS_PLUGINS: '["apoc"]'
         ports:
-          - 7474:7474
-          - 7687:7687
+          - published: $TEST_NEO4J_BOLT_PORT
+            target: 7474
         options: >-
           --health-cmd "wget http://localhost:7474/browser -O-"
           --health-interval 5s
           --health-timeout 3s
           --health-retries 5
-
       mysql:
         image: mysql:8
         env:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: test
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+          MYSQL_DATABASE: $TEST_MYSQL_DATABASE
         ports:
-          - 3306:3306
+          - published: $TEST_MYSQL_PORT
+            target: 3306
         options: >-
           --health-cmd "mysqladmin ping -h localhost"
           --health-interval 5s
           --health-timeout 3s
           --health-retries 5
-
-    env:
-      TEST_NEO4J_URL: bolt://localhost:7687
-      TEST_PRISMA_DATABASE_URL: mysql://root:password@localhost:3306/test
 
     steps:
       - uses: actions/checkout@v2

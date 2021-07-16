@@ -1,18 +1,33 @@
-import {Inject, Injectable, OnApplicationShutdown} from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
+import {ConfigType} from '@nestjs/config';
 import neo4j, {Driver, Transaction} from 'neo4j-driver';
 
-import {NEO4J_MODULE_DRIVER, NEO4J_MODULE_OPTIONS} from './neo4j.constants';
-import {Neo4jCreateOptions} from './neo4j.utils';
+import {Neo4jConfig} from './neo4j.config';
 
 @Injectable()
-export class Neo4jService implements OnApplicationShutdown {
+export class Neo4jService implements OnModuleInit, OnModuleDestroy {
   private readonly driver: Driver;
 
-  constructor(
-    @Inject(NEO4J_MODULE_OPTIONS) config: Neo4jCreateOptions,
-    @Inject(NEO4J_MODULE_DRIVER) driver: Driver,
-  ) {
-    this.driver = driver;
+  constructor(@Inject(Neo4jConfig.KEY) config: ConfigType<typeof Neo4jConfig>) {
+    const driverUrl = config.url;
+    const driverAuth =
+      config.username && config.password
+        ? neo4j.auth.basic(config.username, config.password)
+        : undefined;
+    this.driver = neo4j.driver(driverUrl, driverAuth);
+  }
+
+  async onModuleInit() {
+    await this.driver.verifyConnectivity();
+  }
+
+  async onModuleDestroy() {
+    await this.driver.close();
   }
 
   beginTransaction(database?: string): Transaction {
@@ -46,9 +61,5 @@ export class Neo4jService implements OnApplicationShutdown {
     const result = await session.run(cypher, params);
     await session.close();
     return result;
-  }
-
-  onApplicationShutdown() {
-    return this.driver.close();
   }
 }

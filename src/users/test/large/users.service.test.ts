@@ -1,13 +1,13 @@
 import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
 
-import {Neo4jTestModule} from '~/neo4j/neo4j-test.module';
 import {Neo4jService} from '~/neo4j/neo4j.service';
 import {IdModule} from '~/id/id.module';
 import {UsersService} from '~/users/users.service';
 import {PrismaModule} from '~/prisma/prisma.module';
 import {PrismaService} from '~/prisma/prisma.service';
 import {cleanPrisma} from '~/prisma/prisma.utils';
+import {Neo4jModule} from '~/neo4j/neo4j.module';
 
 describe('UsersService', () => {
   let app: INestApplication;
@@ -19,7 +19,7 @@ describe('UsersService', () => {
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      imports: [Neo4jTestModule, IdModule, PrismaModule],
+      imports: [Neo4jModule, IdModule, PrismaModule],
       providers: [UsersService],
     }).compile();
 

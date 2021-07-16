@@ -5,9 +5,10 @@ import {PrejudicesService} from './prejudices.service';
 
 import {IdModule} from '~/id/id.module';
 import {UsersModule} from '~/users/users.module';
+import {Neo4jModule} from '~/neo4j/neo4j.module';
 
 @Module({
-  imports: [IdModule, UsersModule],
+  imports: [Neo4jModule, IdModule, UsersModule],
   providers: [PrejudicesResolver, PrejudicesService],
   exports: [PrejudicesService],
 })
