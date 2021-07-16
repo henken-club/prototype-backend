@@ -8,12 +8,14 @@ import {
   CYPHER_GET_BOOK,
   CYPHER_GET_BOOK_AUTHORS_ORDER_BY_NAME_ASC,
   CYPHER_GET_BOOK_AUTHORS_ORDER_BY_NAME_DESC,
+  CYPHER_GET_USER_RESPONSIBLE_FOR_BOOK,
 } from './books.cypher';
 import {BookEntity} from './books.entities';
 
 import {Neo4jService} from '~/neo4j/neo4j.service';
 import {IdService} from '~/id/id.service';
 import {AuthorEntity, AuthorOrder} from '~/authors/authors.entities';
+import {UserEntity} from '~/users/users.entities';
 
 @Injectable()
 export class BooksService {
@@ -31,11 +33,21 @@ export class BooksService {
     };
   }
 
-  async addBook({title}: {title: string}): Promise<BookEntity> {
+  async addBook({
+    title,
+    userId,
+  }: {
+    title: string;
+    userId: string;
+  }): Promise<BookEntity | null> {
     const id = this.idService.createId();
 
-    const result = await this.neo4jService.write(CYPHER_ADD_BOOK, {id, title});
-    if (result.records.length === 0) throw new Error('Failed add book');
+    const result = await this.neo4jService.write(CYPHER_ADD_BOOK, {
+      id,
+      title,
+      userId,
+    });
+    if (result.records.length !== 1) return null;
     return {
       id: result.records[0].get('id'),
       title: result.records[0].get('title'),
@@ -46,6 +58,16 @@ export class BooksService {
     if (direction === OrderDirection.ASC)
       return CYPHER_GET_BOOK_AUTHORS_ORDER_BY_NAME_ASC;
     else return CYPHER_GET_BOOK_AUTHORS_ORDER_BY_NAME_DESC;
+  }
+
+  async getUserResponsibleFor(id: string): Promise<UserEntity[]> {
+    return this.neo4jService
+      .read(CYPHER_GET_USER_RESPONSIBLE_FOR_BOOK, {id})
+      .then((result) =>
+        result.records.map((record) => ({
+          id: record.get('id'),
+        })),
+      );
   }
 
   async getAuthors(

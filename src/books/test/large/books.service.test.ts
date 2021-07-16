@@ -60,12 +60,83 @@ describe('BooksService', () => {
   });
 
   describe('addBook()', () => {
-    it('return object if success', async () => {
-      const actual = await booksService.addBook({title: 'Title'});
+    it('return object if user exist in neo4j', async () => {
+      await neo4jService.write(`CREATE (u:User {id: "1"}) RETURN *`);
+
+      const actual = await booksService.addBook({
+        title: 'Title',
+        userId: '1',
+      });
       expect(actual).toStrictEqual({
         id: expect.any(String),
         title: 'Title',
       });
+
+      const bookCount = await neo4jService
+        .read(`MATCH (b:Book) RETURN count(b) AS count`)
+        .then((result) => result.records[0].get('count').toNumber());
+      expect(bookCount).toBe(1);
+
+      const userCount = await neo4jService
+        .read(`MATCH (u:User) RETURN count(u) AS count`)
+        .then((result) => result.records[0].get('count').toNumber());
+      expect(userCount).toBe(1);
+
+      const responsibleCount = await neo4jService
+        .read(
+          `MATCH (:User)-[r:RESPONSIBLE_FOR]->(:Book) RETURN count(r) AS count`,
+        )
+        .then((result) => result.records[0].get('count').toNumber());
+      expect(responsibleCount).toBe(1);
+    });
+
+    it('return object if user does not exist in neo4j', async () => {
+      const actual = await booksService.addBook({
+        title: 'Title',
+        userId: '1',
+      });
+      expect(actual).toStrictEqual({
+        id: expect.any(String),
+        title: 'Title',
+      });
+
+      const bookCount = await neo4jService
+        .read(`MATCH (b:Book) RETURN count(b) AS count`)
+        .then((result) => result.records[0].get('count').toNumber());
+      expect(bookCount).toBe(1);
+
+      const userCount = await neo4jService
+        .read(`MATCH (u:User) RETURN count(u) AS count`)
+        .then((result) => result.records[0].get('count').toNumber());
+      expect(userCount).toBe(1);
+
+      const responsibleCount = await neo4jService
+        .read(
+          `MATCH (:User)-[r:RESPONSIBLE_FOR]->(:Book) RETURN count(r) AS count`,
+        )
+        .then((result) => result.records[0].get('count').toNumber());
+      expect(responsibleCount).toBe(1);
+    });
+  });
+
+  describe('getUserResponsibleFor', () => {
+    it('return array if success', async () => {
+      await neo4jService.write(
+        `
+        CREATE (b:Book {id: "book1"}), (u1:User {id: "user1"}), (u2:User {id: "user2"})
+        CREATE (u1)-[:RESPONSIBLE_FOR {updatedAt: localdatetime({year: 2021})}]->(b)
+        CREATE (u2)-[:RESPONSIBLE_FOR {updatedAt: localdatetime({year: 2020})}]->(b)
+        RETURN *
+        `,
+      );
+
+      const actual = await booksService.getUserResponsibleFor('book1');
+      expect(actual).toStrictEqual([{id: 'user1'}, {id: 'user2'}]);
+    });
+
+    it('return empty array if author does not exist', async () => {
+      const actual = await booksService.getUserResponsibleFor('author1');
+      expect(actual).toStrictEqual([]);
     });
   });
 });

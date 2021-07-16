@@ -6,7 +6,7 @@ import {
   CYPHER_GET_AUTHOR,
   CYPHER_GET_AUTHOR_WRITED_BOOKS_ORDER_BY_TITLE_ASC,
   CYPHER_GET_AUTHOR_WRITED_BOOKS_ORDER_BY_TITLE_DESC,
-  CYPHER_GET_USER_RESPONSIBLE_FOR,
+  CYPHER_GET_USER_RESPONSIBLE_FOR_AUTHOR,
 } from './authors.cypher';
 
 import {OrderDirection} from '~/common/common.entities';
@@ -56,7 +56,7 @@ export class AuthorsService {
 
   async getUserResponsibleFor(id: string): Promise<UserEntity | null> {
     const result = await this.neo4jService.read(
-      CYPHER_GET_USER_RESPONSIBLE_FOR,
+      CYPHER_GET_USER_RESPONSIBLE_FOR_AUTHOR,
       {id},
     );
     if (result.records.length !== 1) return null;

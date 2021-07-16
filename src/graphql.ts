@@ -153,6 +153,7 @@ export interface AddAuthorPayload {
 export interface Book {
     id: string;
     title: string;
+    userResponsibleFor: User[];
     authors: AuthorConnection;
 }
 

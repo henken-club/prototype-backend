@@ -3,7 +3,7 @@ import {Connection} from '~/common/common.entities';
 
 export {BookOrder, BookOrderField, AddBookInput} from '~/graphql';
 
-export type BookEntity = Omit<Book, 'authors'>;
+export type BookEntity = Omit<Book, 'authors' | 'userResponsibleFor'>;
 export class BookConnection extends Connection<BookEntity> {}
 
 export class AddBookPayload {

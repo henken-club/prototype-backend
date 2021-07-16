@@ -1,6 +1,7 @@
 type Book {
   id: ID!
   title: String!
+  userResponsibleFor: [User!]!
   authors(
     skip: Int = 0
     limit: Int = 10

@@ -6,7 +6,7 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import {UseGuards} from '@nestjs/common';
+import {InternalServerErrorException, UseGuards} from '@nestjs/common';
 
 import {BookEntity, AddBookInput, AddBookPayload} from './books.entities';
 import {BooksService} from './books.service';
@@ -14,10 +14,19 @@ import {BooksService} from './books.service';
 import {AuthorConnection, AuthorOrder} from '~/authors/authors.entities';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
+import {UserEntity} from '~/users/users.entities';
 
 @Resolver('Book')
 export class BooksResolver {
   constructor(private booksService: BooksService) {}
+
+  @ResolveField('userResponsibleFor')
+  async resolveUserResponsibleFor(
+    @Parent() {id}: BookEntity,
+  ): Promise<UserEntity[]> {
+    const user = await this.booksService.getUserResponsibleFor(id);
+    return user;
+  }
 
   @ResolveField('authors')
   async authors(
@@ -42,10 +51,11 @@ export class BooksResolver {
   @Mutation('addBook')
   @UseGuards(GraphQLJwtGuard)
   async addBook(
-    @Viewer() {id}: ViewerType,
+    @Viewer() {id: userId}: ViewerType,
     @Args('input') {title}: AddBookInput,
   ): Promise<AddBookPayload> {
-    const book = await this.booksService.addBook({title});
+    const book = await this.booksService.addBook({title, userId});
+    if (!book) throw new InternalServerErrorException();
     return {book};
   }
 }
