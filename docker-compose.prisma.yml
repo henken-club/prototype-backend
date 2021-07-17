@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  prisma-migrate:
+    build:
+      context: prisma
+      dockerfile: Dockerfile
+    environment:
+      PRISMA_DATABASE_URL: mysql://root:@prisma-mysql:3306/testdb
+    depends_on:
+      prisma-mysql:
+        condition: service_healthy
+
+  prisma-mysql:
+    image: mysql:8
+    healthcheck:
+      test: mysqladmin ping -h localhost
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: testdb
