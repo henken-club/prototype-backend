@@ -40,6 +40,17 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn run lint:prettier
 
+  hadolint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hadolint/hadolint-action@v1.5.0
+        with:
+          dockerfile: Dockerfile
+      - uses: hadolint/hadolint-action@v1.5.0
+        with:
+          dockerfile: prisma/Dockerfile
+
   test-large:
     runs-on: ubuntu-latest
 
