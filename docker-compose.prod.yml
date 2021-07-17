@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - published: 4000
+        target: 4000
+    environment:
+      JWT_SECRET: changeme
+      NEO4J_USERNAME: neo4j
+      NEO4J_PASSWORD: changeme
+      NEO4J_URL: bolt://neo4j:7687
+      PRISMA_DATABASE_URL: mysql://root:@mysql:3306/testdb
+    depends_on:
+      neo4j:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      prisma-migrate:
+        condition: service_completed_successfully
+
+  prod-neo4j:
+    image: neo4j:4.2
+    healthcheck:
+      test: wget http://localhost:7474/browser -O-
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    environment:
+      NEO4J_AUTH: neo4j/changeme
+      NEO4JLABS_PLUGINS: '["apoc"]'
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+      - neo4j-import:/var/lib/neo4j/import
+      - neo4j-plugins:/plugins
+
+  prod-mysql:
+    image: mysql:8
+    healthcheck:
+      test: mysqladmin ping -h localhost
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: testdb
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  prod-prisma-migrate:
+    build:
+      context: prisma
+      dockerfile: Dockerfile
+    environment:
+      PRISMA_DATABASE_URL: mysql://root:@mysql:3306/testdb
+    depends_on:
+      prod-mysql:
+        condition: service_healthy
+
+volumes:
+  prod-neo4j-data:
+  prod-neo4j-logs:
+  prod-neo4j-import:
+  prod-neo4j-plugins:
+  prod-mysql-data:
