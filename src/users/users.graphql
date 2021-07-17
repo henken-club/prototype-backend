@@ -1,0 +1,77 @@
+type User {
+  id: ID!
+  alias: ID!
+  displayName: String
+
+  following(skip: Int = 0, limit: Int = 10): FollowingConnection!
+  followers(skip: Int = 0, limit: Int = 10): FollowerConnection!
+
+  prejudicesPosted(
+    skip: Int = 0
+    limit: Int = 10
+    orderBy: PrejudiceOrder = {direction: DESC, field: CREATED_AT}
+  ): PrejudiceConnection!
+
+  preduicesRecieved(
+    skip: Int = 0
+    limit: Int = 10
+    orderBy: PrejudiceOrder = {direction: DESC, field: CREATED_AT}
+  ): PrejudiceConnection!
+
+  answersPosted(
+    skip: Int = 0
+    limit: Int = 10
+    orderBy: AnswerOrder = {direction: DESC, field: CREATED_AT}
+  ): AnswerConnection!
+}
+
+type UserConnection {
+  nodes: [User!]!
+  totalCount: Int!
+}
+
+type FollowingConnection {
+  nodes: [User!]!
+  totalCount: Int!
+}
+
+type FollowerConnection {
+  nodes: [User!]!
+  totalCount: Int!
+}
+
+type Follow {
+  from: User!
+  to: User!
+}
+
+type Unfollow {
+  from: User!
+  to: User!
+}
+
+type Query {
+  user(alias: ID!): User
+  viewer: User!
+}
+
+type Mutation {
+  followUser(input: FollowUserInput!): FollowUserPayload!
+  unfollowUser(input: UnfollowUserInput!): UnfollowUserPayload!
+}
+
+input FollowUserInput {
+  userId: ID!
+}
+
+type FollowUserPayload {
+  follow: Follow!
+}
+
+input UnfollowUserInput {
+  userId: ID!
+}
+
+type UnfollowUserPayload {
+  unfollow: Unfollow!
+}

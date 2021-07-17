@@ -1,0 +1,51 @@
+type Prejudice {
+  id: ID!
+  title: String!
+  createdAt: DateTime!
+
+  book: Book!
+
+  userFrom: User!
+  userTo: User!
+
+  answer: Answer
+
+  relatedBooks(
+    skip: Int = 0
+    limit: Int = 10
+    orderBy: BookOrder = {direction: ASC, field: TITLE}
+  ): BookConnection!
+}
+
+type PrejudiceConnection {
+  nodes: [Prejudice!]!
+}
+
+input PrejudiceOrder {
+  direction: OrderDirection!
+  field: PrejudiceOrderField!
+}
+
+enum PrejudiceOrderField {
+  CREATED_AT
+}
+
+type Query {
+  prejudice(id: ID!): Prejudice
+}
+
+type Mutation {
+  postPrejudice(input: PostPrejudiceInput!): PostPrejudicePayload!
+}
+
+input PostPrejudiceInput {
+  userId: ID!
+
+  title: String!
+
+  relatedBooks: [ID!]!
+}
+
+type PostPrejudicePayload {
+  prejudice: Prejudice!
+}

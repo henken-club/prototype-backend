@@ -1,0 +1,40 @@
+type Book {
+  id: ID!
+  title: String!
+  userResponsibleFor: [User!]!
+  authors(
+    skip: Int = 0
+    limit: Int = 10
+    orderBy: AuthorOrder = {direction: ASC, field: NAME}
+  ): AuthorConnection!
+}
+
+type BookConnection {
+  nodes: [Book!]!
+}
+
+input BookOrder {
+  direction: OrderDirection!
+  field: BookOrderField!
+}
+
+enum BookOrderField {
+  TITLE
+}
+
+type Query {
+  book(id: ID!): Book
+}
+
+type Mutation {
+  addBook(input: AddBookInput!): AddBookPayload!
+}
+
+input AddBookInput {
+  title: String!
+  authors: [ID!]!
+}
+
+type AddBookPayload {
+  book: Book!
+}
