@@ -12,14 +12,14 @@ services:
       JWT_SECRET: changeme
       NEO4J_USERNAME: neo4j
       NEO4J_PASSWORD: changeme
-      NEO4J_URL: bolt://neo4j:7687
-      PRISMA_DATABASE_URL: mysql://root:@mysql:3306/testdb
+      NEO4J_URL: bolt://prod-neo4j:7687
+      PRISMA_DATABASE_URL: mysql://root:@prod-mysql:3306/testdb
     depends_on:
-      neo4j:
+      prod-neo4j:
         condition: service_healthy
-      mysql:
+      prod-mysql:
         condition: service_healthy
-      prisma-migrate:
+      prod-prisma-migrate:
         condition: service_completed_successfully
 
   prod-neo4j:
@@ -33,10 +33,10 @@ services:
       NEO4J_AUTH: neo4j/changeme
       NEO4JLABS_PLUGINS: '["apoc"]'
     volumes:
-      - neo4j-data:/data
-      - neo4j-logs:/logs
-      - neo4j-import:/var/lib/neo4j/import
-      - neo4j-plugins:/plugins
+      - prod-neo4j-data:/data
+      - prod-neo4j-logs:/logs
+      - prod-neo4j-import:/var/lib/neo4j/import
+      - prod-neo4j-plugins:/plugins
 
   prod-mysql:
     image: mysql:8
@@ -49,14 +49,14 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
       MYSQL_DATABASE: testdb
     volumes:
-      - mysql-data:/var/lib/mysql
+      - prod-mysql-data:/var/lib/mysql
 
   prod-prisma-migrate:
     build:
       context: prisma
       dockerfile: Dockerfile
     environment:
-      PRISMA_DATABASE_URL: mysql://root:@mysql:3306/testdb
+      PRISMA_DATABASE_URL: mysql://root:@prod-mysql:3306/testdb
     depends_on:
       prod-mysql:
         condition: service_healthy

@@ -17,10 +17,10 @@ services:
       NEO4J_AUTH: ${NEO4J_USERNAME}/${NEO4J_PASSWORD}
       NEO4JLABS_PLUGINS: '["apoc"]'
     volumes:
-      - local-neo4j-data:/data
-      - local-neo4j-logs:/logs
-      - local-neo4j-import:/var/lib/neo4j/import
-      - local-neo4j-plugins:/plugins
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+      - neo4j-import:/var/lib/neo4j/import
+      - neo4j-plugins:/plugins
 
   mysql:
     image: mysql:8

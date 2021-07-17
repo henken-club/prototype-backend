@@ -9,3 +9,8 @@ pre-commit:
       run: |
         docker run --rm -i hadolint/hadolint < Dockerfile
         docker run --rm -i hadolint/hadolint < prisma/Dockerfile
+    docker-compose:
+      run: |
+        docker-compose -f docker-compose.yml config -q || exit $?
+        docker-compose -f docker-compose.prod.yml config -q || exit $?
+        docker-compose -f docker-compose.test.yml config -q || exit $?
