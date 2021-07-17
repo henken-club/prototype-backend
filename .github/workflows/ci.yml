@@ -8,6 +8,7 @@ on:
 
 jobs:
   ts-check:
+    name: TS Compiler Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -19,6 +20,7 @@ jobs:
       - run: yarn run ts-check
 
   eslint:
+    name: ESLint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -30,6 +32,7 @@ jobs:
       - run: yarn run lint:eslint
 
   prettier:
+    name: Prettier
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -41,6 +44,7 @@ jobs:
       - run: yarn run lint:prettier
 
   hadolint:
+    name: Hadolint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -52,6 +56,7 @@ jobs:
           dockerfile: prisma/Dockerfile
 
   test-large:
+    name: Large Test
     runs-on: ubuntu-latest
 
     env:
