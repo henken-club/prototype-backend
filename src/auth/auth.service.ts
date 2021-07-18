@@ -1,9 +1,9 @@
 import {Inject, Injectable} from '@nestjs/common';
 import {ConfigType} from '@nestjs/config';
 import {JwtService} from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
 
 import {AuthConfig} from './auth.config';
+import {PasswordService} from './password.service';
 
 import {PrismaService} from '~/prisma/prisma.service';
 
@@ -14,6 +14,7 @@ export class AuthService {
     private readonly config: ConfigType<typeof AuthConfig>,
     private readonly jwtService: JwtService,
     private readonly prismaService: PrismaService,
+    private readonly passwordService: PasswordService,
   ) {}
 
   async verifyUser({
@@ -85,5 +86,13 @@ export class AuthService {
       secret: this.config.refleshJwtSecret,
       expiresIn: this.config.refleshExpiresIn,
     });
+  }
+
+  async refleshToken(token: string) {
+    const {uid} = this.jwtService.verify(token, {
+      secret: this.config.refleshJwtSecret,
+    });
+    if (uid) return this.generateTokens({uid});
+    return null;
   }
 }

@@ -82,6 +82,10 @@ export interface PrejudiceOrder {
     field: PrejudiceOrderField;
 }
 
+export interface RefleshTokenInput {
+    token: string;
+}
+
 export interface SignupInput {
     alias: string;
     displayName: string;
@@ -164,6 +168,7 @@ export interface IMutation {
     login(input: LoginInput): LoginPayload | Promise<LoginPayload>;
     postAnswer(input: PostAnswerInput): PostAnswerPayload | Promise<PostAnswerPayload>;
     postPrejudice(input: PostPrejudiceInput): PostPrejudicePayload | Promise<PostPrejudicePayload>;
+    refleshToken(input: RefleshTokenInput): RefleshTokenPayload | Promise<RefleshTokenPayload>;
     signup(input: SignupInput): SignupPayload | Promise<SignupPayload>;
     unfollowUser(input: UnfollowUserInput): UnfollowUserPayload | Promise<UnfollowUserPayload>;
 }
@@ -205,6 +210,10 @@ export interface IQuery {
     prejudice(id: string): Prejudice | Promise<Prejudice>;
     user(alias: string): User | Promise<User>;
     viewer(): User | Promise<User>;
+}
+
+export interface RefleshTokenPayload {
+    tokens: TokensData;
 }
 
 export interface SignupPayload {

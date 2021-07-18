@@ -9,6 +9,8 @@ import {
   LoginPayload,
   LoginInput,
   SignupPayload,
+  RefleshTokenInput,
+  RefleshTokenPayload,
   SignupInput,
 } from './auth.entities';
 import {AuthService} from './auth.service';
@@ -48,5 +50,14 @@ export class AuthResolver {
     return {
       tokens,
     };
+  }
+
+  @Mutation('refleshToken')
+  async refleshToken(
+    @Args('input') {token}: RefleshTokenInput,
+  ): Promise<RefleshTokenPayload> {
+    const tokens = await this.authServer.refleshToken(token);
+    if (!tokens) throw new UnauthorizedException();
+    return {tokens};
   }
 }

@@ -1,6 +1,8 @@
 type Mutation {
   login(input: LoginInput!): LoginPayload!
   signup(input: SignupInput!): SignupPayload!
+
+  refleshToken(input: RefleshTokenInput!): RefleshTokenPayload!
 }
 
 type TokensData {
@@ -24,5 +26,13 @@ input SignupInput {
 }
 
 type SignupPayload {
+  tokens: TokensData!
+}
+
+input RefleshTokenInput {
+  token: String!
+}
+
+type RefleshTokenPayload {
   tokens: TokensData!
 }
