@@ -55,6 +55,19 @@ jobs:
         with:
           dockerfile: prisma/Dockerfile
 
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn prisma generate
+      - run: yarn run build
+
   test-large:
     name: Large Test
     runs-on: ubuntu-latest
