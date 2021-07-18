@@ -7,4 +7,4 @@ COPY migrations ./migrations
 
 RUN yarn install --frozen-lockfile && yarn cache clean
 
-CMD ["npx", "prisma", "migrate", "deploy"]
+CMD ["yarn", "prisma", "migrate", "deploy"]

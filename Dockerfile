@@ -9,8 +9,8 @@ COPY prisma/schema.prisma ./prisma/schema.prisma
 COPY tsconfig.json tsconfig.build.json nest-cli.json ./
 COPY src ./src
 
-RUN npx prisma generate
-RUN npm run build
+RUN yarn prisma generate
+RUN yarn run build
 
 FROM node:14.16.1-slim
 
