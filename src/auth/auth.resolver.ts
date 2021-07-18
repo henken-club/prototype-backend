@@ -11,7 +11,7 @@ import {
   SignupPayload,
   SignupInput,
 } from './auth.entities';
-import {AuthService} from './auth.server';
+import {AuthService} from './auth.service';
 
 @Resolver('Auth')
 export class AuthResolver {
@@ -24,8 +24,10 @@ export class AuthResolver {
     const validated = await this.authServer.verifyUser({alias, password});
     if (!validated) throw new UnauthorizedException();
 
-    const accessToken = await this.authServer.getAccessToken(validated);
-    return {accessToken};
+    const tokens = await this.authServer.generateTokens(validated);
+    return {
+      tokens,
+    };
   }
 
   @Mutation('signup')
@@ -42,7 +44,9 @@ export class AuthResolver {
     });
     if (!created) throw new InternalServerErrorException();
 
-    const accessToken = await this.authServer.getAccessToken(created);
-    return {accessToken};
+    const tokens = await this.authServer.generateTokens(created);
+    return {
+      tokens,
+    };
   }
 }

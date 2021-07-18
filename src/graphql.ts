@@ -7,12 +7,6 @@
 
 /* tslint:disable */
 /* eslint-disable */
-export enum Correctness {
-    CORRECT = "CORRECT",
-    PARTLY_CORRECT = "PARTLY_CORRECT",
-    INCORRECT = "INCORRECT"
-}
-
 export enum AnswerOrderField {
     CREATED_AT = "CREATED_AT"
 }
@@ -25,6 +19,12 @@ export enum BookOrderField {
     TITLE = "TITLE"
 }
 
+export enum Correctness {
+    CORRECT = "CORRECT",
+    INCORRECT = "INCORRECT",
+    PARTLY_CORRECT = "PARTLY_CORRECT"
+}
+
 export enum OrderDirection {
     ASC = "ASC",
     DESC = "DESC"
@@ -34,18 +34,52 @@ export enum PrejudiceOrderField {
     CREATED_AT = "CREATED_AT"
 }
 
+export interface AddAuthorInput {
+    name: string;
+}
+
+export interface AddBookInput {
+    authors: string[];
+    title: string;
+}
+
 export interface AnswerOrder {
     direction: OrderDirection;
     field: AnswerOrderField;
+}
+
+export interface AuthorOrder {
+    direction: OrderDirection;
+    field: AuthorOrderField;
+}
+
+export interface BookOrder {
+    direction: OrderDirection;
+    field: BookOrderField;
+}
+
+export interface FollowUserInput {
+    userId: string;
+}
+
+export interface LoginInput {
+    alias: string;
+    password: string;
 }
 
 export interface PostAnswerInput {
     prejudiceId: string;
 }
 
-export interface LoginInput {
-    alias: string;
-    password: string;
+export interface PostPrejudiceInput {
+    relatedBooks: string[];
+    title: string;
+    userId: string;
+}
+
+export interface PrejudiceOrder {
+    direction: OrderDirection;
+    field: PrejudiceOrderField;
 }
 
 export interface SignupInput {
@@ -54,54 +88,114 @@ export interface SignupInput {
     password: string;
 }
 
-export interface AuthorOrder {
-    direction: OrderDirection;
-    field: AuthorOrderField;
-}
-
-export interface AddAuthorInput {
-    name: string;
-}
-
-export interface BookOrder {
-    direction: OrderDirection;
-    field: BookOrderField;
-}
-
-export interface AddBookInput {
-    title: string;
-    authors: string[];
-}
-
-export interface PrejudiceOrder {
-    direction: OrderDirection;
-    field: PrejudiceOrderField;
-}
-
-export interface PostPrejudiceInput {
-    userId: string;
-    title: string;
-    relatedBooks: string[];
-}
-
-export interface FollowUserInput {
-    userId: string;
-}
-
 export interface UnfollowUserInput {
     userId: string;
 }
 
+export interface AddAuthorPayload {
+    author: Author;
+}
+
+export interface AddBookPayload {
+    book: Book;
+}
+
 export interface Answer {
-    id: string;
-    createdAt: DateTime;
     correctness: Correctness;
-    text?: string;
+    createdAt: DateTime;
+    id: string;
     prejudiceTo: Prejudice;
+    text?: string;
 }
 
 export interface AnswerConnection {
     nodes: Answer[];
+}
+
+export interface Author {
+    booksWrited: BookConnection;
+    id: string;
+    name: string;
+    userResponsibleFor: User[];
+}
+
+export interface AuthorConnection {
+    nodes: Author[];
+}
+
+export interface Book {
+    authors: AuthorConnection;
+    id: string;
+    title: string;
+    userResponsibleFor: User[];
+}
+
+export interface BookConnection {
+    nodes: Book[];
+}
+
+export interface Follow {
+    from: User;
+    to: User;
+}
+
+export interface FollowUserPayload {
+    follow: Follow;
+}
+
+export interface FollowerConnection {
+    nodes: User[];
+    totalCount: number;
+}
+
+export interface FollowingConnection {
+    nodes: User[];
+    totalCount: number;
+}
+
+export interface LoginPayload {
+    tokens: TokensData;
+}
+
+export interface IMutation {
+    addAuthor(input: AddAuthorInput): AddAuthorPayload | Promise<AddAuthorPayload>;
+    addBook(input: AddBookInput): AddBookPayload | Promise<AddBookPayload>;
+    followUser(input: FollowUserInput): FollowUserPayload | Promise<FollowUserPayload>;
+    login(input: LoginInput): LoginPayload | Promise<LoginPayload>;
+    postAnswer(input: PostAnswerInput): PostAnswerPayload | Promise<PostAnswerPayload>;
+    postPrejudice(input: PostPrejudiceInput): PostPrejudicePayload | Promise<PostPrejudicePayload>;
+    signup(input: SignupInput): SignupPayload | Promise<SignupPayload>;
+    unfollowUser(input: UnfollowUserInput): UnfollowUserPayload | Promise<UnfollowUserPayload>;
+}
+
+export interface PageInfo {
+    endCursor?: string;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+    startCursor?: string;
+}
+
+export interface PostAnswerPayload {
+    answer: Answer;
+}
+
+export interface PostPrejudicePayload {
+    prejudice: Prejudice;
+}
+
+export interface Prejudice {
+    answer?: Answer;
+    book: Book;
+    createdAt: DateTime;
+    id: string;
+    relatedBooks: BookConnection;
+    title: string;
+    userFrom: User;
+    userTo: User;
+}
+
+export interface PrejudiceConnection {
+    nodes: Prejudice[];
 }
 
 export interface IQuery {
@@ -113,114 +207,13 @@ export interface IQuery {
     viewer(): User | Promise<User>;
 }
 
-export interface IMutation {
-    postAnswer(input: PostAnswerInput): PostAnswerPayload | Promise<PostAnswerPayload>;
-    login(input: LoginInput): LoginPayload | Promise<LoginPayload>;
-    signup(input: SignupInput): SignupPayload | Promise<SignupPayload>;
-    addAuthor(input: AddAuthorInput): AddAuthorPayload | Promise<AddAuthorPayload>;
-    addBook(input: AddBookInput): AddBookPayload | Promise<AddBookPayload>;
-    postPrejudice(input: PostPrejudiceInput): PostPrejudicePayload | Promise<PostPrejudicePayload>;
-    followUser(input: FollowUserInput): FollowUserPayload | Promise<FollowUserPayload>;
-    unfollowUser(input: UnfollowUserInput): UnfollowUserPayload | Promise<UnfollowUserPayload>;
-}
-
-export interface PostAnswerPayload {
-    answer: Answer;
-}
-
-export interface LoginPayload {
-    accessToken: string;
-}
-
 export interface SignupPayload {
+    tokens: TokensData;
+}
+
+export interface TokensData {
     accessToken: string;
-}
-
-export interface Author {
-    id: string;
-    name: string;
-    userResponsibleFor: User[];
-    booksWrited: BookConnection;
-}
-
-export interface AuthorConnection {
-    nodes: Author[];
-}
-
-export interface AddAuthorPayload {
-    author: Author;
-}
-
-export interface Book {
-    id: string;
-    title: string;
-    userResponsibleFor: User[];
-    authors: AuthorConnection;
-}
-
-export interface BookConnection {
-    nodes: Book[];
-}
-
-export interface AddBookPayload {
-    book: Book;
-}
-
-export interface PageInfo {
-    startCursor?: string;
-    endCursor?: string;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-}
-
-export interface Prejudice {
-    id: string;
-    title: string;
-    createdAt: DateTime;
-    book: Book;
-    userFrom: User;
-    userTo: User;
-    answer?: Answer;
-    relatedBooks: BookConnection;
-}
-
-export interface PrejudiceConnection {
-    nodes: Prejudice[];
-}
-
-export interface PostPrejudicePayload {
-    prejudice: Prejudice;
-}
-
-export interface User {
-    id: string;
-    alias: string;
-    displayName?: string;
-    following: FollowingConnection;
-    followers: FollowerConnection;
-    prejudicesPosted: PrejudiceConnection;
-    preduicesRecieved: PrejudiceConnection;
-    answersPosted: AnswerConnection;
-}
-
-export interface UserConnection {
-    nodes: User[];
-    totalCount: number;
-}
-
-export interface FollowingConnection {
-    nodes: User[];
-    totalCount: number;
-}
-
-export interface FollowerConnection {
-    nodes: User[];
-    totalCount: number;
-}
-
-export interface Follow {
-    from: User;
-    to: User;
+    refleshToken: string;
 }
 
 export interface Unfollow {
@@ -228,12 +221,24 @@ export interface Unfollow {
     to: User;
 }
 
-export interface FollowUserPayload {
-    follow: Follow;
-}
-
 export interface UnfollowUserPayload {
     unfollow: Unfollow;
+}
+
+export interface User {
+    alias: string;
+    answersPosted: AnswerConnection;
+    displayName?: string;
+    followers: FollowerConnection;
+    following: FollowingConnection;
+    id: string;
+    preduicesRecieved: PrejudiceConnection;
+    prejudicesPosted: PrejudiceConnection;
+}
+
+export interface UserConnection {
+    nodes: User[];
+    totalCount: number;
 }
 
 export type DateTime = Date;

@@ -1,12 +1,17 @@
-import {Injectable} from '@nestjs/common';
+import {Inject, Injectable} from '@nestjs/common';
+import {ConfigType} from '@nestjs/config';
 import {JwtService} from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+
+import {AuthConfig} from './auth.config';
 
 import {PrismaService} from '~/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
+    @Inject(AuthConfig.KEY)
+    private readonly config: ConfigType<typeof AuthConfig>,
     private readonly jwtService: JwtService,
     private readonly prismaService: PrismaService,
   ) {}
@@ -46,15 +51,38 @@ export class AuthService {
   }): Promise<{uid: string} | null> {
     return this.prismaService.user
       .create({
-        data: {...data, password: await bcrypt.hash(password, 10)},
+        data: {
+          ...data,
+          password: await bcrypt.hash(password, this.config.bcryptRound),
+        },
         select: {id: true},
       })
       .then((user) => ({uid: user.id}))
       .catch(() => null);
   }
 
-  async getAccessToken(user: {uid: string}): Promise<string> {
+  async generateTokens(user: {
+    uid: string;
+  }): Promise<{accessToken: string; refleshToken: string}> {
+    return {
+      accessToken: await this.generateAccessToken(user),
+      refleshToken: await this.generateRefleshToken(user),
+    };
+  }
+
+  async generateAccessToken(user: {uid: string}): Promise<string> {
     const payload = {uid: user.uid};
-    return this.jwtService.sign(payload);
+    return this.jwtService.sign(payload, {
+      secret: this.config.accessJwtSecret,
+      expiresIn: this.config.accessExpiresIn,
+    });
+  }
+
+  async generateRefleshToken(user: {uid: string}): Promise<string> {
+    const payload = {uid: user.uid};
+    return this.jwtService.sign(payload, {
+      secret: this.config.refleshJwtSecret,
+      expiresIn: this.config.refleshExpiresIn,
+    });
   }
 }
