@@ -1,5 +1,5 @@
 {
-  "name": "@henken.club/prisma-migrate",
+  "name": "@henken.club/prototype-prisma-migrate",
   "private": true,
   "engines": {
     "node": "14"

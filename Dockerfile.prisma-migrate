@@ -2,8 +2,8 @@ FROM node:14.16.1
 
 WORKDIR /app
 
-COPY package.json yarn.lock schema.prisma ./
-COPY migrations ./migrations
+COPY prisma/package.json prisma/yarn.lock prisma/schema.prisma ./
+COPY prisma/migrations ./migrations
 
 RUN yarn install --frozen-lockfile && yarn cache clean
 

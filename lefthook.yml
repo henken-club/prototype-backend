@@ -8,4 +8,4 @@ pre-commit:
     hadolint:
       run: |
         docker run --rm -i hadolint/hadolint < Dockerfile
-        docker run --rm -i hadolint/hadolint < prisma/Dockerfile
+        docker run --rm -i hadolint/hadolint < Dockerfile.prisma-migrate

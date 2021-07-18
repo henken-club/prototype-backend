@@ -53,8 +53,8 @@ services:
 
   prod-prisma-migrate:
     build:
-      context: prisma
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.prisma-migrate
     environment:
       PRISMA_DATABASE_URL: mysql://root:@prod-mysql:3306/testdb
     depends_on:
