@@ -4,6 +4,7 @@ import {JwtService} from '@nestjs/jwt';
 
 import {AuthConfig} from './auth.config';
 import {PasswordService} from './password.service';
+import {JwtPayload} from './auth.entities';
 
 import {PrismaService} from '~/prisma/prisma.service';
 
@@ -23,7 +24,7 @@ export class AuthService {
   }: {
     alias: string;
     password: string;
-  }): Promise<{uid: string} | null> {
+  }): Promise<{id: string} | null> {
     return this.prismaService.user
       .findUnique({
         where,
@@ -32,7 +33,7 @@ export class AuthService {
       .then(async (user) =>
         user?.password &&
         (await this.passwordService.verifyPassword(password, user.password))
-          ? {uid: user.id}
+          ? {id: user.id}
           : null,
       );
   }
@@ -48,7 +49,7 @@ export class AuthService {
     alias: string;
     displayName: string;
     password: string;
-  }): Promise<{uid: string} | null> {
+  }): Promise<{id: string} | null> {
     return this.prismaService.user
       .create({
         data: {
@@ -57,12 +58,11 @@ export class AuthService {
         },
         select: {id: true},
       })
-      .then((user) => ({uid: user.id}))
       .catch(() => null);
   }
 
   async generateTokens(user: {
-    uid: string;
+    id: string;
   }): Promise<{accessToken: string; refleshToken: string}> {
     return {
       accessToken: await this.generateAccessToken(user),
@@ -70,16 +70,16 @@ export class AuthService {
     };
   }
 
-  async generateAccessToken(user: {uid: string}): Promise<string> {
-    const payload = {uid: user.uid};
+  async generateAccessToken(user: {id: string}): Promise<string> {
+    const payload: JwtPayload = {uid: user.id};
     return this.jwtService.sign(payload, {
       secret: this.config.accessJwtSecret,
       expiresIn: this.config.accessExpiresIn,
     });
   }
 
-  async generateRefleshToken(user: {uid: string}): Promise<string> {
-    const payload = {uid: user.uid};
+  async generateRefleshToken(user: {id: string}): Promise<string> {
+    const payload: JwtPayload = {uid: user.id};
     return this.jwtService.sign(payload, {
       secret: this.config.refleshJwtSecret,
       expiresIn: this.config.refleshExpiresIn,
@@ -87,10 +87,10 @@ export class AuthService {
   }
 
   async refleshToken(token: string) {
-    const {uid} = this.jwtService.verify(token, {
+    const {uid}: JwtPayload = this.jwtService.verify(token, {
       secret: this.config.refleshJwtSecret,
     });
-    if (uid) return this.generateTokens({uid});
+    if (uid) return this.generateTokens({id: uid});
     return null;
   }
 }
