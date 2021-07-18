@@ -17,6 +17,7 @@ FROM node:14.16.1-slim
 WORKDIR /app
 
 ENV PORT 4000
+ENV NODE_ENV production
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   openssl=1.1.0l-1~deb9u3 \
