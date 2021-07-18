@@ -36,7 +36,9 @@ export class AuthResolver {
   async signup(
     @Args('input') {password, alias, displayName}: SignupInput,
   ): Promise<SignupPayload> {
-    const isDuplicated = await this.authServer.checkDuplicate({alias});
+    const isDuplicated = await this.authServer
+      .existsUser({alias})
+      .then((user) => Boolean(user));
     if (isDuplicated) throw new BadRequestException();
 
     const created = await this.authServer.signup({

@@ -37,10 +37,8 @@ export class AuthService {
       );
   }
 
-  async checkDuplicate({...where}: {alias: string}): Promise<boolean> {
-    return this.prismaService.user
-      .findUnique({where})
-      .then((user) => Boolean(user));
+  async existsUser({...where}: {id: string} | {alias: string}) {
+    return this.prismaService.user.findUnique({where, select: {id: true}});
   }
 
   async signup({
