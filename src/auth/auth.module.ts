@@ -7,6 +7,7 @@ import {AuthService} from './auth.service';
 import {AuthConfig} from './auth.config';
 import {AuthResolver} from './auth.resolver';
 import {JwtStrategy} from './jwt.strategy';
+import {PasswordService} from './password.service';
 
 import {PrismaModule} from '~/prisma/prisma.module';
 
@@ -21,7 +22,7 @@ import {PrismaModule} from '~/prisma/prisma.module';
     }),
     PrismaModule,
   ],
-  providers: [AuthService, AuthResolver, JwtStrategy],
+  providers: [PasswordService, AuthService, AuthResolver, JwtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

@@ -29,7 +29,8 @@ export class AuthService {
         select: {id: true, password: true},
       })
       .then(async (user) =>
-        user?.password && (await bcrypt.compare(password, user.password))
+        user?.password &&
+        (await this.passwordService.verifyPassword(password, user.password))
           ? {uid: user.id}
           : null,
       );
@@ -53,7 +54,7 @@ export class AuthService {
       .create({
         data: {
           ...data,
-          password: await bcrypt.hash(password, this.config.bcryptRound),
+          password: await this.passwordService.encryptPassword(password),
         },
         select: {id: true},
       })
