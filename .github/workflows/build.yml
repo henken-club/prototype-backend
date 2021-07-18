@@ -7,7 +7,7 @@ on:
   pull_request:
 
 env:
-  APP_IMAGE_NAME: prototype-backend
+  BACKEND_IMAGE_NAME: prototype-backend
   PRISMA_MIGRATE_IMAGE_NAME: prototype-backend-prisma-migrate
 
 jobs:
@@ -36,8 +36,8 @@ jobs:
       - run: yarn prisma generate
       - run: yarn run build
 
-  docker-app:
-    name: Docker for app
+  docker-backend:
+    name: Docker for backend
     needs:
       - ts-check
       - build
