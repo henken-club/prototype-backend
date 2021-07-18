@@ -6,6 +6,11 @@ services:
     ports:
       - published: $TEST_NEO4J_BOLT_PORT
         target: 7687
+    healthcheck:
+      test: wget http://localhost:7474/browser -O-
+      interval: 5s
+      timeout: 3s
+      retries: 30
     environment:
       NEO4J_AUTH: none
       NEO4JLABS_PLUGINS: '["apoc"]'
@@ -15,6 +20,11 @@ services:
     ports:
       - published: $TEST_MYSQL_PORT
         target: 3306
+    healthcheck:
+      test: mysqladmin ping -h localhost
+      interval: 1s
+      timeout: 3s
+      retries: 30
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
       MYSQL_DATABASE: $TEST_MYSQL_DATABASE

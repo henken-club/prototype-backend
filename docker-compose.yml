@@ -17,25 +17,30 @@ services:
       NEO4J_AUTH: ${NEO4J_USERNAME}/${NEO4J_PASSWORD}
       NEO4JLABS_PLUGINS: '["apoc"]'
     volumes:
-      - henken-club-backend-prototype-neo4j-data:/data
-      - henken-club-backend-prototype-neo4j-logs:/logs
-      - henken-club-backend-prototype-neo4j-import:/var/lib/neo4j/import
-      - henken-club-backend-prototype-neo4j-plugins:/plugins
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+      - neo4j-import:/var/lib/neo4j/import
+      - neo4j-plugins:/plugins
 
   mysql:
     image: mysql:8
     ports:
       - published: $MYSQL_PORT
         target: 3306
+    healthcheck:
+      test: mysqladmin ping -h localhost
+      interval: 1s
+      timeout: 3s
+      retries: 30
     environment:
       MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
       MYSQL_DATABASE: $MYSQL_DATABASE
     volumes:
-      - henken-club-backend-prototype-mysql-data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
 
 volumes:
-  henken-club-backend-prototype-neo4j-data:
-  henken-club-backend-prototype-neo4j-logs:
-  henken-club-backend-prototype-neo4j-import:
-  henken-club-backend-prototype-neo4j-plugins:
-  henken-club-backend-prototype-mysql-data:
+  neo4j-data:
+  neo4j-logs:
+  neo4j-import:
+  neo4j-plugins:
+  mysql-data:

@@ -1,0 +1,10 @@
+{
+  "name": "@henken.club/prisma-migrate",
+  "private": true,
+  "engines": {
+    "node": "14"
+  },
+  "devDependencies": {
+    "prisma": "^2.27.0"
+  }
+}
