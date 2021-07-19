@@ -1,9 +1,18 @@
-export {LoginInput, SignupInput} from '~/graphql';
+export {LoginInput, SignupInput, RefleshTokenInput} from '~/graphql';
 
-export class LoginPayload {
-  accessToken!: string;
+export class JwtPayload {
+  uid!: string;
 }
-
-export class SignupPayload {
+export class TokenEntities {
   accessToken!: string;
+  refleshToken!: string;
+}
+export class LoginPayload {
+  tokens!: TokenEntities;
+}
+export class SignupPayload {
+  tokens!: TokenEntities;
+}
+export class RefleshTokenPayload {
+  tokens!: TokenEntities;
 }

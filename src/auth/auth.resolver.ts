@@ -9,9 +9,11 @@ import {
   LoginPayload,
   LoginInput,
   SignupPayload,
+  RefleshTokenInput,
+  RefleshTokenPayload,
   SignupInput,
 } from './auth.entities';
-import {AuthService} from './auth.server';
+import {AuthService} from './auth.service';
 
 @Resolver('Auth')
 export class AuthResolver {
@@ -24,15 +26,19 @@ export class AuthResolver {
     const validated = await this.authServer.verifyUser({alias, password});
     if (!validated) throw new UnauthorizedException();
 
-    const accessToken = await this.authServer.getAccessToken(validated);
-    return {accessToken};
+    const tokens = await this.authServer.generateTokens(validated);
+    return {
+      tokens,
+    };
   }
 
   @Mutation('signup')
   async signup(
     @Args('input') {password, alias, displayName}: SignupInput,
   ): Promise<SignupPayload> {
-    const isDuplicated = await this.authServer.checkDuplicate({alias});
+    const isDuplicated = await this.authServer
+      .existsUser({alias})
+      .then((user) => Boolean(user));
     if (isDuplicated) throw new BadRequestException();
 
     const created = await this.authServer.signup({
@@ -42,7 +48,18 @@ export class AuthResolver {
     });
     if (!created) throw new InternalServerErrorException();
 
-    const accessToken = await this.authServer.getAccessToken(created);
-    return {accessToken};
+    const tokens = await this.authServer.generateTokens(created);
+    return {
+      tokens,
+    };
+  }
+
+  @Mutation('refleshToken')
+  async refleshToken(
+    @Args('input') {token}: RefleshTokenInput,
+  ): Promise<RefleshTokenPayload> {
+    const tokens = await this.authServer.refleshToken(token);
+    if (!tokens) throw new UnauthorizedException();
+    return {tokens};
   }
 }
