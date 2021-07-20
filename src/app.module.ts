@@ -20,6 +20,7 @@ import {GraphQLConfig} from './graphql/graphql.config';
         playground: config.playground,
         debug: config.debug,
         typePaths: config.typePaths,
+        introspection: config.introspection,
         resolvers: {
           DateTime: GraphQLDateTime,
         },
