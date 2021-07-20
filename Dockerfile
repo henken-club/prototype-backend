@@ -6,10 +6,10 @@ COPY package.json yarn.lock  ./
 RUN yarn install --frozen-lockfile && yarn cache clean
 
 COPY prisma/schema.prisma ./prisma/schema.prisma
+RUN yarn prisma generate
+
 COPY tsconfig.json tsconfig.build.json nest-cli.json ./
 COPY src ./src
-
-RUN yarn prisma generate
 RUN yarn run build
 
 FROM node:14.16.1-slim
