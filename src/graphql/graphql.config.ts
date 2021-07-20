@@ -6,6 +6,7 @@ export const GraphQLConfig = registerAs('graphql', () => ({
   playground: process.env.NODE_ENV !== 'production',
   debug: process.env.NODE_ENV !== 'production',
   sortSchema: true,
+  introspection: true,
   typePaths:
     process.env.NODE_ENV === 'production'
       ? ['dist/**/*.graphql']
