@@ -52,6 +52,7 @@ type Unfollow {
 
 type Query {
   user(alias: ID!): User
+  allUsers: [User!]!
   viewer: User!
 }
 

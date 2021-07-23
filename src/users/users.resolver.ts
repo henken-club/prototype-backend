@@ -123,6 +123,11 @@ export class UsersResolver {
     return this.usersService.getByAlias(alias);
   }
 
+  @Query('allUsers')
+  async getAllUsers(): Promise<UserEntity[]> {
+    return this.usersService.getAll();
+  }
+
   @Query('viewer')
   @UseGuards(GraphQLJwtGuard)
   async getViewer(@Viewer() {id}: ViewerType): Promise<UserEntity> {
