@@ -131,11 +131,7 @@ export class UsersResolver {
     if (!(await this.usersService.checkExists({id: toId})))
       throw new BadRequestException();
 
-    return this.settingsService
-      .getSettingByUserId(fromId)
-      .then(({rulePostPrejudice}) =>
-        this.usersService.canPostPrejudiceTo(rulePostPrejudice, fromId, toId),
-      );
+    return this.settingsService.canPostPrejudiceTo(fromId, toId);
   }
 
   @Query('user')
