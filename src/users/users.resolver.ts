@@ -142,9 +142,9 @@ export class UsersResolver {
     @Viewer() {id: fromId}: ViewerType,
     @Args('input') {userId: toId}: FollowUserInput,
   ): Promise<FollowEntity> {
-    if (await this.usersService.checkExists({id: fromId}))
+    if (!(await this.usersService.checkExists({id: fromId})))
       throw new BadRequestException();
-    if (await this.usersService.checkExists({id: toId}))
+    if (!(await this.usersService.checkExists({id: toId})))
       throw new BadRequestException();
 
     const result = await this.usersService.followUser(fromId, toId);
@@ -162,9 +162,9 @@ export class UsersResolver {
     @Viewer() {id: fromId}: ViewerType,
     @Args('input') {userId: toId}: FollowUserInput,
   ): Promise<UnfollowEntity> {
-    if (await this.usersService.checkExists({id: fromId}))
+    if (!(await this.usersService.checkExists({id: fromId})))
       throw new BadRequestException();
-    if (await this.usersService.checkExists({id: toId}))
+    if (!(await this.usersService.checkExists({id: toId})))
       throw new BadRequestException();
 
     const result = await this.usersService.unfollowUser(fromId, toId);
