@@ -54,6 +54,10 @@ export class UsersService {
     });
   }
 
+  async getAll(): Promise<UserEntity[]> {
+    return this.prismaService.user.findMany({select: {id: true}});
+  }
+
   async getAlias(id: string) {
     return this.prismaService.user
       .findUnique({where: {id}, select: {alias: true}})

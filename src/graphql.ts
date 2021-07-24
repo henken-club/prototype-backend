@@ -204,6 +204,7 @@ export interface PrejudiceConnection {
 }
 
 export interface IQuery {
+    allUsers(): User[] | Promise<User[]>;
     answer(id: string): Answer | Promise<Answer>;
     author(id: string): Author | Promise<Author>;
     book(id: string): Book | Promise<Book>;
