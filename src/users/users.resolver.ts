@@ -30,10 +30,14 @@ import {
   PrejudiceOrder,
 } from '~/prejudices/prejudices.entities';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
+import {SettingsService} from '~/settings/settings.service';
 
 @Resolver('User')
 export class UsersResolver {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private settingsService: SettingsService,
+  ) {}
 
   @ResolveField('alias')
   async resolveAlias(@Parent() {id}: UserEntity): Promise<string> {
@@ -116,6 +120,22 @@ export class UsersResolver {
     const totalCount = await this.usersService.getFollowersCount(id);
     if (totalCount === null) throw new InternalServerErrorException();
     return {nodes, totalCount};
+  }
+
+  @ResolveField('canPostPrejudiceTo')
+  async canPostPrejudiceTo(
+    @Parent() {id: fromId}: UserEntity,
+    @Args('userId') toId: string,
+  ): Promise<boolean> {
+    if (fromId === toId) throw new BadRequestException();
+    if (!(await this.usersService.checkExists({id: toId})))
+      throw new BadRequestException();
+
+    return this.settingsService
+      .getSettingByUserId(fromId)
+      .then(({rulePostPrejudice}) =>
+        this.usersService.canPostPrejudiceTo(rulePostPrejudice, fromId, toId),
+      );
   }
 
   @Query('user')

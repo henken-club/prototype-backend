@@ -1,0 +1,8 @@
+type Setting {
+  rulePostPrejudice: PrejudicePostRule!
+}
+
+enum PrejudicePostRule {
+  ALL_FOLLOWERS
+  MUTUAL_ONLY
+}

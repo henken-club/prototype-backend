@@ -10,6 +10,7 @@ import {PrejudicesModule} from './prejudices/prejudices.module';
 import {AnswersModule} from './answers/answers.module';
 import {AuthModule} from './auth/auth.module';
 import {GraphQLConfig} from './graphql/graphql.config';
+import {SettingsModule} from './settings/settings.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import {GraphQLConfig} from './graphql/graphql.config';
     AuthorsModule,
     BooksModule,
     PrejudicesModule,
+    SettingsModule,
     UsersModule,
   ],
 })

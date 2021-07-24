@@ -3,6 +3,8 @@ import {int} from 'neo4j-driver';
 
 import {UserEntity} from './users.entities';
 import {
+  CYPHER_CAN_POST_PREJUDICE_ALL_FOLLOWERS,
+  CYPHER_CAN_POST_PREJUDICE_MUTUAL_ONLY,
   CYPHER_FOLLOW_USER,
   CYPHER_GET_USER_FOLLOWERS,
   CYPHER_GET_USER_FOLLOWERS_COUNT,
@@ -26,6 +28,7 @@ import {OrderDirection} from '~/common/common.entities';
 import {AnswerOrder} from '~/graphql';
 import {AnswerEntity} from '~/answers/answers.entities';
 import {PrismaService} from '~/prisma/prisma.service';
+import {PrejudicePostRule} from '~/settings/settings.entities';
 
 @Injectable()
 export class UsersService {
@@ -223,5 +226,24 @@ export class UsersService {
       fromId: result.records[0].get('fromId'),
       toId: result.records[0].get('toId'),
     };
+  }
+
+  canPostPrejudiceToQuery(mode: PrejudicePostRule) {
+    if (mode === PrejudicePostRule.ALL_FOLLOWERS)
+      return CYPHER_CAN_POST_PREJUDICE_ALL_FOLLOWERS;
+    else return CYPHER_CAN_POST_PREJUDICE_MUTUAL_ONLY;
+  }
+
+  async canPostPrejudiceTo(
+    mode: PrejudicePostRule,
+    from: string,
+    to: string,
+  ): Promise<boolean> {
+    const result = await this.neo4jService.read(
+      this.canPostPrejudiceToQuery(mode),
+      {from, to},
+    );
+    if (result.records.length !== 1) throw new Error();
+    return result.records[0].get('can');
   }
 }
