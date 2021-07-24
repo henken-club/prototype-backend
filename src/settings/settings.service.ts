@@ -31,14 +31,16 @@ export class SettingsService {
   }
 
   async canPostPrejudiceTo(fromId: string, toId: string): Promise<boolean> {
-    return this.getSettingByUserId(fromId)
+    const result = await this.getSettingByUserId(toId)
       .then(({rulePostPrejudice}) => rulePostPrejudice)
       .then((mode) =>
         this.neo4jService.read(this.canPostPrejudiceToQuery(mode), {
           from: fromId,
           to: toId,
         }),
-      )
-      .then(({records}) => records[0].get('can'));
+      );
+
+    if (!result.records[0]) throw new Error();
+    return result.records[0].get('can');
   }
 }

@@ -8,6 +8,7 @@ import {
 } from '@nestjs/graphql';
 import {
   BadRequestException,
+  ForbiddenException,
   InternalServerErrorException,
   UseGuards,
 } from '@nestjs/common';
@@ -25,12 +26,14 @@ import {BookConnection, BookOrder} from '~/books/books.entities';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {UsersService} from '~/users/users.service';
+import {SettingsService} from '~/settings/settings.service';
 
 @Resolver('Prejudice')
 export class PrejudicesResolver {
   constructor(
     private readonly prejudicesService: PrejudicesService,
     private readonly usersService: UsersService,
+    private readonly settingsService: SettingsService,
   ) {}
 
   @ResolveField('userFrom')
@@ -81,19 +84,24 @@ export class PrejudicesResolver {
   @Mutation('postPrejudice')
   @UseGuards(GraphQLJwtGuard)
   async createPrejudice(
-    @Viewer() {id: from}: ViewerType,
-    @Args('input') {userId: to, title, relatedBooks}: PostPrejudiceInput,
+    @Viewer() {id: fromId}: ViewerType,
+    @Args('input') {userId: toId, title, relatedBooks}: PostPrejudiceInput,
   ): Promise<PostPrejudicePayload> {
-    if (!(await this.usersService.checkExists({id: to})))
+    if (fromId === toId) throw new BadRequestException();
+    if (!(await this.usersService.checkExists({id: toId})))
       throw new BadRequestException();
+    if (!(await this.settingsService.canPostPrejudiceTo(fromId, toId)))
+      throw new ForbiddenException();
 
-    const prejudice = await this.prejudicesService.createPrejudice({
-      from,
-      to,
-      title,
-      relatedBooks,
-    });
-    if (!prejudice) throw new InternalServerErrorException();
-    return {prejudice};
+    try {
+      const prejudice = await this.prejudicesService.createPrejudice(
+        fromId,
+        toId,
+        {title, relatedBooks},
+      );
+      return {prejudice};
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 }

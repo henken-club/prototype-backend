@@ -41,7 +41,9 @@ export const CYPHER_GET_PREJUDICE_RELATED_BOOKS_ORDERBY_TITLE_AT_DESC =
 export const CYPHER_CREATE_PREJUDICE = `
   MATCH (b:Book) WHERE b.id IN $relatedBooks
   MERGE (p:Prejudice {id: $id})
-  MERGE (:User {id: $from})-[:POST_PREJUDICE]->(p)-[:PREJUDICE_AGAINST]->(:User {id: $to})
+  MERGE (from:User {id: $from})
+  MERGE (to:User {id: $to})
+  MERGE (from)-[:POST_PREJUDICE]->(p)-[:PREJUDICE_AGAINST]->(to)
   MERGE (p)-[:RELATED_BOOK]->(b)
   SET p.title = $title, p.createdAt = localdatetime()
   RETURN DISTINCT p.id AS id, p.title AS title, p.createdAt AS createdAt
