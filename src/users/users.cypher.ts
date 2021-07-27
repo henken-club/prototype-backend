@@ -42,7 +42,9 @@ export const CYPHER_GET_USER_POST_ANSWERS_ORDERBY_CREATED_AT_DESC =
   getPostAnswers('createdAt', 'DESC');
 
 export const CYPHER_FOLLOW_USER = `
-  MERGE (from {id: $from})-[r:FOLLOWS]->(to {id: $to})
+  MERGE (from:User {id: $from})
+  MERGE (to:User {id: $to})
+  MERGE (from)-[r:FOLLOWS]->(to)
   ON CREATE
     SET r.followedAt = localdatetime()
   RETURN from.id AS fromId, to.id AS toId
