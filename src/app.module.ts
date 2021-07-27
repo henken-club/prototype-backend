@@ -32,6 +32,7 @@ import {SettingsModule} from './settings/settings.module';
           },
         },
         sortSchema: config.sortSchema,
+        fieldResolverEnhancers: ['interceptors'],
       }),
     }),
     AnswersModule,

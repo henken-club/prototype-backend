@@ -6,7 +6,7 @@ type User {
   following(skip: Int = 0, limit: Int = 10): FollowingConnection!
   followers(skip: Int = 0, limit: Int = 10): FollowerConnection!
 
-  canPostPrejudiceTo(userId: ID!): Boolean!
+  canPostPrejudiceTo: Boolean!
 
   prejudicesPosted(
     skip: Int = 0
