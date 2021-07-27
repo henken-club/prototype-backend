@@ -38,9 +38,23 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
 
+  imageproxy:
+    image: willnorris/imageproxy:latest
+    ports:
+      - published: $IMAGEPROXY_PORT
+        target: 8080
+    environment:
+      IMAGEPROXY_CACHE: redis://imageproxy-redis:6379
+
+  imageproxy-redis:
+    image: redis:6
+    volumes:
+      - imageproxy-redis-data:/data
+
 volumes:
   neo4j-data:
   neo4j-logs:
   neo4j-import:
   neo4j-plugins:
   mysql-data:
+  imageproxy-redis-data:

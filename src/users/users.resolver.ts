@@ -31,12 +31,14 @@ import {
 } from '~/prejudices/prejudices.entities';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {SettingsService} from '~/settings/settings.service';
+import {ImageproxyService} from '~/imageproxy/imageproxy.service';
 
 @Resolver('User')
 export class UsersResolver {
   constructor(
     private usersService: UsersService,
     private settingsService: SettingsService,
+    private imageproxyService: ImageproxyService,
   ) {}
 
   @ResolveField('alias')
@@ -51,6 +53,16 @@ export class UsersResolver {
     const displayName = await this.usersService.getDisplayName(id);
     if (!displayName) throw new InternalServerErrorException();
     return displayName;
+  }
+
+  @ResolveField('picture')
+  async resolvePicture(@Parent() {id}: UserEntity): Promise<string> {
+    return this.usersService
+      .getPicture(id)
+      .then((picture) => this.imageproxyService.proxy(picture))
+      .catch(() => {
+        throw new InternalServerErrorException();
+      });
   }
 
   @ResolveField('prejudicesPosted')
