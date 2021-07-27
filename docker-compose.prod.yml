@@ -16,6 +16,7 @@ services:
       NEO4J_PASSWORD: changeme
       NEO4J_URL: bolt://prod-neo4j:7687
       PRISMA_DATABASE_URL: mysql://root:@prod-mysql:3306/testdb
+      IMAGEPROXY_URL: http://localhost:8080
     depends_on:
       prod-neo4j:
         condition: service_healthy
@@ -63,9 +64,23 @@ services:
       prod-mysql:
         condition: service_healthy
 
+  prod-imageproxy:
+    image: willnorris/imageproxy:latest
+    ports:
+      - published: 8080
+        target: 8080
+    environment:
+      IMAGEPROXY_CACHE: redis://prod-imageproxy-redis:6379
+
+  prod-imageproxy-redis:
+    image: redis:6
+    volumes:
+      - prod-imageproxy-redis-data:/data
+
 volumes:
   prod-neo4j-data:
   prod-neo4j-logs:
   prod-neo4j-import:
   prod-neo4j-plugins:
   prod-mysql-data:
+  prod-imageproxy-redis-data:

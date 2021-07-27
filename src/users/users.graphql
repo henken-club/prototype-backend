@@ -2,6 +2,7 @@ type User {
   id: ID!
   alias: ID!
   displayName: String!
+  picture: String!
 
   following(skip: Int = 0, limit: Int = 10): FollowingConnection!
   followers(skip: Int = 0, limit: Int = 10): FollowerConnection!

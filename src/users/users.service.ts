@@ -70,6 +70,19 @@ export class UsersService {
       .then((user) => user?.displayName || null);
   }
 
+  async getPicture(id: string): Promise<string> {
+    return this.prismaService.user
+      .findUnique({
+        where: {id},
+        select: {alias: true},
+        rejectOnNotFound: true,
+      })
+      .then(
+        ({alias}) =>
+          `https://identicon-api.herokuapp.com/${alias}/256?format=png`,
+      );
+  }
+
   getPostPrejudicesQuery({direction, field}: PrejudiceOrder) {
     if (direction === OrderDirection.ASC)
       return CYPHER_GET_USER_POST_PREJUDICES_ORDERBY_CREATED_AT_ASC;
