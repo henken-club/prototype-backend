@@ -123,9 +123,10 @@ export class UsersResolver {
   }
 
   @ResolveField('canPostPrejudiceTo')
+  @UseGuards(GraphQLJwtGuard)
   async canPostPrejudiceTo(
-    @Parent() {id: fromId}: UserEntity,
-    @Args('userId') toId: string,
+    @Viewer() {id: fromId}: ViewerType,
+    @Parent() {id: toId}: UserEntity,
   ): Promise<boolean> {
     if (fromId === toId) throw new BadRequestException();
     if (!(await this.usersService.checkExists({id: toId})))
