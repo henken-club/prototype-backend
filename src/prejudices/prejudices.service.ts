@@ -89,26 +89,20 @@ export class PrejudicesService {
       );
   }
 
-  async createPrejudice({
-    from,
-    to,
-    title,
-    relatedBooks,
-  }: {
-    from: string;
-    to: string;
-    title: string;
-    relatedBooks: string[];
-  }): Promise<PrejudiceEntity | null> {
+  async createPrejudice(
+    fromId: string,
+    toId: string,
+    {title, relatedBooks}: {title: string; relatedBooks: string[]},
+  ): Promise<PrejudiceEntity> {
     const id = this.idService.createId();
     const result = await this.neo4jService.write(CYPHER_CREATE_PREJUDICE, {
       id,
-      from,
-      to,
+      from: fromId,
+      to: toId,
       title,
       relatedBooks,
     });
-    if (result.records.length !== 1) return null;
+    if (!result.records[0]) throw new Error();
     return {
       id: result.records[0].get('id'),
       title: result.records[0].get('title'),

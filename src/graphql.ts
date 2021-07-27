@@ -34,6 +34,11 @@ export enum PrejudiceOrderField {
     CREATED_AT = "CREATED_AT"
 }
 
+export enum PrejudicePostRule {
+    ALL_FOLLOWERS = "ALL_FOLLOWERS",
+    MUTUAL_ONLY = "MUTUAL_ONLY"
+}
+
 export interface AddAuthorInput {
     name: string;
 }
@@ -217,6 +222,10 @@ export interface RefleshTokenPayload {
     tokens: TokensData;
 }
 
+export interface Setting {
+    rulePostPrejudice: PrejudicePostRule;
+}
+
 export interface SignupPayload {
     tokens: TokensData;
 }
@@ -238,6 +247,7 @@ export interface UnfollowUserPayload {
 export interface User {
     alias: string;
     answersPosted: AnswerConnection;
+    canPostPrejudiceTo: boolean;
     displayName?: string;
     followers: FollowerConnection;
     following: FollowingConnection;

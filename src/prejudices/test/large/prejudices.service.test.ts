@@ -48,10 +48,8 @@ describe('PrejudicesService', () => {
         CREATE (b:Book {id: "book1"})
         RETURN *
       `);
-      const actual = await prejudicesService.createPrejudice({
+      const actual = await prejudicesService.createPrejudice('from', 'to', {
         title: 'title',
-        from: 'from',
-        to: 'to',
         relatedBooks: ['book1'],
       });
       expect(actual).toStrictEqual({
@@ -80,9 +78,7 @@ describe('PrejudicesService', () => {
         CREATE (b2:Book {id: "book2"})
         RETURN *
       `);
-      const actual = await prejudicesService.createPrejudice({
-        from: 'from',
-        to: 'to',
+      const actual = await prejudicesService.createPrejudice('from', 'to', {
         title: 'title',
         relatedBooks: ['book1', 'book2'],
       });
@@ -112,9 +108,7 @@ describe('PrejudicesService', () => {
         CREATE (b2:Book {id: "book2"})
         RETURN *
       `);
-      const actual = await prejudicesService.createPrejudice({
-        from: 'from',
-        to: 'to',
+      const actual = await prejudicesService.createPrejudice('from', 'to', {
         title: 'title',
         relatedBooks: ['book1', 'book2'],
       });
@@ -144,9 +138,7 @@ describe('PrejudicesService', () => {
         CREATE (b2:Book {id: "book2"})
         RETURN *
       `);
-      const actual = await prejudicesService.createPrejudice({
-        from: 'from',
-        to: 'to',
+      const actual = await prejudicesService.createPrejudice('from', 'to', {
         title: 'title',
         relatedBooks: ['book1', 'book2'],
       });

@@ -55,6 +55,9 @@ export class AuthService {
         data: {
           ...data,
           password: await this.passwordService.encryptPassword(password),
+          setting: {
+            create: {},
+          },
         },
         select: {id: true},
       })
