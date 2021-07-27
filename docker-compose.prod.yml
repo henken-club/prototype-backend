@@ -9,6 +9,7 @@ services:
       - published: 4000
         target: 4000
     environment:
+      GRAPHQL_PLAYGROUND: enable
       JWT_ACCESS_SECRET: access_secret
       JWT_REFLESH_SECRET: reflesh_secret
       NEO4J_USERNAME: neo4j
