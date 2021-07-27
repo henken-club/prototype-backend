@@ -9,6 +9,7 @@ import {
   CYPHER_GET_PREJUDICE_USER_FROM,
   CYPHER_GET_PREJUDICE_USER_TO,
   CYPHER_CREATE_PREJUDICE,
+  CYPHER_ALL_PREJUDICES,
 } from './prejudices.cypher';
 import {PrejudiceEntity} from './prejudices.entities';
 
@@ -36,6 +37,16 @@ export class PrejudicesService {
       title: result.records[0].get('title'),
       createdAt: new Date(result.records[0].get('createdAt')),
     };
+  }
+
+  async getAllPrejudices(): Promise<PrejudiceEntity[]> {
+    return this.neo4jService.read(CYPHER_ALL_PREJUDICES).then(({records}) =>
+      records.map((record) => ({
+        id: record.get('id'),
+        title: record.get('title'),
+        createdAt: new Date(record.get('createdAt')),
+      })),
+    );
   }
 
   async getUserFrom(id: string): Promise<string | null> {

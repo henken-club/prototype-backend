@@ -6,6 +6,14 @@ export const CYPHER_GET_PREJUDICE = `
     p.createdAt AS createdAt
 `;
 
+export const CYPHER_ALL_PREJUDICES = `
+  MATCH (p:Prejudice)
+  RETURN
+    p.id AS id,
+    p.title AS title,
+    p.createdAt AS createdAt
+`;
+
 export const CYPHER_GET_PREJUDICE_USER_FROM = `
   MATCH (u:User)-[:POST_PREJUDICE]->(:Prejudice {id: $id})
   RETURN u.id AS id
