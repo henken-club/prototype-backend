@@ -3,6 +3,11 @@ export const CYPHER_GET_BOOK = `
   RETURN b.id AS id, b.title AS title
 `;
 
+export const CYPHER_GET_ALL_BOOKS = `
+  MATCH (b:Book)
+  RETURN b.id AS id, b.title AS title
+`;
+
 const getAuthors = (property: 'name', order: 'ASC' | 'DESC') =>
   `
   MATCH (b:Book {id: $id})

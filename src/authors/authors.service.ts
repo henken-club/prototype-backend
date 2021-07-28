@@ -7,6 +7,7 @@ import {
   CYPHER_GET_AUTHOR_WRITED_BOOKS_ORDER_BY_TITLE_ASC,
   CYPHER_GET_AUTHOR_WRITED_BOOKS_ORDER_BY_TITLE_DESC,
   CYPHER_GET_USER_RESPONSIBLE_FOR_AUTHOR,
+  CYPHER_GET_ALL_AUTHORS,
 } from './authors.cypher';
 
 import {OrderDirection} from '~/common/common.entities';
@@ -30,6 +31,15 @@ export class AuthorsService {
       id: result.records[0].get('id'),
       name: result.records[0].get('name'),
     };
+  }
+
+  async getAll(): Promise<AuthorEntity[]> {
+    return this.neo4jService.read(CYPHER_GET_ALL_AUTHORS).then(({records}) =>
+      records.map((record) => ({
+        id: record.get('id'),
+        name: record.get('name'),
+      })),
+    );
   }
 
   getWritedBooksQuery({direction, field}: BookOrder) {

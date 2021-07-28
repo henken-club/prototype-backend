@@ -81,6 +81,11 @@ export class PrejudicesResolver {
     return this.prejudicesService.getById(id);
   }
 
+  @Query('allPrejudices')
+  async getAllPrejudices(): Promise<PrejudiceEntity[]> {
+    return this.prejudicesService.getAllPrejudices();
+  }
+
   @Mutation('postPrejudice')
   @UseGuards(GraphQLJwtGuard)
   async createPrejudice(

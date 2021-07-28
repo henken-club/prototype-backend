@@ -24,6 +24,7 @@ enum BookOrderField {
 
 type Query {
   book(id: ID!): Book
+  allBooks: [Book!]!
 }
 
 type Mutation {

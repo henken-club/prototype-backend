@@ -48,6 +48,11 @@ export class BooksResolver {
     return this.booksService.getById(id);
   }
 
+  @Query('allBooks')
+  async getAllBooks(): Promise<BookEntity[]> {
+    return this.booksService.getAll();
+  }
+
   @Mutation('addBook')
   @UseGuards(GraphQLJwtGuard)
   async addBook(
