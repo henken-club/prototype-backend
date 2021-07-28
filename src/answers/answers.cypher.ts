@@ -7,6 +7,15 @@ export const CYPHER_GET_ANSWER = `
     a.text AS text
 `;
 
+export const CYPHER_GET_ALL_ANSWERS = `
+  MATCH (a:Answer)
+  RETURN
+    a.id AS id,
+    a.createdAt AS createdAt,
+    a.correctness AS correctness,
+    a.text AS text
+`;
+
 export const CYPHER_GET_ANSWER_TO_PREJUDICE = `
   MATCH (:Answer {id: $id})-[:ANSWER_TO]->(p:Prejudice)
   RETURN

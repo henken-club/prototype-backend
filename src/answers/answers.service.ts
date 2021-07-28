@@ -2,6 +2,7 @@ import {Injectable} from '@nestjs/common';
 
 import {
   CYPHER_GET_ANSWER,
+  CYPHER_GET_ALL_ANSWERS,
   CYPHER_GET_ANSWER_TO_PREJUDICE,
 } from './answers.cypher';
 import {AnswerEntity} from './answers.entities';
@@ -29,6 +30,17 @@ export class AnswersService {
       correctness: result.records[0].get('correctness'),
       text: result.records[0].get('text'),
     };
+  }
+
+  async getAll(): Promise<AnswerEntity[]> {
+    return this.neo4jService.read(CYPHER_GET_ALL_ANSWERS).then(({records}) =>
+      records.map((record) => ({
+        id: record.get('id'),
+        correctness: record.get('correctness'),
+        text: record.get('text'),
+        createdAt: new Date(record.get('createdAt')),
+      })),
+    );
   }
 
   async getPrejudice(id: string): Promise<PrejudiceEntity> {

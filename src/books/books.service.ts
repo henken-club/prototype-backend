@@ -9,6 +9,7 @@ import {
   CYPHER_GET_BOOK_AUTHORS_ORDER_BY_NAME_ASC,
   CYPHER_GET_BOOK_AUTHORS_ORDER_BY_NAME_DESC,
   CYPHER_GET_USER_RESPONSIBLE_FOR_BOOK,
+  CYPHER_GET_ALL_BOOKS,
 } from './books.cypher';
 import {BookEntity} from './books.entities';
 
@@ -31,6 +32,15 @@ export class BooksService {
       id: result.records[0].get('id'),
       title: result.records[0].get('title'),
     };
+  }
+
+  async getAll(): Promise<BookEntity[]> {
+    return this.neo4jService.read(CYPHER_GET_ALL_BOOKS).then(({records}) =>
+      records.map((record) => ({
+        id: record.get('id'),
+        title: record.get('title'),
+      })),
+    );
   }
 
   async addBook({

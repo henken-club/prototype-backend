@@ -18,4 +18,9 @@ export class AnswersResolver {
   async getAnswer(@Args('id') id: string): Promise<AnswerEntity | null> {
     return this.prejudicesService.getById(id);
   }
+
+  @Query('allAnswers')
+  async getAllAnswers(): Promise<AnswerEntity[]> {
+    return this.prejudicesService.getAll();
+  }
 }

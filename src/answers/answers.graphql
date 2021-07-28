@@ -29,6 +29,7 @@ enum AnswerOrderField {
 
 type Query {
   answer(id: ID!): Answer
+  allAnswers: [Answer!]!
 }
 
 type Mutation {

@@ -52,6 +52,11 @@ export class AuthorsResolver {
     return this.authorsService.getById(id);
   }
 
+  @Query('allAuthors')
+  async getAllBooks(): Promise<AuthorEntity[]> {
+    return this.authorsService.getAll();
+  }
+
   @Mutation('addAuthor')
   @UseGuards(GraphQLJwtGuard)
   async addAuthor(
