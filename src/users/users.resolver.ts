@@ -67,7 +67,7 @@ export class UsersResolver {
       });
   }
 
-  @ResolveField('prejudicesPosted')
+  @ResolveField('postedPrejudices')
   async getPostPreduices(
     @Parent() {id}: UserEntity,
     @Args('skip') skip: number,
@@ -82,7 +82,7 @@ export class UsersResolver {
     return {nodes};
   }
 
-  @ResolveField('preduicesRecieved')
+  @ResolveField('recivedPrejudices')
   async getRecievedPreduices(
     @Parent() {id}: UserEntity,
     @Args('skip') skip: number,
@@ -97,7 +97,7 @@ export class UsersResolver {
     return {nodes};
   }
 
-  @ResolveField('answersPosted')
+  @ResolveField('postedAnswers')
   async getPostAnswers(
     @Parent() {id}: UserEntity,
     @Args('skip') skip: number,

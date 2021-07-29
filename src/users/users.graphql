@@ -9,19 +9,19 @@ type User {
 
   canPostPrejudiceTo: Boolean!
 
-  prejudicesPosted(
+  postedPrejudices(
     skip: Int = 0
     limit: Int = 10
     orderBy: PrejudiceOrder = {direction: DESC, field: CREATED_AT}
   ): PrejudiceConnection!
 
-  preduicesRecieved(
+  recivedPrejudices(
     skip: Int = 0
     limit: Int = 10
     orderBy: PrejudiceOrder = {direction: DESC, field: CREATED_AT}
   ): PrejudiceConnection!
 
-  answersPosted(
+  postedAnswers(
     skip: Int = 0
     limit: Int = 10
     orderBy: AnswerOrder = {direction: DESC, field: CREATED_AT}

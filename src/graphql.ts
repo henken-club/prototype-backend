@@ -290,15 +290,15 @@ export interface UnfollowUserPayload {
 
 export interface User {
     alias: string;
-    answersPosted: AnswerConnection;
     canPostPrejudiceTo: boolean;
     displayName: string;
     followers: FollowerConnection;
     following: FollowingConnection;
     id: string;
     picture: string;
-    preduicesRecieved: PrejudiceConnection;
-    prejudicesPosted: PrejudiceConnection;
+    postedAnswers: AnswerConnection;
+    postedPrejudices: PrejudiceConnection;
+    recivedPrejudices: PrejudiceConnection;
 }
 
 export interface UserConnection {
