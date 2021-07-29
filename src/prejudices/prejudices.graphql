@@ -2,6 +2,7 @@ type Prejudice {
   id: ID!
   title: String!
   createdAt: DateTime!
+  number: Int!
 
   book: Book!
 
@@ -46,7 +47,7 @@ type Mutation {
 }
 
 input PostPrejudiceInput {
-  userId: ID!
+  receivedUser: UserUniqueUnion!
 
   title: String!
 

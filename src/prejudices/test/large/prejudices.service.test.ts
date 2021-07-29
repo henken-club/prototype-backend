@@ -40,125 +40,210 @@ describe('PrejudicesService', () => {
     expect(prejudicesService).toBeDefined();
   });
 
-  describe('createPrejudice()', () => {
-    it('return object if success with one relatedBook', async () => {
-      await neo4jService.write(`
-        CREATE (from:User {id: "from"})
-        CREATE (to:User {id: "to"})
-        CREATE (b:Book {id: "book1"})
-        RETURN *
-      `);
-      const actual = await prejudicesService.createPrejudice('from', 'to', {
-        title: 'title',
-        relatedBooks: ['book1'],
-      });
-      expect(actual).toStrictEqual({
-        id: expect.any(String),
-        title: 'title',
-        createdAt: expect.any(Date),
+  describe('createPrejudice', () => {
+    describe('first create', () => {
+      beforeEach(async () => {
+        await neo4jService.write(`
+          CREATE (p:User {id: "post"})
+          CREATE (r:User {id: "recieved"})
+          CREATE (b1:Book {id: "book1"})
+          CREATE (b2:Book {id: "book2"})
+          RETURN *
+        `);
       });
 
-      const count = await neo4jService
-        .read(`MATCH (p:Prejudice) RETURN count(p) AS count`)
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(count).toBe(1);
+      it('with single book', async () => {
+        const actual = await prejudicesService.createPrejudice(
+          'post',
+          'recieved',
+          {
+            title: 'title',
+            relatedBooks: ['book1'],
+          },
+        );
 
-      const bookIds = await neo4jService
-        .read(`MATCH (:Prejudice)-[:RELATED_BOOK]->(b:Book) RETURN b.id AS id`)
-        .then((result) => result.records.map((record) => record.get('id')));
-      expect(bookIds).toHaveLength(1);
-      expect(bookIds).toContain('book1');
+        expect(actual).toStrictEqual({id: expect.any(String)});
+
+        expect(
+          await neo4jService
+            .read(
+              `
+          MATCH (p:Prejudice {id: $id})
+          RETURN p.id AS id, p.title AS title, p.number AS number
+          `,
+              {id: actual.id},
+            )
+            .then((result) => ({
+              id: result.records[0].get('id'),
+              title: result.records[0].get('title'),
+              number: result.records[0].get('number').toNumber(),
+            })),
+        ).toStrictEqual({
+          id: actual.id,
+          title: 'title',
+          number: 1,
+        });
+        expect(
+          await neo4jService
+            .read(
+              `MATCH (:User {id: "post"})-[r:POST_PREJUDICE]->(:Prejudice {id: $id}) RETURN count(r) = 1 AS result`,
+              {id: actual.id},
+            )
+            .then((result) => result.records[0].get('result')),
+        ).toBe(true);
+        expect(
+          await neo4jService
+            .read(
+              `MATCH (:Prejudice {id: $id})-[r:PREJUDICE_AGAINST]->(:User {id: "recieved"}) RETURN count(r) = 1 AS result`,
+              {id: actual.id},
+            )
+            .then((result) => result.records[0].get('result')),
+        ).toBe(true);
+        expect(
+          await neo4jService
+            .read(
+              `MATCH (:Prejudice {id: $id})-[r:RELATED_BOOK]->(:Book {id: "book1"}) RETURN count(r) = 1 AS result`,
+              {id: actual.id},
+            )
+            .then((result) => result.records[0].get('result')),
+        ).toBe(true);
+      });
+
+      it('with multiple books', async () => {
+        const actual = await prejudicesService.createPrejudice(
+          'post',
+          'recieved',
+          {
+            title: 'title',
+            relatedBooks: ['book1', 'book2'],
+          },
+        );
+
+        expect(actual).toStrictEqual({id: expect.any(String)});
+
+        expect(
+          await neo4jService
+            .read(
+              `
+          MATCH (p:Prejudice {id: $id})
+          RETURN p.id AS id, p.title AS title, p.number AS number
+          `,
+              {id: actual.id},
+            )
+            .then((result) => ({
+              id: result.records[0].get('id'),
+              title: result.records[0].get('title'),
+              number: result.records[0].get('number').toNumber(),
+            })),
+        ).toStrictEqual({
+          id: actual.id,
+          title: 'title',
+          number: 1,
+        });
+        expect(
+          await neo4jService
+            .read(
+              `MATCH (:User {id: "post"})-[r:POST_PREJUDICE]->(:Prejudice {id: $id}) RETURN count(r) = 1 AS result`,
+              {id: actual.id},
+            )
+            .then((result) => result.records[0].get('result')),
+        ).toBe(true);
+        expect(
+          await neo4jService
+            .read(
+              `MATCH (:Prejudice {id: $id})-[r:PREJUDICE_AGAINST]->(:User {id: "recieved"}) RETURN count(r) = 1 AS result`,
+              {id: actual.id},
+            )
+            .then((result) => result.records[0].get('result')),
+        ).toBe(true);
+        expect(
+          await neo4jService
+            .read(
+              `MATCH (:Prejudice {id: $id})-[r:RELATED_BOOK]->(:Book {id: "book1"}) RETURN count(r) = 1 AS result`,
+              {id: actual.id},
+            )
+            .then((result) => result.records[0].get('result')),
+        ).toBe(true);
+        expect(
+          await neo4jService
+            .read(
+              `MATCH (:Prejudice {id: $id})-[r:RELATED_BOOK]->(:Book {id: "book2"}) RETURN count(r) = 1 AS result`,
+              {id: actual.id},
+            )
+            .then((result) => result.records[0].get('result')),
+        ).toBe(true);
+      });
     });
 
-    it('return object if success with multiple relatedBooks', async () => {
-      await neo4jService.write(`
-        CREATE (from:User {id: "from"})
-        CREATE (to:User {id: "to"})
-        CREATE (b1:Book {id: "book1"})
-        CREATE (b2:Book {id: "book2"})
-        RETURN *
-      `);
-      const actual = await prejudicesService.createPrejudice('from', 'to', {
-        title: 'title',
-        relatedBooks: ['book1', 'book2'],
-      });
-      expect(actual).toStrictEqual({
-        id: expect.any(String),
-        title: 'title',
-        createdAt: expect.any(Date),
+    describe('second create', () => {
+      beforeEach(async () => {
+        await neo4jService.write(`
+          CREATE (pu:User {id: "post"})
+          CREATE (ru:User {id: "recieved"})
+          CREATE (b1:Book {id: "book1"})
+          CREATE (b2:Book {id: "book2"})
+          CREATE (pu)-[:POST_PREJUDICE]->(p:Prejudice)-[:PREJUDICE_AGAINST]->(ru)
+          CREATE (p)-[:RELATED_BOOK]->(b1)
+          RETURN *
+        `);
       });
 
-      const count = await neo4jService
-        .read(`MATCH (p:Prejudice) RETURN count(p) AS count`)
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(count).toBe(1);
+      it('with single book', async () => {
+        const actual = await prejudicesService.createPrejudice(
+          'post',
+          'recieved',
+          {
+            title: 'title',
+            relatedBooks: ['book1'],
+          },
+        );
 
-      const bookIds = await neo4jService
-        .read(`MATCH (:Prejudice)-[:RELATED_BOOK]->(b:Book) RETURN b.id AS id`)
-        .then((result) => result.records.map((record) => record.get('id')));
-      expect(bookIds).toHaveLength(2);
-      expect(bookIds).toContain('book1');
-      expect(bookIds).toContain('book2');
-    });
+        expect(actual).toStrictEqual({id: expect.any(String)});
 
-    it('return object if from user does not exist', async () => {
-      await neo4jService.write(`
-        CREATE (to:User {id: "to"})
-        CREATE (b1:Book {id: "book1"})
-        CREATE (b2:Book {id: "book2"})
-        RETURN *
-      `);
-      const actual = await prejudicesService.createPrejudice('from', 'to', {
-        title: 'title',
-        relatedBooks: ['book1', 'book2'],
+        expect(
+          await neo4jService
+            .read(
+              `
+          MATCH (p:Prejudice {id: $id})
+          RETURN p.id AS id, p.title AS title, p.number AS number
+          `,
+              {id: actual.id},
+            )
+            .then((result) => ({
+              id: result.records[0].get('id'),
+              title: result.records[0].get('title'),
+              number: result.records[0].get('number').toNumber(),
+            })),
+        ).toStrictEqual({
+          id: actual.id,
+          title: 'title',
+          number: 2,
+        });
+        expect(
+          await neo4jService
+            .read(
+              `MATCH (:User {id: "post"})-[r:POST_PREJUDICE]->(:Prejudice {id: $id}) RETURN count(r) = 1 AS result`,
+              {id: actual.id},
+            )
+            .then((result) => result.records[0].get('result')),
+        ).toBe(true);
+        expect(
+          await neo4jService
+            .read(
+              `MATCH (:Prejudice {id: $id})-[r:PREJUDICE_AGAINST]->(:User {id: "recieved"}) RETURN count(r) = 1 AS result`,
+              {id: actual.id},
+            )
+            .then((result) => result.records[0].get('result')),
+        ).toBe(true);
+        expect(
+          await neo4jService
+            .read(
+              `MATCH (:Prejudice {id: $id})-[r:RELATED_BOOK]->(:Book {id: "book1"}) RETURN count(r) = 1 AS result`,
+              {id: actual.id},
+            )
+            .then((result) => result.records[0].get('result')),
+        ).toBe(true);
       });
-      expect(actual).toStrictEqual({
-        id: expect.any(String),
-        title: 'title',
-        createdAt: expect.any(Date),
-      });
-
-      const count = await neo4jService
-        .read(`MATCH (p:Prejudice) RETURN count(p) AS count`)
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(count).toBe(1);
-
-      const bookIds = await neo4jService
-        .read(`MATCH (:Prejudice)-[:RELATED_BOOK]->(b:Book) RETURN b.id AS id`)
-        .then((result) => result.records.map((record) => record.get('id')));
-      expect(bookIds).toHaveLength(2);
-      expect(bookIds).toContain('book1');
-      expect(bookIds).toContain('book2');
-    });
-
-    it('return object if to user does not exist', async () => {
-      await neo4jService.write(`
-        CREATE (from:User {id: "from"})
-        CREATE (b1:Book {id: "book1"})
-        CREATE (b2:Book {id: "book2"})
-        RETURN *
-      `);
-      const actual = await prejudicesService.createPrejudice('from', 'to', {
-        title: 'title',
-        relatedBooks: ['book1', 'book2'],
-      });
-      expect(actual).toStrictEqual({
-        id: expect.any(String),
-        title: 'title',
-        createdAt: expect.any(Date),
-      });
-
-      const count = await neo4jService
-        .read(`MATCH (p:Prejudice) RETURN count(p) AS count`)
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(count).toBe(1);
-
-      const bookIds = await neo4jService
-        .read(`MATCH (:Prejudice)-[:RELATED_BOOK]->(b:Book) RETURN b.id AS id`)
-        .then((result) => result.records.map((record) => record.get('id')));
-      expect(bookIds).toHaveLength(2);
-      expect(bookIds).toContain('book1');
-      expect(bookIds).toContain('book2');
     });
   });
 });

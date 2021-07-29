@@ -53,10 +53,6 @@ export class AnswersService {
     if (result.records.length !== 1)
       throw new Error('Prejudice.userFrom broken');
 
-    return {
-      id: result.records[0].get('id'),
-      title: result.records[0].get('title'),
-      createdAt: new Date(result.records[0].get('createdAt')),
-    };
+    return {id: result.records[0].get('id')};
   }
 }

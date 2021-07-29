@@ -42,6 +42,15 @@ export class UsersService {
     return null;
   }
 
+  async resolveUserUniqueUnion2(
+    input: UserUniqueUnion,
+  ): Promise<string | null> {
+    if (input.id)
+      return (await this.checkExists({id: input.id})) ? input.id : null;
+    if (input.alias) return (await this.getByAlias(input.alias))?.id || null;
+    return null;
+  }
+
   async checkExists(where: {id: string}): Promise<boolean> {
     return this.prismaService.user
       .findUnique({where})

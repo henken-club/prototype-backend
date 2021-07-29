@@ -83,9 +83,9 @@ export interface PostAnswerInput {
 }
 
 export interface PostPrejudiceInput {
+    receivedUser: UserUniqueUnion;
     relatedBooks: string[];
     title: string;
-    userId: string;
 }
 
 export interface PrejudiceOrder {
@@ -209,6 +209,7 @@ export interface Prejudice {
     book: Book;
     createdAt: DateTime;
     id: string;
+    number: number;
     relatedBooks: BookConnection;
     title: string;
     userFrom: User;

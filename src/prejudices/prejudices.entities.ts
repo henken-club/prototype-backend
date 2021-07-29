@@ -1,4 +1,3 @@
-import {Prejudice} from '~/graphql';
 import {Connection} from '~/common/common.entities';
 
 export {
@@ -8,10 +7,7 @@ export {
   GetPrejudiceInput,
 } from '~/graphql';
 
-export type PrejudiceEntity = Omit<
-  Prejudice,
-  'book' | 'userFrom' | 'userTo' | 'answeredBy' | 'relatedBooks'
->;
+export type PrejudiceEntity = {id: string};
 export class PrejudiceConnection extends Connection<PrejudiceEntity> {}
 
 export class PostPrejudicePayload {
