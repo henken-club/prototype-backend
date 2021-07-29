@@ -102,26 +102,8 @@ export class PrejudicesResolver {
   async getPrejudice(
     @Args('input') {post, received, number}: GetPrejudiceInput,
   ): Promise<PrejudiceEntity | null> {
-    const postUniq = this.usersService.resolveUserUniqueUnion(post);
-    const receivedUniq = this.usersService.resolveUserUniqueUnion(received);
-
-    if (!postUniq || !receivedUniq) throw new BadRequestException();
-    if (
-      'alias' in postUniq &&
-      'alias' in receivedUniq &&
-      postUniq.alias === receivedUniq.alias
-    )
-      throw new BadRequestException();
-
-    const postId =
-      'id' in postUniq
-        ? postUniq.id
-        : (await this.usersService.getByAlias(postUniq.alias))?.id;
-
-    const receivedId =
-      'id' in receivedUniq
-        ? receivedUniq.id
-        : (await this.usersService.getByAlias(receivedUniq.alias))?.id;
+    const postId = await this.usersService.convertUserUniqueUnion(post);
+    const receivedId = await this.usersService.convertUserUniqueUnion(received);
 
     if (!postId || !receivedId) return null;
     if (postId === receivedId) throw new BadRequestException();
@@ -145,7 +127,7 @@ export class PrejudicesResolver {
     @Args('input')
     {receivedUser, title, relatedBooks}: PostPrejudiceInput,
   ): Promise<PostPrejudicePayload> {
-    const recievedId = await this.usersService.resolveUserUniqueUnion2(
+    const recievedId = await this.usersService.convertUserUniqueUnion(
       receivedUser,
     );
 
