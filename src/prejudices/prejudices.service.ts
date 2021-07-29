@@ -67,17 +67,10 @@ export class PrejudicesService {
   async resolveAnswer(id: string): Promise<AnswerEntity | null> {
     const result = await this.neo4jService.read(
       CYPHER_RESOLVE_PREJUDICE_ANSWER,
-      {
-        id,
-      },
+      {id},
     );
     if (result.records.length !== 1) return null;
-    return {
-      id: result.records[0].get('id'),
-      createdAt: new Date(result.records[0].get('createdAt')),
-      correctness: result.records[0].get('correctness'),
-      text: result.records[0].get('text'),
-    };
+    return {id: result.records[0].get('id')};
   }
 
   getQueryForResolveRelatedBooks({direction, field}: BookOrder) {

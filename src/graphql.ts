@@ -67,6 +67,12 @@ export interface FollowUserInput {
     userId: string;
 }
 
+export interface GetAnswerInput {
+    number: number;
+    post: UserUniqueUnion;
+    received: UserUniqueUnion;
+}
+
 export interface GetPrejudiceInput {
     number: number;
     post: UserUniqueUnion;
@@ -124,7 +130,7 @@ export interface Answer {
     correctness: Correctness;
     createdAt: DateTime;
     id: string;
-    prejudiceTo: Prejudice;
+    prejudice: Prejudice;
     text?: string;
 }
 
@@ -171,6 +177,11 @@ export interface FollowerConnection {
 export interface FollowingConnection {
     nodes: User[];
     totalCount: number;
+}
+
+export interface GetAnswerResult {
+    answer?: Answer;
+    possibility: boolean;
 }
 
 export interface LoginPayload {
@@ -226,9 +237,9 @@ export interface IQuery {
     allBooks(): Book[] | Promise<Book[]>;
     allPrejudices(): Prejudice[] | Promise<Prejudice[]>;
     allUsers(): User[] | Promise<User[]>;
-    answer(id: string): Answer | Promise<Answer>;
     author(id: string): Author | Promise<Author>;
     book(id: string): Book | Promise<Book>;
+    getAnswer(input: GetAnswerInput): GetAnswerResult | Promise<GetAnswerResult>;
     prejudice(input: GetPrejudiceInput): Prejudice | Promise<Prejudice>;
     user(alias: string): User | Promise<User>;
     viewer(): User | Promise<User>;
