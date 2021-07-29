@@ -242,10 +242,12 @@ export interface IQuery {
     allBooks(): Book[] | Promise<Book[]>;
     allPrejudices(): Prejudice[] | Promise<Prejudice[]>;
     allUsers(): User[] | Promise<User[]>;
+    answer(id: string): Answer | Promise<Answer>;
     author(id: string): Author | Promise<Author>;
     book(id: string): Book | Promise<Book>;
     getAnswer(input: GetAnswerInput): GetAnswerResult | Promise<GetAnswerResult>;
     getPrejudice(input: GetPrejudiceInput): GetPrejudiceResult | Promise<GetPrejudiceResult>;
+    prejudice(id: string): Prejudice | Promise<Prejudice>;
     user(alias: string): User | Promise<User>;
     viewer(): User | Promise<User>;
 }

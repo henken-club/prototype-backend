@@ -41,6 +41,11 @@ export class AnswersResolver {
     return this.answersService.resolvePrejudice(id);
   }
 
+  @Query('answer')
+  async getAnswerById(@Args('id') id: string) {
+    return this.answersService.getById(id);
+  }
+
   @Query('getAnswer')
   async getAnswer(
     @Args('input') {post, received, number}: GetPrejudiceInput,

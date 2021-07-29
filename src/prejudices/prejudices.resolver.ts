@@ -99,6 +99,13 @@ export class PrejudicesResolver {
     return {nodes};
   }
 
+  @Query('prejudice')
+  async getPrejudiceById(
+    @Args('id') id: string,
+  ): Promise<PrejudiceEntity | null> {
+    return this.prejudicesService.getById(id);
+  }
+
   @Query('getPrejudice')
   async getPrejudice(
     @Args('input') {post, received, number}: GetPrejudiceInput,

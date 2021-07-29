@@ -28,6 +28,7 @@ enum AnswerOrderField {
 }
 
 type Query {
+  answer(id: ID!): Answer!
   getAnswer(input: GetAnswerInput!): GetAnswerResult!
   allAnswers: [Answer!]!
 }
