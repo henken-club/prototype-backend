@@ -221,30 +221,30 @@ export class UsersService {
   async followUser(
     from: string,
     to: string,
-  ): Promise<{fromId: string; toId: string} | null> {
+  ): Promise<{from: UserEntity; to: UserEntity}> {
     const result = await this.neo4jService.write(CYPHER_FOLLOW_USER, {
       from,
       to,
     });
-    if (result.records.length !== 1) return null;
+    if (result.records.length !== 1) throw new Error('Failed to unfollow');
     return {
-      fromId: result.records[0].get('fromId'),
-      toId: result.records[0].get('toId'),
+      from: {id: result.records[0].get('fromId')},
+      to: {id: result.records[0].get('toId')},
     };
   }
 
   async unfollowUser(
     from: string,
     to: string,
-  ): Promise<{fromId: string; toId: string} | null> {
+  ): Promise<{from: UserEntity; to: UserEntity}> {
     const result = await this.neo4jService.write(CYPHER_UNFOLLOW_USER, {
       from,
       to,
     });
-    if (result.records.length !== 1) return null;
+    if (result.records.length !== 1) throw new Error('Failed to unfollow');
     return {
-      fromId: result.records[0].get('fromId'),
-      toId: result.records[0].get('toId'),
+      from: {id: result.records[0].get('fromId')},
+      to: {id: result.records[0].get('toId')},
     };
   }
 }

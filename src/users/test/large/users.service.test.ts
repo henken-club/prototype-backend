@@ -276,7 +276,7 @@ describe('UsersService', () => {
         RETURN *
       `);
       const actual = await usersService.followUser('user1', 'user2');
-      expect(actual).toStrictEqual({fromId: 'user1', toId: 'user2'});
+      expect(actual).toStrictEqual({from: {id: 'user1'}, to: {id: 'user2'}});
 
       const neo4jResult = await neo4jService.read(
         `MATCH (f)-[r:FOLLOWS]->(t) RETURN f.id AS fromId, t.id AS toId`,
@@ -293,7 +293,7 @@ describe('UsersService', () => {
         RETURN *
       `);
       const actual = await usersService.followUser('user1', 'user2');
-      expect(actual).toStrictEqual({fromId: 'user1', toId: 'user2'});
+      expect(actual).toStrictEqual({from: {id: 'user1'}, to: {id: 'user2'}});
 
       const neo4jResult = await neo4jService.read(
         `MATCH (f)-[r:FOLLOWS]->(t) RETURN f.id AS fromId, t.id AS toId`,
@@ -309,7 +309,7 @@ describe('UsersService', () => {
         RETURN *
       `);
       const actual = await usersService.followUser('user1', 'user2');
-      expect(actual).toStrictEqual({fromId: 'user1', toId: 'user2'});
+      expect(actual).toStrictEqual({from: {id: 'user1'}, to: {id: 'user2'}});
 
       const neo4jResult = await neo4jService.read(
         `MATCH (f)-[r:FOLLOWS]->(t) RETURN f.id AS fromId, t.id AS toId`,
@@ -325,7 +325,7 @@ describe('UsersService', () => {
         RETURN *
       `);
       const actual = await usersService.followUser('user1', 'user2');
-      expect(actual).toStrictEqual({fromId: 'user1', toId: 'user2'});
+      expect(actual).toStrictEqual({from: {id: 'user1'}, to: {id: 'user2'}});
 
       const neo4jResult = await neo4jService.read(
         `MATCH (f)-[r:FOLLOWS]->(t) RETURN f.id AS fromId, t.id AS toId`,
@@ -344,7 +344,7 @@ describe('UsersService', () => {
         RETURN *
       `);
       const actual = await usersService.unfollowUser('user1', 'user2');
-      expect(actual).toStrictEqual({fromId: 'user1', toId: 'user2'});
+      expect(actual).toStrictEqual({from: {id: 'user1'}, to: {id: 'user2'}});
 
       const neo4jResult = await neo4jService.read(
         `MATCH p=()-[r:FOLLOWS]->() RETURN count(p) AS count`,
@@ -358,8 +358,9 @@ describe('UsersService', () => {
         CREATE (from:User {id: "user1"}), (to:User {id: "user2"})
         RETURN *
       `);
-      const actual = await usersService.unfollowUser('user1', 'user2');
-      expect(actual).toBeNull();
+      await expect(usersService.unfollowUser('user1', 'user2')).rejects.toThrow(
+        'Failed to unfollow',
+      );
 
       const neo4jResult = await neo4jService.read(
         `MATCH p=()-[r:FOLLOWS]->() RETURN count(p) AS count`,
@@ -373,8 +374,9 @@ describe('UsersService', () => {
         CREATE (from:User {id: "user1"})
         RETURN *
       `);
-      const actual = await usersService.unfollowUser('user1', 'user2');
-      expect(actual).toBeNull();
+      await expect(usersService.unfollowUser('user1', 'user2')).rejects.toThrow(
+        'Failed to unfollow',
+      );
 
       const neo4jResult = await neo4jService.read(
         `MATCH p=()-[r:FOLLOWS]->() RETURN count(p) AS count`,
@@ -388,8 +390,9 @@ describe('UsersService', () => {
         CREATE (to:User {id: "user2"})
         RETURN *
       `);
-      const actual = await usersService.unfollowUser('user1', 'user2');
-      expect(actual).toBeNull();
+      await expect(usersService.unfollowUser('user1', 'user2')).rejects.toThrow(
+        'Failed to unfollow',
+      );
 
       const neo4jResult = await neo4jService.read(
         `MATCH p=()-[r:FOLLOWS]->() RETURN count(p) AS count`,

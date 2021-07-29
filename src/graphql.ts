@@ -64,7 +64,7 @@ export interface BookOrder {
 }
 
 export interface FollowUserInput {
-    userId: string;
+    user: GetUserInput;
 }
 
 export interface GetAnswerInput {
@@ -115,7 +115,7 @@ export interface SignupInput {
 }
 
 export interface UnfollowUserInput {
-    userId: string;
+    user: GetUserInput;
 }
 
 export interface UserUniqueUnion {
