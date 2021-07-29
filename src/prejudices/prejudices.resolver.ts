@@ -16,6 +16,7 @@ import {
 import {
   PrejudiceEntity,
   PostPrejudiceInput,
+  GetPrejudiceResult,
   PostPrejudicePayload,
 } from './prejudices.entities';
 import {PrejudicesService} from './prejudices.service';
@@ -98,21 +99,24 @@ export class PrejudicesResolver {
     return {nodes};
   }
 
-  @Query('prejudice')
+  @Query('getPrejudice')
   async getPrejudice(
     @Args('input') {post, received, number}: GetPrejudiceInput,
-  ): Promise<PrejudiceEntity | null> {
+  ): Promise<GetPrejudiceResult> {
     const postId = await this.usersService.convertUserUniqueUnion(post);
     const receivedId = await this.usersService.convertUserUniqueUnion(received);
 
-    if (!postId || !receivedId) return null;
+    if (!postId || !receivedId) return {possibility: false, prejudice: null};
     if (postId === receivedId) throw new BadRequestException();
 
-    return this.prejudicesService.getByUserIdAndNumber(
-      postId,
-      receivedId,
-      number,
-    );
+    return {
+      possibility: true,
+      prejudice: await this.prejudicesService.getByUserIdAndNumber(
+        postId,
+        receivedId,
+        number,
+      ),
+    };
   }
 
   @Query('allPrejudices')

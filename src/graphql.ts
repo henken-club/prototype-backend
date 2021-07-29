@@ -184,6 +184,11 @@ export interface GetAnswerResult {
     possibility: boolean;
 }
 
+export interface GetPrejudiceResult {
+    possibility: boolean;
+    prejudice?: Prejudice;
+}
+
 export interface LoginPayload {
     tokens: TokensData;
 }
@@ -240,7 +245,7 @@ export interface IQuery {
     author(id: string): Author | Promise<Author>;
     book(id: string): Book | Promise<Book>;
     getAnswer(input: GetAnswerInput): GetAnswerResult | Promise<GetAnswerResult>;
-    prejudice(input: GetPrejudiceInput): Prejudice | Promise<Prejudice>;
+    getPrejudice(input: GetPrejudiceInput): GetPrejudiceResult | Promise<GetPrejudiceResult>;
     user(alias: string): User | Promise<User>;
     viewer(): User | Promise<User>;
 }
