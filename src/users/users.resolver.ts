@@ -21,6 +21,8 @@ import {
   FollowUserInput,
   FollowEntity,
   UnfollowEntity,
+  GetUserResult,
+  GetUserInput,
 } from './users.entities';
 import {UsersService} from './users.service';
 
@@ -65,7 +67,7 @@ export class UsersResolver {
       });
   }
 
-  @ResolveField('prejudicesPosted')
+  @ResolveField('postedPrejudices')
   async getPostPreduices(
     @Parent() {id}: UserEntity,
     @Args('skip') skip: number,
@@ -80,7 +82,7 @@ export class UsersResolver {
     return {nodes};
   }
 
-  @ResolveField('preduicesRecieved')
+  @ResolveField('recivedPrejudices')
   async getRecievedPreduices(
     @Parent() {id}: UserEntity,
     @Args('skip') skip: number,
@@ -95,7 +97,7 @@ export class UsersResolver {
     return {nodes};
   }
 
-  @ResolveField('answersPosted')
+  @ResolveField('postedAnswers')
   async getPostAnswers(
     @Parent() {id}: UserEntity,
     @Args('skip') skip: number,
@@ -151,8 +153,15 @@ export class UsersResolver {
   }
 
   @Query('user')
-  async getUser(@Args('alias') alias: string): Promise<UserEntity | null> {
-    return this.usersService.getByAlias(alias);
+  async getUserById(@Args('id') id: string): Promise<UserEntity | null> {
+    return this.usersService.getById(id);
+  }
+
+  @Query('getUser')
+  async getUser(@Args('input') input: GetUserInput): Promise<GetUserResult> {
+    return this.usersService
+      .convertUserUniqueUnion(input)
+      .then((id) => (id ? {user: {id}} : {user: null}));
   }
 
   @Query('allUsers')
@@ -172,39 +181,33 @@ export class UsersResolver {
   @UseGuards(GraphQLJwtGuard)
   async follow(
     @Viewer() {id: fromId}: ViewerType,
-    @Args('input') {userId: toId}: FollowUserInput,
+    @Args('input') {user}: FollowUserInput,
   ): Promise<FollowEntity> {
-    if (!(await this.usersService.checkExists({id: fromId})))
-      throw new BadRequestException();
-    if (!(await this.usersService.checkExists({id: toId})))
-      throw new BadRequestException();
+    const toId = await this.usersService.convertUserUniqueUnion(user);
+    if (!toId || fromId === toId) throw new BadRequestException();
 
-    const result = await this.usersService.followUser(fromId, toId);
-    if (!result) throw new InternalServerErrorException();
-
-    return {
-      from: {id: result.fromId},
-      to: {id: result.toId},
-    };
+    return this.usersService
+      .followUser(fromId, toId)
+      .then((res) => res)
+      .catch(() => {
+        throw new InternalServerErrorException();
+      });
   }
 
   @Mutation('unfollowUser')
   @UseGuards(GraphQLJwtGuard)
   async unfollow(
-    @Viewer() {id: fromId}: ViewerType,
-    @Args('input') {userId: toId}: FollowUserInput,
+    @Viewer() {id: from}: ViewerType,
+    @Args('input') {user}: FollowUserInput,
   ): Promise<UnfollowEntity> {
-    if (!(await this.usersService.checkExists({id: fromId})))
-      throw new BadRequestException();
-    if (!(await this.usersService.checkExists({id: toId})))
-      throw new BadRequestException();
+    const toId = await this.usersService.convertUserUniqueUnion(user);
+    if (!toId || from === toId) throw new BadRequestException();
 
-    const result = await this.usersService.unfollowUser(fromId, toId);
-    if (!result) throw new InternalServerErrorException();
-
-    return {
-      from: {id: result.fromId},
-      to: {id: result.toId},
-    };
+    return this.usersService
+      .unfollowUser(from, toId)
+      .then((res) => res)
+      .catch(() => {
+        throw new InternalServerErrorException();
+      });
   }
 }

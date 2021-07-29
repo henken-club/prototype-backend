@@ -64,7 +64,7 @@ export interface BookOrder {
 }
 
 export interface FollowUserInput {
-    userId: string;
+    user: GetUserInput;
 }
 
 export interface GetAnswerInput {
@@ -77,6 +77,11 @@ export interface GetPrejudiceInput {
     number: number;
     post: UserUniqueUnion;
     received: UserUniqueUnion;
+}
+
+export interface GetUserInput {
+    alias?: string;
+    id?: string;
 }
 
 export interface LoginInput {
@@ -110,7 +115,7 @@ export interface SignupInput {
 }
 
 export interface UnfollowUserInput {
-    userId: string;
+    user: GetUserInput;
 }
 
 export interface UserUniqueUnion {
@@ -189,6 +194,10 @@ export interface GetPrejudiceResult {
     prejudice?: Prejudice;
 }
 
+export interface GetUserResult {
+    user?: User;
+}
+
 export interface LoginPayload {
     tokens: TokensData;
 }
@@ -247,8 +256,9 @@ export interface IQuery {
     book(id: string): Book | Promise<Book>;
     getAnswer(input: GetAnswerInput): GetAnswerResult | Promise<GetAnswerResult>;
     getPrejudice(input: GetPrejudiceInput): GetPrejudiceResult | Promise<GetPrejudiceResult>;
+    getUser(input: GetUserInput): GetUserResult | Promise<GetUserResult>;
     prejudice(id: string): Prejudice | Promise<Prejudice>;
-    user(alias: string): User | Promise<User>;
+    user(id: string): User | Promise<User>;
     viewer(): User | Promise<User>;
 }
 
@@ -280,15 +290,15 @@ export interface UnfollowUserPayload {
 
 export interface User {
     alias: string;
-    answersPosted: AnswerConnection;
     canPostPrejudiceTo: boolean;
     displayName: string;
     followers: FollowerConnection;
     following: FollowingConnection;
     id: string;
     picture: string;
-    preduicesRecieved: PrejudiceConnection;
-    prejudicesPosted: PrejudiceConnection;
+    postedAnswers: AnswerConnection;
+    postedPrejudices: PrejudiceConnection;
+    recivedPrejudices: PrejudiceConnection;
 }
 
 export interface UserConnection {
