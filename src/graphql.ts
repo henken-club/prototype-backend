@@ -67,6 +67,12 @@ export interface FollowUserInput {
     userId: string;
 }
 
+export interface GetPrejudiceInput {
+    number: number;
+    post: UserUniqueUnion;
+    received: UserUniqueUnion;
+}
+
 export interface LoginInput {
     alias: string;
     password: string;
@@ -99,6 +105,11 @@ export interface SignupInput {
 
 export interface UnfollowUserInput {
     userId: string;
+}
+
+export interface UserUniqueUnion {
+    alias?: string;
+    id?: string;
 }
 
 export interface AddAuthorPayload {
@@ -217,7 +228,7 @@ export interface IQuery {
     answer(id: string): Answer | Promise<Answer>;
     author(id: string): Author | Promise<Author>;
     book(id: string): Book | Promise<Book>;
-    prejudice(id: string): Prejudice | Promise<Prejudice>;
+    prejudice(input: GetPrejudiceInput): Prejudice | Promise<Prejudice>;
     user(alias: string): User | Promise<User>;
     viewer(): User | Promise<User>;
 }

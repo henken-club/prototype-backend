@@ -10,6 +10,7 @@ import {
   CYPHER_GET_PREJUDICE_USER_TO,
   CYPHER_CREATE_PREJUDICE,
   CYPHER_ALL_PREJUDICES,
+  CYPHER_GET_PREJUDICE_FROM_USER_ID_AND_NUMBER,
 } from './prejudices.cypher';
 import {PrejudiceEntity} from './prejudices.entities';
 
@@ -30,6 +31,28 @@ export class PrejudicesService {
     const result = await this.neo4jService.read(CYPHER_GET_PREJUDICE, {
       id,
     });
+    if (result.records.length !== 1) return null;
+
+    return {
+      id: result.records[0].get('id'),
+      title: result.records[0].get('title'),
+      createdAt: new Date(result.records[0].get('createdAt')),
+    };
+  }
+
+  async getByUserIdAndNumber(
+    postId: string,
+    recivedId: string,
+    number: number,
+  ): Promise<PrejudiceEntity | null> {
+    const result = await this.neo4jService.read(
+      CYPHER_GET_PREJUDICE_FROM_USER_ID_AND_NUMBER,
+      {
+        post: postId,
+        recived: recivedId,
+        number,
+      },
+    );
     if (result.records.length !== 1) return null;
 
     return {

@@ -27,13 +27,14 @@ import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {UsersService} from '~/users/users.service';
 import {SettingsService} from '~/settings/settings.service';
+import {GetPrejudiceInput} from '~/graphql';
 
 @Resolver('Prejudice')
 export class PrejudicesResolver {
   constructor(
     private readonly prejudicesService: PrejudicesService,
-    private readonly usersService: UsersService,
     private readonly settingsService: SettingsService,
+    private readonly usersService: UsersService,
   ) {}
 
   @ResolveField('userFrom')
@@ -77,8 +78,38 @@ export class PrejudicesResolver {
   }
 
   @Query('prejudice')
-  async getPrejudice(@Args('id') id: string): Promise<PrejudiceEntity | null> {
-    return this.prejudicesService.getById(id);
+  async getPrejudice(
+    @Args('input') {post, received, number}: GetPrejudiceInput,
+  ): Promise<PrejudiceEntity | null> {
+    const postUniq = this.usersService.resolveUserUniqueUnion(post);
+    const receivedUniq = this.usersService.resolveUserUniqueUnion(received);
+
+    if (!postUniq || !receivedUniq) throw new BadRequestException();
+    if (
+      'alias' in postUniq &&
+      'alias' in receivedUniq &&
+      postUniq.alias === receivedUniq.alias
+    )
+      throw new BadRequestException();
+
+    const postId =
+      'id' in postUniq
+        ? postUniq.id
+        : (await this.usersService.getByAlias(postUniq.alias))?.id;
+
+    const receivedId =
+      'id' in receivedUniq
+        ? receivedUniq.id
+        : (await this.usersService.getByAlias(receivedUniq.alias))?.id;
+
+    if (!postId || !receivedId) return null;
+    if (postId === receivedId) throw new BadRequestException();
+
+    return this.prejudicesService.getByUserIdAndNumber(
+      postId,
+      receivedId,
+      number,
+    );
   }
 
   @Query('allPrejudices')

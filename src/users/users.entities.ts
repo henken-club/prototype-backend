@@ -6,6 +6,7 @@ export {
   AddBookInput,
   FollowUserInput,
   UnfollowUserInput,
+  UserUniqueUnion,
 } from '~/graphql';
 
 export class UserEntity {

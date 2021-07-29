@@ -5,6 +5,7 @@ export {
   PrejudiceOrder,
   PrejudiceOrderField,
   PostPrejudiceInput,
+  GetPrejudiceInput,
 } from '~/graphql';
 
 export type PrejudiceEntity = Omit<

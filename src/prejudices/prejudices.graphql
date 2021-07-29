@@ -31,8 +31,14 @@ enum PrejudiceOrderField {
 }
 
 type Query {
-  prejudice(id: ID!): Prejudice
+  prejudice(input: GetPrejudiceInput!): Prejudice
   allPrejudices: [Prejudice!]!
+}
+
+input GetPrejudiceInput {
+  post: UserUniqueUnion!
+  received: UserUniqueUnion!
+  number: Int!
 }
 
 type Mutation {

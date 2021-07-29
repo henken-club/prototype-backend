@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {int} from 'neo4j-driver';
 
-import {UserEntity} from './users.entities';
+import {UserEntity, UserUniqueUnion} from './users.entities';
 import {
   CYPHER_FOLLOW_USER,
   CYPHER_GET_USER_FOLLOWERS,
@@ -33,6 +33,14 @@ export class UsersService {
     private readonly neo4jService: Neo4jService,
     private readonly prismaService: PrismaService,
   ) {}
+
+  resolveUserUniqueUnion(
+    input: UserUniqueUnion,
+  ): {id: string} | {alias: string} | null {
+    if (input.id) return {id: input.id};
+    if (input.alias) return {alias: input.alias};
+    return null;
+  }
 
   async checkExists(where: {id: string}): Promise<boolean> {
     return this.prismaService.user
