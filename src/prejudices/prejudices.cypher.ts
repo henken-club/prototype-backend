@@ -1,30 +1,44 @@
-export const CYPHER_GET_PREJUDICE = `
+export const CYPHER_GET_PREJUDICE_BY_ID = `
   MATCH (p:Prejudice {id: $id})
-  RETURN
-    p.id AS id,
-    p.title AS title,
-    p.createdAt AS createdAt
+  RETURN p.id AS id
 `;
 
-export const CYPHER_ALL_PREJUDICES = `
+export const CYPHER_GET_PREJUDICE_BY_USER_ID_AND_NUMBER = `
+  MATCH (:User {id: $post})-[:POST_PREJUDICE]->(p:Prejudice {number: $number})-[:PREJUDICE_AGAINST]->(:User {id: $received})
+  RETURN p.id AS id
+`;
+
+export const CYPHER_GET_ALL_PREJUDICES = `
   MATCH (p:Prejudice)
-  RETURN
-    p.id AS id,
-    p.title AS title,
-    p.createdAt AS createdAt
+  RETURN p.id AS id
 `;
 
-export const CYPHER_GET_PREJUDICE_USER_FROM = `
+export const CYPHER_RESOLVE_PREJUDICE_TITLE = `
+  MATCH (p:Prejudice {id: $id})
+  RETURN p.title AS title
+`;
+
+export const CYPHER_RESOLVE_PREJUDICE_CREATED_AT = `
+  MATCH (p:Prejudice {id: $id})
+  RETURN p.createdAt AS createdAt
+`;
+
+export const CYPHER_RESOLVE_PREJUDICE_NUMBER = `
+  MATCH (p:Prejudice {id: $id})
+  RETURN p.number AS number
+`;
+
+export const CYPHER_RESOLVE_PREJUDICE_USER_POSTED = `
   MATCH (u:User)-[:POST_PREJUDICE]->(:Prejudice {id: $id})
   RETURN u.id AS id
 `;
 
-export const CYPHER_GET_PREJUDICE_USER_TO = `
+export const CYPHER_RESOLVE_PREJUDICE_USER_RECIEVED = `
   MATCH (:Prejudice {id: $id})-[:PREJUDICE_AGAINST]->(u:User)
   RETURN u.id AS id
 `;
 
-export const CYPHER_GET_PREJUDICE_ANSWER = `
+export const CYPHER_RESOLVE_PREJUDICE_ANSWER = `
   MATCH (a:Answer)-[:ANSWER_TO]->(:Prejudice {id: $id})
   RETURN
     a.id AS id,
@@ -46,13 +60,27 @@ export const CYPHER_GET_PREJUDICE_RELATED_BOOKS_ORDERBY_TITLE_AT_ASC =
 export const CYPHER_GET_PREJUDICE_RELATED_BOOKS_ORDERBY_TITLE_AT_DESC =
   getRelatedBooks('title', 'DESC');
 
-export const CYPHER_CREATE_PREJUDICE = `
+export const CYPHER_CREATE_PREJUICE = `
+  MATCH (pu:User {id: $post})
+  MATCH (ru:User {id: $recieved})
   MATCH (b:Book) WHERE b.id IN $relatedBooks
-  MERGE (p:Prejudice {id: $id})
-  MERGE (from:User {id: $from})
-  MERGE (to:User {id: $to})
-  MERGE (from)-[:POST_PREJUDICE]->(p)-[:PREJUDICE_AGAINST]->(to)
-  MERGE (p)-[:RELATED_BOOK]->(b)
-  SET p.title = $title, p.createdAt = localdatetime()
-  RETURN DISTINCT p.id AS id, p.title AS title, p.createdAt AS createdAt
+  WITH pu, ru, collect(b) AS bc
+  CALL {
+      WITH pu, ru
+      MATCH (pu)-[:POST_PREJUDICE]->(al:Prejudice)-[:PREJUDICE_AGAINST]->(ru)
+      RETURN count(al) + 1 AS number
+  }
+  CALL {
+      WITH pu, ru, number
+      CREATE (pu)-[:POST_PREJUDICE]->(p:Prejudice)-[:PREJUDICE_AGAINST]->(ru)
+      SET p.id = randomUUID(), p.number = number, p.createdAt = timestamp(), p.title = $title
+      RETURN p
+  }
+  CALL {
+      WITH bc, p
+      UNWIND bc AS b
+      CREATE (p)-[r:RELATED_BOOK]->(b)
+      RETURN r
+  }
+  RETURN DISTINCT p.id AS id
 `;

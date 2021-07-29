@@ -28,6 +28,11 @@ type User {
   ): AnswerConnection!
 }
 
+input UserUniqueUnion {
+  id: ID
+  alias: ID
+}
+
 type UserConnection {
   nodes: [User!]!
   totalCount: Int!

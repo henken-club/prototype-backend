@@ -43,14 +43,14 @@ export class UsersResolver {
 
   @ResolveField('alias')
   async resolveAlias(@Parent() {id}: UserEntity): Promise<string> {
-    const alias = await this.usersService.getAlias(id);
+    const alias = await this.usersService.resolveAlias(id);
     if (!alias) throw new InternalServerErrorException();
     return alias;
   }
 
   @ResolveField('displayName')
   async resolveDisplayName(@Parent() {id}: UserEntity): Promise<string> {
-    const displayName = await this.usersService.getDisplayName(id);
+    const displayName = await this.usersService.resolveDisplayName(id);
     if (!displayName) throw new InternalServerErrorException();
     return displayName;
   }
@@ -58,7 +58,7 @@ export class UsersResolver {
   @ResolveField('picture')
   async resolvePicture(@Parent() {id}: UserEntity): Promise<string> {
     return this.usersService
-      .getPicture(id)
+      .resolvePicture(id)
       .then((picture) => this.imageproxyService.proxy(picture))
       .catch(() => {
         throw new InternalServerErrorException();
@@ -72,7 +72,7 @@ export class UsersResolver {
     @Args('limit') limit: number,
     @Args('orderBy') orderBy: PrejudiceOrder,
   ): Promise<PrejudiceConnection> {
-    const nodes = await this.usersService.getPostPrejudices(id, {
+    const nodes = await this.usersService.resolvePostedPrejudices(id, {
       skip,
       limit,
       orderBy,
@@ -87,7 +87,7 @@ export class UsersResolver {
     @Args('limit') limit: number,
     @Args('orderBy') orderBy: PrejudiceOrder,
   ): Promise<PrejudiceConnection> {
-    const nodes = await this.usersService.getRecivedPrejudices(id, {
+    const nodes = await this.usersService.resolveRecievedPrejudices(id, {
       skip,
       limit,
       orderBy,
@@ -102,7 +102,7 @@ export class UsersResolver {
     @Args('limit') limit: number,
     @Args('orderBy') orderBy: AnswerOrder,
   ): Promise<AnswerConnection> {
-    const nodes = await this.usersService.getPostAnswers(id, {
+    const nodes = await this.usersService.resolvePostedAnswers(id, {
       skip,
       limit,
       orderBy,
@@ -116,8 +116,11 @@ export class UsersResolver {
     @Args('skip') skip: number,
     @Args('limit') limit: number,
   ): Promise<FollowingConnection> {
-    const nodes = await this.usersService.getFollowing(id, {skip, limit});
-    const totalCount = await this.usersService.getFollowingCount(id);
+    const nodes = await this.usersService.resolveFollowings(id, {
+      skip,
+      limit,
+    });
+    const totalCount = await this.usersService.countFollowings(id);
     if (totalCount === null) throw new InternalServerErrorException();
     return {nodes, totalCount};
   }
@@ -128,8 +131,8 @@ export class UsersResolver {
     @Args('skip') skip: number,
     @Args('limit') limit: number,
   ): Promise<FollowerConnection> {
-    const nodes = await this.usersService.getFollowers(id, {skip, limit});
-    const totalCount = await this.usersService.getFollowersCount(id);
+    const nodes = await this.usersService.resolveFollowers(id, {skip, limit});
+    const totalCount = await this.usersService.countFollowers(id);
     if (totalCount === null) throw new InternalServerErrorException();
     return {nodes, totalCount};
   }

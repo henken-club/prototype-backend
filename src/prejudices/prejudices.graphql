@@ -2,6 +2,7 @@ type Prejudice {
   id: ID!
   title: String!
   createdAt: DateTime!
+  number: Int!
 
   book: Book!
 
@@ -32,7 +33,19 @@ enum PrejudiceOrderField {
 
 type Query {
   prejudice(id: ID!): Prejudice
+  getPrejudice(input: GetPrejudiceInput!): GetPrejudiceResult!
   allPrejudices: [Prejudice!]!
+}
+
+input GetPrejudiceInput {
+  post: UserUniqueUnion!
+  received: UserUniqueUnion!
+  number: Int!
+}
+
+type GetPrejudiceResult {
+  possibility: Boolean!
+  prejudice: Prejudice
 }
 
 type Mutation {
@@ -40,7 +53,7 @@ type Mutation {
 }
 
 input PostPrejudiceInput {
-  userId: ID!
+  receivedUser: UserUniqueUnion!
 
   title: String!
 

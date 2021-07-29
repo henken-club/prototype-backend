@@ -144,13 +144,16 @@ describe('UsersService', () => {
           CREATE (u1)-[:FOLLOWS {followedAt: localdatetime({year: 2000})}]->(u4)
           RETURN *
         `);
-        const actual = await usersService.getFollowing('user1', {skip, limit});
+        const actual = await usersService.resolveFollowings('user1', {
+          skip,
+          limit,
+        });
         expect(actual).toStrictEqual(expected);
       },
     );
 
     it('return empty array if user does not exist', async () => {
-      const actual = await usersService.getFollowing('user1', {
+      const actual = await usersService.resolveFollowings('user1', {
         skip: 0,
         limit: 3,
       });
@@ -172,12 +175,12 @@ describe('UsersService', () => {
         RETURN *
       `);
 
-      const actual = await usersService.getFollowingCount('user1');
+      const actual = await usersService.countFollowings('user1');
       expect(actual).toBe(3);
     });
 
     it('return 0 if user does not exist', async () => {
-      const actual = await usersService.getFollowingCount('user1');
+      const actual = await usersService.countFollowings('user1');
       expect(actual).toBe(0);
     });
   });
@@ -225,13 +228,16 @@ describe('UsersService', () => {
           CREATE (u4)-[:FOLLOWS {followedAt: localdatetime({year: 2000})}]->(u1)
           RETURN *
         `);
-        const actual = await usersService.getFollowers('user1', {skip, limit});
+        const actual = await usersService.resolveFollowers('user1', {
+          skip,
+          limit,
+        });
         expect(actual).toStrictEqual(expected);
       },
     );
 
     it('return empty array if user does not exist', async () => {
-      const actual = await usersService.getFollowers('user1', {
+      const actual = await usersService.resolveFollowers('user1', {
         skip: 0,
         limit: 3,
       });
@@ -253,12 +259,12 @@ describe('UsersService', () => {
         RETURN *
       `);
 
-      const actual = await usersService.getFollowersCount('user1');
+      const actual = await usersService.countFollowers('user1');
       expect(actual).toBe(3);
     });
 
     it('return 0 if user does not exist', async () => {
-      const actual = await usersService.getFollowersCount('user1');
+      const actual = await usersService.countFollowers('user1');
       expect(actual).toBe(0);
     });
   });

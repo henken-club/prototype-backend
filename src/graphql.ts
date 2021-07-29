@@ -67,6 +67,18 @@ export interface FollowUserInput {
     userId: string;
 }
 
+export interface GetAnswerInput {
+    number: number;
+    post: UserUniqueUnion;
+    received: UserUniqueUnion;
+}
+
+export interface GetPrejudiceInput {
+    number: number;
+    post: UserUniqueUnion;
+    received: UserUniqueUnion;
+}
+
 export interface LoginInput {
     alias: string;
     password: string;
@@ -77,9 +89,9 @@ export interface PostAnswerInput {
 }
 
 export interface PostPrejudiceInput {
+    receivedUser: UserUniqueUnion;
     relatedBooks: string[];
     title: string;
-    userId: string;
 }
 
 export interface PrejudiceOrder {
@@ -101,6 +113,11 @@ export interface UnfollowUserInput {
     userId: string;
 }
 
+export interface UserUniqueUnion {
+    alias?: string;
+    id?: string;
+}
+
 export interface AddAuthorPayload {
     author: Author;
 }
@@ -113,7 +130,7 @@ export interface Answer {
     correctness: Correctness;
     createdAt: DateTime;
     id: string;
-    prejudiceTo: Prejudice;
+    prejudice: Prejudice;
     text?: string;
 }
 
@@ -162,6 +179,16 @@ export interface FollowingConnection {
     totalCount: number;
 }
 
+export interface GetAnswerResult {
+    answer?: Answer;
+    possibility: boolean;
+}
+
+export interface GetPrejudiceResult {
+    possibility: boolean;
+    prejudice?: Prejudice;
+}
+
 export interface LoginPayload {
     tokens: TokensData;
 }
@@ -198,6 +225,7 @@ export interface Prejudice {
     book: Book;
     createdAt: DateTime;
     id: string;
+    number: number;
     relatedBooks: BookConnection;
     title: string;
     userFrom: User;
@@ -217,6 +245,8 @@ export interface IQuery {
     answer(id: string): Answer | Promise<Answer>;
     author(id: string): Author | Promise<Author>;
     book(id: string): Book | Promise<Book>;
+    getAnswer(input: GetAnswerInput): GetAnswerResult | Promise<GetAnswerResult>;
+    getPrejudice(input: GetPrejudiceInput): GetPrejudiceResult | Promise<GetPrejudiceResult>;
     prejudice(id: string): Prejudice | Promise<Prejudice>;
     user(alias: string): User | Promise<User>;
     viewer(): User | Promise<User>;

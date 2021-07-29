@@ -16,6 +16,7 @@ import {
 import {
   PrejudiceEntity,
   PostPrejudiceInput,
+  GetPrejudiceResult,
   PostPrejudicePayload,
 } from './prejudices.entities';
 import {PrejudicesService} from './prejudices.service';
@@ -27,19 +28,41 @@ import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {UsersService} from '~/users/users.service';
 import {SettingsService} from '~/settings/settings.service';
+import {GetPrejudiceInput} from '~/graphql';
 
 @Resolver('Prejudice')
 export class PrejudicesResolver {
   constructor(
     private readonly prejudicesService: PrejudicesService,
-    private readonly usersService: UsersService,
     private readonly settingsService: SettingsService,
+    private readonly usersService: UsersService,
   ) {}
+
+  @ResolveField('title')
+  async resolveTitle(@Parent() {id}: PrejudiceEntity): Promise<string> {
+    return this.prejudicesService.resolveTitle(id).catch(() => {
+      throw new InternalServerErrorException();
+    });
+  }
+
+  @ResolveField('createdAt')
+  async resolveCreatedAt(@Parent() {id}: PrejudiceEntity): Promise<Date> {
+    return this.prejudicesService.resolveCreatedAt(id).catch(() => {
+      throw new InternalServerErrorException();
+    });
+  }
+
+  @ResolveField('number')
+  async resolveNumber(@Parent() {id}: PrejudiceEntity): Promise<Date> {
+    return this.prejudicesService.resolveNumber(id).catch(() => {
+      throw new InternalServerErrorException();
+    });
+  }
 
   @ResolveField('userFrom')
   async getUserFrom(@Parent() {id}: PrejudiceEntity): Promise<UserEntity> {
     const user = await this.prejudicesService
-      .getUserFrom(id)
+      .resolveUserPosted(id)
       .then((id) => (id ? this.usersService.getById(id) : null));
     if (!user) throw new InternalServerErrorException();
     return user;
@@ -48,7 +71,7 @@ export class PrejudicesResolver {
   @ResolveField('userTo')
   async getUserTo(@Parent() {id}: PrejudiceEntity): Promise<UserEntity> {
     const user = await this.prejudicesService
-      .getUserTo(id)
+      .resolveUserRecieved(id)
       .then((id) => (id ? this.usersService.getById(id) : null));
     if (!user) throw new InternalServerErrorException();
     return user;
@@ -58,7 +81,7 @@ export class PrejudicesResolver {
   async getAnswer(
     @Parent() {id}: PrejudiceEntity,
   ): Promise<AnswerEntity | null> {
-    return this.prejudicesService.getAnswer(id);
+    return this.prejudicesService.resolveAnswer(id);
   }
 
   @ResolveField('relatedBooks')
@@ -68,7 +91,7 @@ export class PrejudicesResolver {
     @Args('limit') limit: number,
     @Args('orderBy') orderBy: BookOrder,
   ): Promise<BookConnection> {
-    const nodes = await this.prejudicesService.getRelatedBooks(id, {
+    const nodes = await this.prejudicesService.resolveRelatedBooks(id, {
       skip,
       limit,
       orderBy,
@@ -77,8 +100,30 @@ export class PrejudicesResolver {
   }
 
   @Query('prejudice')
-  async getPrejudice(@Args('id') id: string): Promise<PrejudiceEntity | null> {
+  async getPrejudiceById(
+    @Args('id') id: string,
+  ): Promise<PrejudiceEntity | null> {
     return this.prejudicesService.getById(id);
+  }
+
+  @Query('getPrejudice')
+  async getPrejudice(
+    @Args('input') {post, received, number}: GetPrejudiceInput,
+  ): Promise<GetPrejudiceResult> {
+    const postId = await this.usersService.convertUserUniqueUnion(post);
+    const receivedId = await this.usersService.convertUserUniqueUnion(received);
+
+    if (!postId || !receivedId) return {possibility: false, prejudice: null};
+    if (postId === receivedId) throw new BadRequestException();
+
+    return {
+      possibility: true,
+      prejudice: await this.prejudicesService.getByUserIdAndNumber(
+        postId,
+        receivedId,
+        number,
+      ),
+    };
   }
 
   @Query('allPrejudices')
@@ -88,25 +133,24 @@ export class PrejudicesResolver {
 
   @Mutation('postPrejudice')
   @UseGuards(GraphQLJwtGuard)
-  async createPrejudice(
-    @Viewer() {id: fromId}: ViewerType,
-    @Args('input') {userId: toId, title, relatedBooks}: PostPrejudiceInput,
+  async postPrejudice(
+    @Viewer() {id: postId}: ViewerType,
+    @Args('input')
+    {receivedUser, title, relatedBooks}: PostPrejudiceInput,
   ): Promise<PostPrejudicePayload> {
-    if (fromId === toId) throw new BadRequestException();
-    if (!(await this.usersService.checkExists({id: toId})))
-      throw new BadRequestException();
-    if (!(await this.settingsService.canPostPrejudiceTo(fromId, toId)))
+    const recievedId = await this.usersService.convertUserUniqueUnion(
+      receivedUser,
+    );
+
+    if (!recievedId || postId === recievedId) throw new BadRequestException();
+    if (!(await this.settingsService.canPostPrejudiceTo(postId, recievedId)))
       throw new ForbiddenException();
 
-    try {
-      const prejudice = await this.prejudicesService.createPrejudice(
-        fromId,
-        toId,
-        {title, relatedBooks},
-      );
-      return {prejudice};
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
+    return this.prejudicesService
+      .createPrejudice(postId, recievedId, {title, relatedBooks})
+      .then((prejudice) => ({prejudice}))
+      .catch(() => {
+        throw new InternalServerErrorException();
+      });
   }
 }
