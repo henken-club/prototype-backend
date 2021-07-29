@@ -59,9 +59,19 @@ type Unfollow {
 }
 
 type Query {
-  user(alias: ID!): User
+  user(id: ID!): User
+  getUser(input: GetUserInput!): GetUserResult!
   allUsers: [User!]!
   viewer: User!
+}
+
+input GetUserInput {
+  id: ID
+  alias: ID
+}
+
+type GetUserResult {
+  user: User
 }
 
 type Mutation {

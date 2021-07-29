@@ -191,11 +191,13 @@ export class UsersService {
   }
 
   async convertUserUniqueUnion(input: UserUniqueUnion): Promise<string | null> {
-    if (input.id)
-      return (await this.checkExists({id: input.id})) ? input.id : null;
-    else if (input.alias)
+    if (input.id) {
+      return (await this.getById(input.id))?.id || null;
+    } else if (input.alias) {
       return (await this.getByAlias(input.alias))?.id || null;
-    return null;
+    } else {
+      return null;
+    }
   }
 
   getQueryForResolvePostedPrejudices({direction, field}: PrejudiceOrder) {

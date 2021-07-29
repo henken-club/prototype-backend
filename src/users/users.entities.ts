@@ -1,4 +1,5 @@
 import {Connection} from '~/common/common.entities';
+import {UserUniqueUnion} from '~/graphql';
 
 export {
   BookOrder,
@@ -20,6 +21,11 @@ export class UnfollowEntity {
   from!: UserEntity;
   to!: UserEntity;
 }
+
+export type GetUserInput = UserUniqueUnion;
+export type GetUserResult = {
+  user: UserEntity | null;
+};
 
 export class UserConnection extends Connection<UserEntity> {}
 export class FollowingConnection {

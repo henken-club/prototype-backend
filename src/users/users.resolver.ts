@@ -21,6 +21,8 @@ import {
   FollowUserInput,
   FollowEntity,
   UnfollowEntity,
+  GetUserResult,
+  GetUserInput,
 } from './users.entities';
 import {UsersService} from './users.service';
 
@@ -151,8 +153,15 @@ export class UsersResolver {
   }
 
   @Query('user')
-  async getUser(@Args('alias') alias: string): Promise<UserEntity | null> {
-    return this.usersService.getByAlias(alias);
+  async getUserById(@Args('id') id: string): Promise<UserEntity | null> {
+    return this.usersService.getById(id);
+  }
+
+  @Query('getUser')
+  async getUser(@Args('input') input: GetUserInput): Promise<GetUserResult> {
+    return this.usersService
+      .convertUserUniqueUnion(input)
+      .then((id) => (id ? {user: {id}} : {user: null}));
   }
 
   @Query('allUsers')

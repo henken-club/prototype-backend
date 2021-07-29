@@ -79,6 +79,11 @@ export interface GetPrejudiceInput {
     received: UserUniqueUnion;
 }
 
+export interface GetUserInput {
+    alias?: string;
+    id?: string;
+}
+
 export interface LoginInput {
     alias: string;
     password: string;
@@ -189,6 +194,10 @@ export interface GetPrejudiceResult {
     prejudice?: Prejudice;
 }
 
+export interface GetUserResult {
+    user?: User;
+}
+
 export interface LoginPayload {
     tokens: TokensData;
 }
@@ -247,8 +256,9 @@ export interface IQuery {
     book(id: string): Book | Promise<Book>;
     getAnswer(input: GetAnswerInput): GetAnswerResult | Promise<GetAnswerResult>;
     getPrejudice(input: GetPrejudiceInput): GetPrejudiceResult | Promise<GetPrejudiceResult>;
+    getUser(input: GetUserInput): GetUserResult | Promise<GetUserResult>;
     prejudice(id: string): Prejudice | Promise<Prejudice>;
-    user(alias: string): User | Promise<User>;
+    user(id: string): User | Promise<User>;
     viewer(): User | Promise<User>;
 }
 
