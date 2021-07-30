@@ -97,12 +97,12 @@ describe('BooksService', () => {
         .then((result) => result.records[0].get('count').toNumber());
       expect(responsibleCount).toBe(1);
 
-      const writedBookCount = await neo4jService
+      const writesBookCount = await neo4jService
         .read(
-          `MATCH (:Author)-[r:WRITED_BOOK]->(:Book) RETURN count(r) AS count`,
+          `MATCH (:Author)-[r:WRITES_BOOK]->(:Book) RETURN count(r) AS count`,
         )
         .then((result) => result.records[0].get('count').toNumber());
-      expect(writedBookCount).toBe(2);
+      expect(writesBookCount).toBe(2);
     });
 
     it('return object if user does not exist in neo4j', async () => {
@@ -137,12 +137,12 @@ describe('BooksService', () => {
         .then((result) => result.records[0].get('count').toNumber());
       expect(responsibleCount).toBe(1);
 
-      const writedBookCount = await neo4jService
+      const writesBookCount = await neo4jService
         .read(
-          `MATCH (:Author)-[r:WRITED_BOOK]->(:Book) RETURN count(r) AS count`,
+          `MATCH (:Author)-[r:WRITES_BOOK]->(:Book) RETURN count(r) AS count`,
         )
         .then((result) => result.records[0].get('count').toNumber());
-      expect(writedBookCount).toBe(2);
+      expect(writesBookCount).toBe(2);
     });
   });
 
