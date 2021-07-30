@@ -21,9 +21,9 @@ const getRecivedPrejudices = (property: 'createdAt', order: 'ASC' | 'DESC') =>
     p.createdAt AS createdAt
   ORDER BY ${property} ${order}
   SKIP $skip LIMIT $limit` as const;
-export const CYPHER_GET_USER_RECIVED_PREJUDICES_ORDERBY_CREATED_AT_ASC =
+export const CYPHER_GET_USER_RECIEVED_PREJUDICES_ORDERBY_CREATED_AT_ASC =
   getRecivedPrejudices('createdAt', 'ASC');
-export const CYPHER_GET_USER_RECIVED_PREJUDICES_ORDERBY_CREATED_AT_DESC =
+export const CYPHER_GET_USER_RECIEVED_PREJUDICES_ORDERBY_CREATED_AT_DESC =
   getRecivedPrejudices('createdAt', 'DESC');
 
 const getPostAnswers = (property: 'createdAt', order: 'ASC' | 'DESC') =>

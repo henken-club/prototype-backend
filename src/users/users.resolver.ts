@@ -82,7 +82,7 @@ export class UsersResolver {
     return {nodes};
   }
 
-  @ResolveField('recivedPrejudices')
+  @ResolveField('recievedPrejudices')
   async getRecievedPreduices(
     @Parent() {id}: UserEntity,
     @Args('skip') skip: number,
