@@ -1,0 +1,21 @@
+{
+  "version": "0.1",
+  "language": "en",
+  "words": [
+    "datamodel",
+    "imageproxy",
+    "localdatetime",
+    "nestjs",
+    "signup",
+    "unfollow",
+    "upsert"
+  ],
+  "ignorePaths": [
+    "./package.json",
+    "./yarn.lock",
+    "node_modules/**",
+    ".vscode/extensions.json",
+    // auto generate file
+    "src/graphql.ts"
+  ]
+}
