@@ -298,7 +298,7 @@ export interface User {
     picture: string;
     postedAnswers: AnswerConnection;
     postedPrejudices: PrejudiceConnection;
-    recivedPrejudices: PrejudiceConnection;
+    recievedPrejudices: PrejudiceConnection;
 }
 
 export interface UserConnection {

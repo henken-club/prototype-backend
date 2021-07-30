@@ -15,7 +15,7 @@ type User {
     orderBy: PrejudiceOrder = {direction: DESC, field: CREATED_AT}
   ): PrejudiceConnection!
 
-  recivedPrejudices(
+  recievedPrejudices(
     skip: Int = 0
     limit: Int = 10
     orderBy: PrejudiceOrder = {direction: DESC, field: CREATED_AT}
