@@ -1,4 +1,4 @@
-name: Build
+name: DevOps
 
 on:
   push:
@@ -11,8 +11,8 @@ env:
   PRISMA_MIGRATE_IMAGE_NAME: prototype-backend-prisma-migrate
 
 jobs:
-  ts-check:
-    name: TS Compiler
+  eslint:
+    name: ESLint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -21,7 +21,87 @@ jobs:
           node-version: 14
           cache: yarn
       - run: yarn install --frozen-lockfile
-      - run: yarn run ts-check
+      - run: yarn run lint:eslint
+
+  prettier:
+    name: Prettier
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn run lint:prettier
+
+  cspell:
+    name: cspell
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn run lint:cspell
+
+  typecheck:
+    name: Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn run typecheck
+
+  test-large:
+    name: Large Test
+    runs-on: ubuntu-latest
+
+    env:
+      TEST_NEO4J_URL: bolt://localhost:7687
+      TEST_PRISMA_DATABASE_URL: mysql://root:@localhost:3306/testdb
+
+    services:
+      neo4j:
+        image: neo4j:4.2
+        env:
+          NEO4J_AUTH: none
+          NEO4JLABS_PLUGINS: '["apoc"]'
+        ports:
+          - 7474:7474
+          - 7687:7687
+        options: >-
+          --health-cmd "wget http://localhost:7474/browser -O-"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+          MYSQL_DATABASE: testdb
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn run test:large
 
   build:
     name: Build
@@ -39,7 +119,7 @@ jobs:
   docker-backend:
     name: Docker for backend
     needs:
-      - ts-check
+      - typecheck
       - build
     runs-on: ubuntu-latest
     steps:

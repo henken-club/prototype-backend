@@ -18,7 +18,7 @@
     "dev": "nest start --watch",
     "debug": "nest start --watch --debug",
     "test:large": "scripty",
-    "ts-check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "lint": "run-s -cn lint:*",
     "lint:eslint": "scripty",
     "lint:prettier": "scripty",
