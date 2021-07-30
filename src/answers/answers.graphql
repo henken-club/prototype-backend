@@ -34,7 +34,7 @@ type Query {
 }
 
 input GetAnswerInput {
-  post: UserUniqueUnion!
+  posted: UserUniqueUnion!
   received: UserUniqueUnion!
   number: Int!
 }

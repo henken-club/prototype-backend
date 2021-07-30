@@ -38,7 +38,7 @@ type Query {
 }
 
 input GetPrejudiceInput {
-  post: UserUniqueUnion!
+  posted: UserUniqueUnion!
   received: UserUniqueUnion!
   number: Int!
 }

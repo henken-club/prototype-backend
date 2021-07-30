@@ -108,18 +108,18 @@ export class PrejudicesResolver {
 
   @Query('getPrejudice')
   async getPrejudice(
-    @Args('input') {post, received, number}: GetPrejudiceInput,
+    @Args('input') {posted, received, number}: GetPrejudiceInput,
   ): Promise<GetPrejudiceResult> {
-    const postId = await this.usersService.convertUserUniqueUnion(post);
+    const postedId = await this.usersService.convertUserUniqueUnion(posted);
     const receivedId = await this.usersService.convertUserUniqueUnion(received);
 
-    if (!postId || !receivedId) return {possibility: false, prejudice: null};
-    if (postId === receivedId) throw new BadRequestException();
+    if (!postedId || !receivedId) return {possibility: false, prejudice: null};
+    if (postedId === receivedId) throw new BadRequestException();
 
     return {
       possibility: true,
       prejudice: await this.prejudicesService.getByUserIdAndNumber(
-        postId,
+        postedId,
         receivedId,
         number,
       ),
@@ -134,7 +134,7 @@ export class PrejudicesResolver {
   @Mutation('postPrejudice')
   @UseGuards(GraphQLJwtGuard)
   async postPrejudice(
-    @Viewer() {id: postId}: ViewerType,
+    @Viewer() {id: postedId}: ViewerType,
     @Args('input')
     {receivedUser, title, relatedBooks}: PostPrejudiceInput,
   ): Promise<PostPrejudicePayload> {
@@ -142,12 +142,12 @@ export class PrejudicesResolver {
       receivedUser,
     );
 
-    if (!recievedId || postId === recievedId) throw new BadRequestException();
-    if (!(await this.settingsService.canPostPrejudiceTo(postId, recievedId)))
+    if (!recievedId || postedId === recievedId) throw new BadRequestException();
+    if (!(await this.settingsService.canPostPrejudiceTo(postedId, recievedId)))
       throw new ForbiddenException();
 
     return this.prejudicesService
-      .createPrejudice(postId, recievedId, {title, relatedBooks})
+      .createPrejudice(postedId, recievedId, {title, relatedBooks})
       .then((prejudice) => ({prejudice}))
       .catch(() => {
         throw new InternalServerErrorException();
