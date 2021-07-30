@@ -3,6 +3,8 @@
   "language": "en",
   "words": [
     "datamodel",
+    "datasource",
+    "dmmf",
     "imageproxy",
     "localdatetime",
     "nestjs",
@@ -15,7 +17,6 @@
     "./yarn.lock",
     "node_modules/**",
     ".vscode/extensions.json",
-    // auto generate file
     "src/graphql.ts"
   ]
 }

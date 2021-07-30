@@ -68,7 +68,7 @@ export class UsersResolver {
   }
 
   @ResolveField('postedPrejudices')
-  async getPostPreduices(
+  async getPostPrejudices(
     @Parent() {id}: UserEntity,
     @Args('skip') skip: number,
     @Args('limit') limit: number,
@@ -82,14 +82,14 @@ export class UsersResolver {
     return {nodes};
   }
 
-  @ResolveField('recievedPrejudices')
-  async getRecievedPreduices(
+  @ResolveField('receivedPrejudices')
+  async getReceivedPrejudices(
     @Parent() {id}: UserEntity,
     @Args('skip') skip: number,
     @Args('limit') limit: number,
     @Args('orderBy') orderBy: PrejudiceOrder,
   ): Promise<PrejudiceConnection> {
-    const nodes = await this.usersService.resolveRecievedPrejudices(id, {
+    const nodes = await this.usersService.resolveReceivedPrejudices(id, {
       skip,
       limit,
       orderBy,

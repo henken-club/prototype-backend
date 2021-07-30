@@ -11,7 +11,7 @@ services:
     environment:
       GRAPHQL_PLAYGROUND: enable
       JWT_ACCESS_SECRET: access_secret
-      JWT_REFLESH_SECRET: reflesh_secret
+      JWT_REFLESH_SECRET: refresh_secret
       NEO4J_USERNAME: neo4j
       NEO4J_PASSWORD: changeme
       NEO4J_URL: bolt://prod-neo4j:7687

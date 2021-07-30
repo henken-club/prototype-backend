@@ -24,14 +24,14 @@ import {UserEntity} from '~/users/users.entities';
 export class AuthorsResolver {
   constructor(private authorsService: AuthorsService) {}
 
-  @ResolveField('booksWrited')
+  @ResolveField('writesBooks')
   async authors(
     @Parent() {id}: AuthorEntity,
     @Args('skip') skip: number,
     @Args('limit') limit: number,
     @Args('orderBy') orderBy: BookOrder,
   ): Promise<BookConnection> {
-    const nodes = await this.authorsService.getWritedBooks(id, {
+    const nodes = await this.authorsService.getWritesBooks(id, {
       skip,
       limit,
       orderBy,

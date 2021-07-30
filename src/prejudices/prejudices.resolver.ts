@@ -71,7 +71,7 @@ export class PrejudicesResolver {
   @ResolveField('userTo')
   async getUserTo(@Parent() {id}: PrejudiceEntity): Promise<UserEntity> {
     const user = await this.prejudicesService
-      .resolveUserRecieved(id)
+      .resolveUserReceived(id)
       .then((id) => (id ? this.usersService.getById(id) : null));
     if (!user) throw new InternalServerErrorException();
     return user;
@@ -85,7 +85,7 @@ export class PrejudicesResolver {
   }
 
   @ResolveField('relatedBooks')
-  async getrelatedBooks(
+  async getRelatedBooks(
     @Parent() {id}: PrejudiceEntity,
     @Args('skip') skip: number,
     @Args('limit') limit: number,
@@ -138,16 +138,16 @@ export class PrejudicesResolver {
     @Args('input')
     {receivedUser, title, relatedBooks}: PostPrejudiceInput,
   ): Promise<PostPrejudicePayload> {
-    const recievedId = await this.usersService.convertUserUniqueUnion(
+    const receivedId = await this.usersService.convertUserUniqueUnion(
       receivedUser,
     );
 
-    if (!recievedId || postedId === recievedId) throw new BadRequestException();
-    if (!(await this.settingsService.canPostPrejudiceTo(postedId, recievedId)))
+    if (!receivedId || postedId === receivedId) throw new BadRequestException();
+    if (!(await this.settingsService.canPostPrejudiceTo(postedId, receivedId)))
       throw new ForbiddenException();
 
     return this.prejudicesService
-      .createPrejudice(postedId, recievedId, {title, relatedBooks})
+      .createPrejudice(postedId, receivedId, {title, relatedBooks})
       .then((prejudice) => ({prejudice}))
       .catch(() => {
         throw new InternalServerErrorException();

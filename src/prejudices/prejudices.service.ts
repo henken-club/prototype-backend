@@ -7,10 +7,10 @@ import {
   CYPHER_GET_PREJUDICE_RELATED_BOOKS_ORDERBY_TITLE_AT_DESC,
   CYPHER_RESOLVE_PREJUDICE_ANSWER,
   CYPHER_RESOLVE_PREJUDICE_USER_POSTED,
-  CYPHER_RESOLVE_PREJUDICE_USER_RECIEVED,
+  CYPHER_RESOLVE_PREJUDICE_USER_RECEIVED,
   CYPHER_GET_ALL_PREJUDICES,
   CYPHER_GET_PREJUDICE_BY_USER_ID_AND_NUMBER,
-  CYPHER_CREATE_PREJUICE,
+  CYPHER_CREATE_PREJUDICE,
   CYPHER_RESOLVE_PREJUDICE_TITLE,
   CYPHER_RESOLVE_PREJUDICE_CREATED_AT,
   CYPHER_RESOLVE_PREJUDICE_NUMBER,
@@ -53,9 +53,9 @@ export class PrejudicesService {
     return result.records[0].get('id');
   }
 
-  async resolveUserRecieved(id: string): Promise<string | null> {
+  async resolveUserReceived(id: string): Promise<string | null> {
     const result = await this.neo4jService.read(
-      CYPHER_RESOLVE_PREJUDICE_USER_RECIEVED,
+      CYPHER_RESOLVE_PREJUDICE_USER_RECEIVED,
       {
         id,
       },
@@ -129,12 +129,12 @@ export class PrejudicesService {
 
   async createPrejudice(
     posted: string,
-    recieved: string,
+    received: string,
     {title, relatedBooks}: {title: string; relatedBooks: string[]},
   ): Promise<{id: string}> {
-    const result = await this.neo4jService.write(CYPHER_CREATE_PREJUICE, {
+    const result = await this.neo4jService.write(CYPHER_CREATE_PREJUDICE, {
       posted,
-      recieved,
+      received,
       title,
       relatedBooks,
     });
