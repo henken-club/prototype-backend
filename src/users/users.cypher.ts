@@ -12,7 +12,7 @@ export const CYPHER_GET_USER_POST_PREJUDICES_ORDERBY_CREATED_AT_ASC =
 export const CYPHER_GET_USER_POST_PREJUDICES_ORDERBY_CREATED_AT_DESC =
   getPostPrejudices('createdAt', 'DESC');
 
-const getRecivedPrejudices = (property: 'createdAt', order: 'ASC' | 'DESC') =>
+const getReceivedPrejudices = (property: 'createdAt', order: 'ASC' | 'DESC') =>
   `
   MATCH (p:Prejudice)-[:PREJUDICE_AGAINST]->(:User {id: $id})
   RETURN
@@ -21,10 +21,10 @@ const getRecivedPrejudices = (property: 'createdAt', order: 'ASC' | 'DESC') =>
     p.createdAt AS createdAt
   ORDER BY ${property} ${order}
   SKIP $skip LIMIT $limit` as const;
-export const CYPHER_GET_USER_RECIEVED_PREJUDICES_ORDERBY_CREATED_AT_ASC =
-  getRecivedPrejudices('createdAt', 'ASC');
-export const CYPHER_GET_USER_RECIEVED_PREJUDICES_ORDERBY_CREATED_AT_DESC =
-  getRecivedPrejudices('createdAt', 'DESC');
+export const CYPHER_GET_USER_RECEIVED_PREJUDICES_ORDERBY_CREATED_AT_ASC =
+  getReceivedPrejudices('createdAt', 'ASC');
+export const CYPHER_GET_USER_RECEIVED_PREJUDICES_ORDERBY_CREATED_AT_DESC =
+  getReceivedPrejudices('createdAt', 'DESC');
 
 const getPostAnswers = (property: 'createdAt', order: 'ASC' | 'DESC') =>
   `

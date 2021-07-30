@@ -104,7 +104,7 @@ export interface PrejudiceOrder {
     field: PrejudiceOrderField;
 }
 
-export interface RefleshTokenInput {
+export interface RefreshTokenInput {
     token: string;
 }
 
@@ -144,10 +144,10 @@ export interface AnswerConnection {
 }
 
 export interface Author {
-    booksWrited: BookConnection;
     id: string;
     name: string;
     userResponsibleFor: User[];
+    writesBooks: BookConnection;
 }
 
 export interface AuthorConnection {
@@ -209,7 +209,7 @@ export interface IMutation {
     login(input: LoginInput): LoginPayload | Promise<LoginPayload>;
     postAnswer(input: PostAnswerInput): PostAnswerPayload | Promise<PostAnswerPayload>;
     postPrejudice(input: PostPrejudiceInput): PostPrejudicePayload | Promise<PostPrejudicePayload>;
-    refleshToken(input: RefleshTokenInput): RefleshTokenPayload | Promise<RefleshTokenPayload>;
+    refreshToken(input: RefreshTokenInput): RefreshTokenPayload | Promise<RefreshTokenPayload>;
     signup(input: SignupInput): SignupPayload | Promise<SignupPayload>;
     unfollowUser(input: UnfollowUserInput): UnfollowUserPayload | Promise<UnfollowUserPayload>;
 }
@@ -262,7 +262,7 @@ export interface IQuery {
     viewer(): User | Promise<User>;
 }
 
-export interface RefleshTokenPayload {
+export interface RefreshTokenPayload {
     tokens: TokensData;
 }
 
@@ -276,7 +276,7 @@ export interface SignupPayload {
 
 export interface TokensData {
     accessToken: string;
-    refleshToken: string;
+    refreshToken: string;
 }
 
 export interface Unfollow {
@@ -298,7 +298,7 @@ export interface User {
     picture: string;
     postedAnswers: AnswerConnection;
     postedPrejudices: PrejudiceConnection;
-    recievedPrejudices: PrejudiceConnection;
+    receivedPrejudices: PrejudiceConnection;
 }
 
 export interface UserConnection {

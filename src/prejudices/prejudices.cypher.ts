@@ -33,7 +33,7 @@ export const CYPHER_RESOLVE_PREJUDICE_USER_POSTED = `
   RETURN u.id AS id
 `;
 
-export const CYPHER_RESOLVE_PREJUDICE_USER_RECIEVED = `
+export const CYPHER_RESOLVE_PREJUDICE_USER_RECEIVED = `
   MATCH (:Prejudice {id: $id})-[:PREJUDICE_AGAINST]->(u:User)
   RETURN u.id AS id
 `;
@@ -60,9 +60,9 @@ export const CYPHER_GET_PREJUDICE_RELATED_BOOKS_ORDERBY_TITLE_AT_ASC =
 export const CYPHER_GET_PREJUDICE_RELATED_BOOKS_ORDERBY_TITLE_AT_DESC =
   getRelatedBooks('title', 'DESC');
 
-export const CYPHER_CREATE_PREJUICE = `
+export const CYPHER_CREATE_PREJUDICE = `
   MATCH (pu:User {id: $posted})
-  MATCH (ru:User {id: $recieved})
+  MATCH (ru:User {id: $received})
   MATCH (b:Book) WHERE b.id IN $relatedBooks
   WITH pu, ru, collect(b) AS bc
   CALL {

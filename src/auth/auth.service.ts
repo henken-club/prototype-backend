@@ -66,10 +66,10 @@ export class AuthService {
 
   async generateTokens(user: {
     id: string;
-  }): Promise<{accessToken: string; refleshToken: string}> {
+  }): Promise<{accessToken: string; refreshToken: string}> {
     return {
       accessToken: await this.generateAccessToken(user),
-      refleshToken: await this.generateRefleshToken(user),
+      refreshToken: await this.generateRefreshToken(user),
     };
   }
 
@@ -81,17 +81,17 @@ export class AuthService {
     });
   }
 
-  async generateRefleshToken(user: {id: string}): Promise<string> {
+  async generateRefreshToken(user: {id: string}): Promise<string> {
     const payload: JwtPayload = {uid: user.id};
     return this.jwtService.sign(payload, {
-      secret: this.config.refleshJwtSecret,
-      expiresIn: this.config.refleshExpiresIn,
+      secret: this.config.refreshJwtSecret,
+      expiresIn: this.config.refreshExpiresIn,
     });
   }
 
-  async refleshToken(token: string) {
+  async refreshToken(token: string) {
     const {uid}: JwtPayload = this.jwtService.verify(token, {
-      secret: this.config.refleshJwtSecret,
+      secret: this.config.refreshJwtSecret,
     });
     if (uid) return this.generateTokens({id: uid});
     return null;

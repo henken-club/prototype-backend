@@ -4,8 +4,8 @@ import {int} from 'neo4j-driver';
 import {
   CYPHER_ADD_AUTHOR,
   CYPHER_GET_AUTHOR,
-  CYPHER_GET_AUTHOR_WRITED_BOOKS_ORDER_BY_TITLE_ASC,
-  CYPHER_GET_AUTHOR_WRITED_BOOKS_ORDER_BY_TITLE_DESC,
+  CYPHER_GET_AUTHOR_WRITES_BOOKS_ORDER_BY_TITLE_ASC,
+  CYPHER_GET_AUTHOR_WRITES_BOOKS_ORDER_BY_TITLE_DESC,
   CYPHER_GET_USER_RESPONSIBLE_FOR_AUTHOR,
   CYPHER_GET_ALL_AUTHORS,
 } from './authors.cypher';
@@ -42,17 +42,17 @@ export class AuthorsService {
     );
   }
 
-  getWritedBooksQuery({direction, field}: BookOrder) {
+  getWritesBooksQuery({direction, field}: BookOrder) {
     if (direction === OrderDirection.ASC)
-      return CYPHER_GET_AUTHOR_WRITED_BOOKS_ORDER_BY_TITLE_ASC;
-    else return CYPHER_GET_AUTHOR_WRITED_BOOKS_ORDER_BY_TITLE_DESC;
+      return CYPHER_GET_AUTHOR_WRITES_BOOKS_ORDER_BY_TITLE_ASC;
+    else return CYPHER_GET_AUTHOR_WRITES_BOOKS_ORDER_BY_TITLE_DESC;
   }
 
-  async getWritedBooks(
+  async getWritesBooks(
     id: string,
     {skip, limit, orderBy}: {skip: number; limit: number; orderBy: BookOrder},
   ): Promise<BookEntity[]> {
-    const query = this.getWritedBooksQuery(orderBy);
+    const query = this.getWritesBooksQuery(orderBy);
     const books = await this.neo4jService
       .read(query, {id, skip: int(skip), limit: int(limit)})
       .then((result) =>

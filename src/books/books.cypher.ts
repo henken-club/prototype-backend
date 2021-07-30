@@ -11,7 +11,7 @@ export const CYPHER_GET_ALL_BOOKS = `
 const getAuthors = (property: 'name', order: 'ASC' | 'DESC') =>
   `
   MATCH (b:Book {id: $id})
-  MATCH (a:Author)-[:WRITED_BOOK]->(b)
+  MATCH (a:Author)-[:WRITES_BOOK]->(b)
   RETURN a.id AS id, a.name AS name
   ORDER BY ${property} ${order}
   SKIP $skip LIMIT $limit` as const;
@@ -29,7 +29,7 @@ export const CYPHER_ADD_BOOK = `
   MATCH (a:Author) WHERE a.id IN $authors
   MERGE (u:User {id: $userId})
   MERGE (b:Book {id: $id})
-  MERGE (a)-[:WRITED_BOOK]->(b)
+  MERGE (a)-[:WRITES_BOOK]->(b)
   MERGE (u)-[:RESPONSIBLE_FOR {updatedAt: localdatetime()}]->(b)
   SET b.title=$title
   RETURN DISTINCT b.id AS id, b.title AS title

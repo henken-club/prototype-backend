@@ -12,8 +12,8 @@ import {
   CYPHER_GET_USER_POST_ANSWERS_ORDERBY_CREATED_AT_DESC,
   CYPHER_GET_USER_POST_PREJUDICES_ORDERBY_CREATED_AT_ASC,
   CYPHER_GET_USER_POST_PREJUDICES_ORDERBY_CREATED_AT_DESC,
-  CYPHER_GET_USER_RECIEVED_PREJUDICES_ORDERBY_CREATED_AT_ASC,
-  CYPHER_GET_USER_RECIEVED_PREJUDICES_ORDERBY_CREATED_AT_DESC,
+  CYPHER_GET_USER_RECEIVED_PREJUDICES_ORDERBY_CREATED_AT_ASC,
+  CYPHER_GET_USER_RECEIVED_PREJUDICES_ORDERBY_CREATED_AT_DESC,
   CYPHER_UNFOLLOW_USER,
 } from './users.cypher';
 
@@ -79,7 +79,7 @@ export class UsersService {
       );
   }
 
-  async resolveRecievedPrejudices(
+  async resolveReceivedPrejudices(
     id: string,
     {
       skip,
@@ -87,7 +87,7 @@ export class UsersService {
       orderBy,
     }: {skip: number; limit: number; orderBy: PrejudiceOrder},
   ): Promise<PrejudiceEntity[]> {
-    const query = this.getQueryForResolveRecievedPrejudices(orderBy);
+    const query = this.getQueryForResolveReceivedPrejudices(orderBy);
     return this.neo4jService
       .read(query, {id, skip: int(skip), limit: int(limit)})
       .then((result) =>
@@ -206,10 +206,10 @@ export class UsersService {
     else return CYPHER_GET_USER_POST_PREJUDICES_ORDERBY_CREATED_AT_DESC;
   }
 
-  getQueryForResolveRecievedPrejudices({direction, field}: PrejudiceOrder) {
+  getQueryForResolveReceivedPrejudices({direction, field}: PrejudiceOrder) {
     if (direction === OrderDirection.ASC)
-      return CYPHER_GET_USER_RECIEVED_PREJUDICES_ORDERBY_CREATED_AT_ASC;
-    else return CYPHER_GET_USER_RECIEVED_PREJUDICES_ORDERBY_CREATED_AT_DESC;
+      return CYPHER_GET_USER_RECEIVED_PREJUDICES_ORDERBY_CREATED_AT_ASC;
+    else return CYPHER_GET_USER_RECEIVED_PREJUDICES_ORDERBY_CREATED_AT_DESC;
   }
 
   getPostAnswersQuery({direction, field}: AnswerOrder) {

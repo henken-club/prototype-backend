@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+cspell --no-progress \
+  src/**/* \
+  prisma/schema.prisma \
+  $@
+

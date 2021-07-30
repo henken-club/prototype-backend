@@ -6,6 +6,7 @@
     "christian-kohler.path-intellisense",
     "ms-azuretools.vscode-docker",
     "graphql.vscode-graphql",
-    "prisma.prisma"
+    "prisma.prisma",
+    "streetsidesoftware.code-spell-checker"
   ]
 }

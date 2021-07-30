@@ -9,8 +9,8 @@ import {
   LoginPayload,
   LoginInput,
   SignupPayload,
-  RefleshTokenInput,
-  RefleshTokenPayload,
+  RefreshTokenInput,
+  RefreshTokenPayload,
   SignupInput,
 } from './auth.entities';
 import {AuthService} from './auth.service';
@@ -54,11 +54,11 @@ export class AuthResolver {
     };
   }
 
-  @Mutation('refleshToken')
-  async refleshToken(
-    @Args('input') {token}: RefleshTokenInput,
-  ): Promise<RefleshTokenPayload> {
-    const tokens = await this.authServer.refleshToken(token);
+  @Mutation('refreshToken')
+  async refreshToken(
+    @Args('input') {token}: RefreshTokenInput,
+  ): Promise<RefreshTokenPayload> {
+    const tokens = await this.authServer.refreshToken(token);
     if (!tokens) throw new UnauthorizedException();
     return {tokens};
   }

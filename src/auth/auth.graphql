@@ -2,12 +2,12 @@ type Mutation {
   login(input: LoginInput!): LoginPayload!
   signup(input: SignupInput!): SignupPayload!
 
-  refleshToken(input: RefleshTokenInput!): RefleshTokenPayload!
+  refreshToken(input: RefreshTokenInput!): RefreshTokenPayload!
 }
 
 type TokensData {
   accessToken: String!
-  refleshToken: String!
+  refreshToken: String!
 }
 
 input LoginInput {
@@ -29,10 +29,10 @@ type SignupPayload {
   tokens: TokensData!
 }
 
-input RefleshTokenInput {
+input RefreshTokenInput {
   token: String!
 }
 
-type RefleshTokenPayload {
+type RefreshTokenPayload {
   tokens: TokensData!
 }

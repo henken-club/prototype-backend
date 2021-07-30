@@ -1,11 +1,11 @@
-export {LoginInput, SignupInput, RefleshTokenInput} from '~/graphql';
+export {LoginInput, SignupInput, RefreshTokenInput} from '~/graphql';
 
 export class JwtPayload {
   uid!: string;
 }
 export class TokenEntities {
   accessToken!: string;
-  refleshToken!: string;
+  refreshToken!: string;
 }
 export class LoginPayload {
   tokens!: TokenEntities;
@@ -13,6 +13,6 @@ export class LoginPayload {
 export class SignupPayload {
   tokens!: TokenEntities;
 }
-export class RefleshTokenPayload {
+export class RefreshTokenPayload {
   tokens!: TokenEntities;
 }
