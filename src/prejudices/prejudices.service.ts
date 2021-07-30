@@ -104,13 +104,13 @@ export class PrejudicesService {
   }
 
   async getByUserIdAndNumber(
-    postId: string,
+    posted: string,
     receivedId: string,
     number: number,
   ): Promise<PrejudiceEntity | null> {
     const result = await this.neo4jService.read(
       CYPHER_GET_PREJUDICE_BY_USER_ID_AND_NUMBER,
-      {post: postId, received: receivedId, number},
+      {posted, received: receivedId, number},
     );
     if (result.records.length !== 1) return null;
 
@@ -128,12 +128,12 @@ export class PrejudicesService {
   }
 
   async createPrejudice(
-    post: string,
+    posted: string,
     recieved: string,
     {title, relatedBooks}: {title: string; relatedBooks: string[]},
   ): Promise<{id: string}> {
     const result = await this.neo4jService.write(CYPHER_CREATE_PREJUICE, {
-      post,
+      posted,
       recieved,
       title,
       relatedBooks,

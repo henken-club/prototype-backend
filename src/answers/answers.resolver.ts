@@ -48,17 +48,17 @@ export class AnswersResolver {
 
   @Query('getAnswer')
   async getAnswer(
-    @Args('input') {post, received, number}: GetPrejudiceInput,
+    @Args('input') {posted, received, number}: GetPrejudiceInput,
   ): Promise<GetAnswerPayload | null> {
-    const postId = await this.usersService.convertUserUniqueUnion(post);
+    const postedId = await this.usersService.convertUserUniqueUnion(posted);
     const receivedId = await this.usersService.convertUserUniqueUnion(received);
 
-    if (!postId || !receivedId) return null;
-    if (postId === receivedId) throw new BadRequestException();
+    if (!postedId || !receivedId) return null;
+    if (postedId === receivedId) throw new BadRequestException();
 
     if (
       await this.prejudiceService
-        .getByUserIdAndNumber(postId, receivedId, number)
+        .getByUserIdAndNumber(postedId, receivedId, number)
         .then((prejudice) => !prejudice)
     )
       return {
@@ -68,7 +68,7 @@ export class AnswersResolver {
     return {
       possibility: true,
       answer: await this.answersService.getByUserIdAndNumber(
-        postId,
+        postedId,
         receivedId,
         number,
       ),

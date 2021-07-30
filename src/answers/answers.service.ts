@@ -51,13 +51,13 @@ export class AnswersService {
   }
 
   async getByUserIdAndNumber(
-    postId: string,
+    postedId: string,
     receivedId: string,
     number: number,
   ): Promise<PrejudiceEntity | null> {
     const result = await this.neo4jService.read(
       CYPHER_GET_ANSWER_BY_USER_ID_AND_NUMBER,
-      {post: postId, received: receivedId, number},
+      {posted: postedId, received: receivedId, number},
     );
     if (result.records.length !== 1) return null;
     return {id: result.records[0].get('id')};

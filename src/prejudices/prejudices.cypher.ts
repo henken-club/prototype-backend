@@ -4,7 +4,7 @@ export const CYPHER_GET_PREJUDICE_BY_ID = `
 `;
 
 export const CYPHER_GET_PREJUDICE_BY_USER_ID_AND_NUMBER = `
-  MATCH (:User {id: $post})-[:POST_PREJUDICE]->(p:Prejudice {number: $number})-[:PREJUDICE_AGAINST]->(:User {id: $received})
+  MATCH (:User {id: $posted})-[:POST_PREJUDICE]->(p:Prejudice {number: $number})-[:PREJUDICE_AGAINST]->(:User {id: $received})
   RETURN p.id AS id
 `;
 
@@ -61,7 +61,7 @@ export const CYPHER_GET_PREJUDICE_RELATED_BOOKS_ORDERBY_TITLE_AT_DESC =
   getRelatedBooks('title', 'DESC');
 
 export const CYPHER_CREATE_PREJUICE = `
-  MATCH (pu:User {id: $post})
+  MATCH (pu:User {id: $posted})
   MATCH (ru:User {id: $recieved})
   MATCH (b:Book) WHERE b.id IN $relatedBooks
   WITH pu, ru, collect(b) AS bc

@@ -24,7 +24,7 @@ export const CYPHER_GET_ANSWER_BY_ID = `
 `;
 
 export const CYPHER_GET_ANSWER_BY_USER_ID_AND_NUMBER = `
-  MATCH (:User {id: $post})-[:POST_PREJUDICE]->(p:Prejudice {number: $number})-[:PREJUDICE_AGAINST]->(:User {id: $received})
+  MATCH (:User {id: $posted})-[:POST_PREJUDICE]->(p:Prejudice {number: $number})-[:PREJUDICE_AGAINST]->(:User {id: $received})
   MATCH (a:Answer)-[:ANSWER_TO]->(p)
   RETURN a.id AS id
 `;

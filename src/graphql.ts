@@ -69,13 +69,13 @@ export interface FollowUserInput {
 
 export interface GetAnswerInput {
     number: number;
-    post: UserUniqueUnion;
+    posted: UserUniqueUnion;
     received: UserUniqueUnion;
 }
 
 export interface GetPrejudiceInput {
     number: number;
-    post: UserUniqueUnion;
+    posted: UserUniqueUnion;
     received: UserUniqueUnion;
 }
 
