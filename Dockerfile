@@ -1,4 +1,4 @@
-FROM node:16.6.1 AS builder
+FROM node:16.4.2 AS builder
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY tsconfig.json tsconfig.build.json nest-cli.json ./
 COPY src ./src
 RUN yarn run build
 
-FROM node:16.6.1-slim
+FROM node:16.4.2-slim
 
 WORKDIR /app
 
