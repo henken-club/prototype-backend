@@ -11,7 +11,7 @@
     "url": "https://github.com/henken-club/prototype-backend/issues"
   },
   "engines": {
-    "node": "14"
+    "node": "16.4"
   },
   "scripts": {
     "build": "nest build",
@@ -57,7 +57,7 @@
     "@shopify/prettier-config": "^1.1.2",
     "@types/bcrypt": "^5.0.0",
     "@types/jest": "^26.0.24",
-    "@types/node": "^14",
+    "@types/node": "^16.4",
     "@types/passport-jwt": "^3.0.6",
     "cspell": "^5.6.6",
     "eslint": "^7.30.0",
