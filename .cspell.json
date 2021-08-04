@@ -6,11 +6,17 @@
     "datasource",
     "dmmf",
     "imageproxy",
+    "IMGPROXY",
     "localdatetime",
     "nestjs",
+    "noea",
+    "nowe",
     "signup",
+    "sowa",
+    "sowe",
     "unfollow",
-    "upsert"
+    "upsert",
+    "webp"
   ],
   "ignorePaths": [
     "./package.json",
