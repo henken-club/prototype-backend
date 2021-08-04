@@ -2,9 +2,7 @@ import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
 
 import {Neo4jService} from '~/neo4j/neo4j.service';
-import {IdModule} from '~/id/id.module';
 import {PrejudicesService} from '~/prejudices/prejudices.service';
-import {UsersModule} from '~/users/users.module';
 import {Neo4jModule} from '~/neo4j/neo4j.module';
 
 describe('PrejudicesService', () => {
@@ -16,7 +14,7 @@ describe('PrejudicesService', () => {
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      imports: [Neo4jModule, IdModule, UsersModule],
+      imports: [Neo4jModule],
       providers: [PrejudicesService],
     }).compile();
 

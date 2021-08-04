@@ -2,7 +2,6 @@ import {INestApplication} from '@nestjs/common';
 import {Test} from '@nestjs/testing';
 
 import {Neo4jService} from '~/neo4j/neo4j.service';
-import {IdModule} from '~/id/id.module';
 import {UsersService} from '~/users/users.service';
 import {PrismaModule} from '~/prisma/prisma.module';
 import {PrismaService} from '~/prisma/prisma.service';
@@ -19,7 +18,7 @@ describe('UsersService', () => {
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      imports: [Neo4jModule, IdModule, PrismaModule],
+      imports: [Neo4jModule, PrismaModule],
       providers: [UsersService],
     }).compile();
 
