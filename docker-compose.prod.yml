@@ -8,17 +8,6 @@ services:
     ports:
       - published: 4000
         target: 4000
-    environment:
-      GRAPHQL_PLAYGROUND: enable
-      JWT_ACCESS_SECRET: access_secret
-      JWT_REFLESH_SECRET: refresh_secret
-      NEO4J_USERNAME: neo4j
-      NEO4J_PASSWORD: changeme
-      NEO4J_URL: bolt://prod-neo4j:7687
-      PRISMA_DATABASE_URL: mysql://root:@prod-mysql:3306/testdb
-      IMGPROXY_BASE_URL: http://localhost:8080
-      IMGPROXY_KEY: $IMGPROXY_KEY
-      IMGPROXY_SALT: $IMGPROXY_SALT
     depends_on:
       prod-neo4j:
         condition: service_healthy
@@ -26,6 +15,32 @@ services:
         condition: service_healthy
       prod-prisma-migrate:
         condition: service_completed_successfully
+    environment:
+      GRAPHQL_PLAYGROUND: enable
+
+      JWT_ACCESS_SECRET: access_secret
+      JWT_REFLESH_SECRET: refresh_secret
+
+      IMGPROXY_BASE_URL: http://localhost:8080
+      IMGPROXY_KEY: imgproxy_key
+      IMGPROXY_SALT: imgproxy_secret
+
+      NEO4J_USERNAME: neo4j
+      NEO4J_PASSWORD: changeme
+      NEO4J_URL: bolt://prod-neo4j:7687
+
+      PRISMA_DATABASE_URL: mysql://root:@prod-mysql:3306/testdb
+
+  prod-imgproxy:
+    image: darthsim/imgproxy:latest
+    ports:
+      - published: 8080
+        target: 8080
+    healthcheck:
+      test: ['CMD', 'imgproxy', 'health']
+      timeout: 10s
+      interval: 10s
+      retries: 10
 
   prod-neo4j:
     image: neo4j:4.2
@@ -60,17 +75,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.prisma-migrate
-    environment:
-      PRISMA_DATABASE_URL: mysql://root:@prod-mysql:3306/testdb
     depends_on:
       prod-mysql:
         condition: service_healthy
-
-  prod-imgproxy:
-    image: darthsim/imgproxy:latest
-    ports:
-      - published: 8080
-        target: 8080
+    environment:
+      PRISMA_DATABASE_URL: mysql://root:@prod-mysql:3306/testdb
 
 volumes:
   prod-neo4j-data:
