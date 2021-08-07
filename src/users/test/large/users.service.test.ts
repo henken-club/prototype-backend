@@ -290,7 +290,7 @@ describe('UsersService', () => {
       expect(actual).toBe(false);
     });
 
-    it('return false from user does not exist', async () => {
+    it('return false if from user does not exist', async () => {
       await neo4jService.write(`
         CREATE (to:User {id: "to"})
         RETURN *
@@ -300,7 +300,7 @@ describe('UsersService', () => {
       expect(actual).toBe(false);
     });
 
-    it('return false to user does not exist', async () => {
+    it('return false if to user does not exist', async () => {
       await neo4jService.write(`
         CREATE (from:User {id: "from"})
         RETURN *
