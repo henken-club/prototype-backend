@@ -268,6 +268,51 @@ describe('UsersService', () => {
     });
   });
 
+  describe('isFollowing', () => {
+    it('return true if followed', async () => {
+      await neo4jService.write(`
+        CREATE (from:User {id: "from"}), (to:User {id: "to"})
+        CREATE (from)-[:FOLLOWS]->(to)
+        RETURN *
+      `);
+
+      const actual = await usersService.isFollowing('from', 'to');
+      expect(actual).toBe(true);
+    });
+
+    it('return false if not followed', async () => {
+      await neo4jService.write(`
+        CREATE (from:User {id: "from"}), (to:User {id: "to"})
+        RETURN *
+      `);
+
+      const actual = await usersService.isFollowing('from', 'to');
+      expect(actual).toBe(false);
+    });
+
+    it('throw error from user does not exist', async () => {
+      await neo4jService.write(`
+        CREATE (to:User {id: "to"})
+        RETURN *
+      `);
+
+      await expect(usersService.isFollowing('from', 'to')).rejects.toThrow(
+        'something broken with neo4j',
+      );
+    });
+
+    it('throw error to user does not exist', async () => {
+      await neo4jService.write(`
+        CREATE (from:User {id: "from"})
+        RETURN *
+      `);
+
+      await expect(usersService.isFollowing('from', 'to')).rejects.toThrow(
+        'something broken with neo4j',
+      );
+    });
+  });
+
   describe('followUser()', () => {
     it('return object if success following', async () => {
       await neo4jService.write(`

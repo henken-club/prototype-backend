@@ -4,6 +4,9 @@ type User {
   displayName: String!
   picture: String!
 
+  isFollowing(to: UserUniqueUnion!): Boolean!
+  isFollowed(from: UserUniqueUnion!): Boolean!
+
   following(skip: Int = 0, limit: Int = 10): FollowingConnection!
   followers(skip: Int = 0, limit: Int = 10): FollowerConnection!
 

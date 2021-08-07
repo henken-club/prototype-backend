@@ -9,6 +9,7 @@ import {
 import {
   BadRequestException,
   InternalServerErrorException,
+  NotFoundException,
   UseGuards,
 } from '@nestjs/common';
 
@@ -34,6 +35,7 @@ import {
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {SettingsService} from '~/settings/settings.service';
 import {ImgproxyService} from '~/imgproxy/imgproxy.service';
+import {UserUniqueUnion} from '~/graphql';
 
 @Resolver('User')
 export class UsersResolver {
@@ -139,6 +141,36 @@ export class UsersResolver {
     const totalCount = await this.usersService.countFollowers(id);
     if (totalCount === null) throw new InternalServerErrorException();
     return {nodes, totalCount};
+  }
+
+  @ResolveField('isFollowing')
+  async isFollowing(
+    @Parent() {id: fromId}: UserEntity,
+    @Args('to') to: UserUniqueUnion,
+  ): Promise<boolean> {
+    const toId = await this.usersService.convertUserUniqueUnion(to);
+
+    if (!toId) throw new NotFoundException();
+    else if (fromId === toId) throw new BadRequestException();
+
+    return this.usersService.isFollowing(fromId, toId).catch(() => {
+      throw new InternalServerErrorException();
+    });
+  }
+
+  @ResolveField('isFollowed')
+  async isFollowed(
+    @Parent() {id: toId}: UserEntity,
+    @Args('from') from: UserUniqueUnion,
+  ): Promise<boolean> {
+    const fromId = await this.usersService.convertUserUniqueUnion(from);
+
+    if (!fromId) throw new NotFoundException();
+    else if (fromId === toId) throw new BadRequestException();
+
+    return this.usersService.isFollowing(toId, toId).catch(() => {
+      throw new InternalServerErrorException();
+    });
   }
 
   @ResolveField('canPostPrejudiceTo')

@@ -14,6 +14,7 @@ import {
   CYPHER_GET_USER_POST_PREJUDICES_ORDERBY_CREATED_AT_DESC,
   CYPHER_GET_USER_RECEIVED_PREJUDICES_ORDERBY_CREATED_AT_ASC,
   CYPHER_GET_USER_RECEIVED_PREJUDICES_ORDERBY_CREATED_AT_DESC,
+  CYPHER_IS_USER_FOLLOWING,
   CYPHER_UNFOLLOW_USER,
 } from './users.cypher';
 
@@ -182,6 +183,16 @@ export class UsersService {
 
   async getAll(): Promise<UserEntity[]> {
     return this.prismaService.user.findMany({select: {id: true}});
+  }
+
+  async isFollowing(from: string, to: string): Promise<boolean> {
+    const result = await this.neo4jService.read(CYPHER_IS_USER_FOLLOWING, {
+      from,
+      to,
+    });
+    if (result.records.length !== 1)
+      throw new Error('something broken with neo4j');
+    return result.records[0].get('following');
   }
 
   async checkExists(where: {id: string}): Promise<boolean> {
