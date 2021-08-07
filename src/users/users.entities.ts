@@ -13,11 +13,11 @@ export {
 export class UserEntity {
   id!: string;
 }
-export class FollowEntity {
+export class FollowUserPayload {
   from!: UserEntity;
   to!: UserEntity;
 }
-export class UnfollowEntity {
+export class UnfollowUserPayload {
   from!: UserEntity;
   to!: UserEntity;
 }

@@ -20,8 +20,8 @@ import {
   FollowingConnection,
   FollowerConnection,
   FollowUserInput,
-  FollowEntity,
-  UnfollowEntity,
+  FollowUserPayload,
+  UnfollowUserPayload,
   GetUserResult,
   GetUserInput,
 } from './users.entities';
@@ -216,16 +216,14 @@ export class UsersResolver {
   async follow(
     @Viewer() {id: fromId}: ViewerType,
     @Args('input') {user}: FollowUserInput,
-  ): Promise<FollowEntity> {
+  ): Promise<FollowUserPayload> {
     const toId = await this.usersService.convertUserUniqueUnion(user);
-    if (!toId || fromId === toId) throw new BadRequestException();
+    if (!toId) throw new NotFoundException();
+    if (fromId === toId) throw new BadRequestException();
 
-    return this.usersService
-      .followUser(fromId, toId)
-      .then((res) => res)
-      .catch(() => {
-        throw new InternalServerErrorException();
-      });
+    return this.usersService.followUser(fromId, toId).catch(() => {
+      throw new InternalServerErrorException();
+    });
   }
 
   @Mutation('unfollowUser')
@@ -233,15 +231,13 @@ export class UsersResolver {
   async unfollow(
     @Viewer() {id: from}: ViewerType,
     @Args('input') {user}: FollowUserInput,
-  ): Promise<UnfollowEntity> {
+  ): Promise<UnfollowUserPayload> {
     const toId = await this.usersService.convertUserUniqueUnion(user);
-    if (!toId || from === toId) throw new BadRequestException();
+    if (!toId) throw new NotFoundException();
+    if (from === toId) throw new BadRequestException();
 
-    return this.usersService
-      .unfollowUser(from, toId)
-      .then((res) => res)
-      .catch(() => {
-        throw new InternalServerErrorException();
-      });
+    return this.usersService.unfollowUser(from, toId).catch(() => {
+      throw new InternalServerErrorException();
+    });
   }
 }
