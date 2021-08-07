@@ -42,8 +42,7 @@ export const CYPHER_GET_USER_POST_ANSWERS_ORDERBY_CREATED_AT_DESC =
   getPostAnswers('createdAt', 'DESC');
 
 export const CYPHER_IS_USER_FOLLOWING = `
-  MATCH (from:User {id: $from}), (to:User {id: $to})
-  RETURN exists((from)-[:FOLLOWS]->(to)) AS following
+  RETURN exists((:User {id: $from})-[:FOLLOWS]->(:User {id: $to})) AS following
 `;
 
 export const CYPHER_FOLLOW_USER = `
