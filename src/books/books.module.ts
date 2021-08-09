@@ -5,9 +5,10 @@ import {BooksService} from './books.service';
 
 import {IdModule} from '~/id/id.module';
 import {Neo4jModule} from '~/neo4j/neo4j.module';
+import {AuthorsModule} from '~/authors/authors.module';
 
 @Module({
-  imports: [Neo4jModule, IdModule],
+  imports: [Neo4jModule, IdModule, AuthorsModule],
   providers: [BooksResolver, BooksService],
   exports: [BooksService],
 })
