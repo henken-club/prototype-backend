@@ -6,7 +6,11 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import {InternalServerErrorException, UseGuards} from '@nestjs/common';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+  UseGuards,
+} from '@nestjs/common';
 
 import {BookEntity, AddBookInput, AddBookPayload} from './books.entities';
 import {BooksService} from './books.service';
@@ -15,10 +19,14 @@ import {AuthorConnection, AuthorOrder} from '~/authors/authors.entities';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {UserEntity} from '~/users/users.entities';
+import {AuthorsService} from '~/authors/authors.service';
 
 @Resolver('Book')
 export class BooksResolver {
-  constructor(private booksService: BooksService) {}
+  constructor(
+    private readonly booksService: BooksService,
+    private readonly authorsService: AuthorsService,
+  ) {}
 
   @ResolveField('userResponsibleFor')
   async resolveUserResponsibleFor(
@@ -57,9 +65,15 @@ export class BooksResolver {
   @UseGuards(GraphQLJwtGuard)
   async addBook(
     @Viewer() {id: userId}: ViewerType,
-    @Args('input') {title, authors}: AddBookInput,
+    @Args('input') {title, authors: authorIds}: AddBookInput,
   ): Promise<AddBookPayload> {
-    const book = await this.booksService.addBook({title, authors, userId});
+    if (!(await this.authorsService.checkExistence(authorIds)))
+      throw new BadRequestException('not exist author(s)');
+
+    const book = await this.booksService.addBook(userId, {
+      title,
+      authors: authorIds,
+    });
     if (!book) throw new InternalServerErrorException();
     return {book};
   }
