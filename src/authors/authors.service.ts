@@ -42,6 +42,12 @@ export class AuthorsService {
     );
   }
 
+  async checkExistence(idArray: string[]): Promise<boolean> {
+    return !(await Promise.all(idArray.map((id) => this.getById(id)))).includes(
+      null,
+    );
+  }
+
   getWritesBooksQuery({direction, field}: BookOrder) {
     if (direction === OrderDirection.ASC)
       return CYPHER_GET_AUTHOR_WRITES_BOOKS_ORDER_BY_TITLE_ASC;

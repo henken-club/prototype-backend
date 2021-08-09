@@ -67,14 +67,8 @@ export class BooksResolver {
     @Viewer() {id: userId}: ViewerType,
     @Args('input') {title, authors: authorIds}: AddBookInput,
   ): Promise<AddBookPayload> {
-    if (
-      (
-        await Promise.all(
-          authorIds.map((id) => this.authorsService.getById(id)),
-        )
-      ).includes(null)
-    )
-      throw new BadRequestException('not exist author');
+    if (!(await this.authorsService.checkExistence(authorIds)))
+      throw new BadRequestException('not exist author(s)');
 
     const book = await this.booksService.addBook(userId, {
       title,
