@@ -10,9 +10,6 @@
   "bugs": {
     "url": "https://github.com/henken-club/prototype-backend/issues"
   },
-  "engines": {
-    "node": "16.4"
-  },
   "scripts": {
     "build": "nest build",
     "dev": "nest start --watch",
