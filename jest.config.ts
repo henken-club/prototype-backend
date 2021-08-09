@@ -8,12 +8,12 @@ const config: Config.InitialOptions = {
   testTimeout: 30000,
   testEnvironment: 'node',
   rootDir: './',
-  testMatch: ['<rootDir>/src/**/test/large/*.test.ts'],
+  testMatch: ['<rootDir>/src/**/test/*.test.ts'],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/',
   }),
   collectCoverage: true,
-  coverageDirectory: './coverage/large',
+  coverageDirectory: './coverage',
   reporters: ['default'],
 };
 export default config;
