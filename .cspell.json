@@ -6,23 +6,22 @@
     "datasource",
     "dmmf",
     "imageproxy",
-    "IMGPROXY",
+    "imgproxy",
     "localdatetime",
     "nestjs",
-    "noea",
-    "nowe",
     "signup",
-    "sowa",
-    "sowe",
     "unfollow",
     "upsert",
     "webp"
   ],
   "ignorePaths": [
-    "./package.json",
-    "./yarn.lock",
-    "node_modules/**",
+    ".github/workflows/*",
     ".vscode/extensions.json",
-    "src/graphql.ts"
+    "node_modules/**",
+    "src/graphql.ts",
+    ".cspell.json",
+    ".yarnrc",
+    "package.json",
+    "yarn.lock"
   ]
 }
