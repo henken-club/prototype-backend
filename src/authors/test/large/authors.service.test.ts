@@ -63,59 +63,59 @@ describe('AuthorsService', () => {
     it('return object if user exist in neo4j', async () => {
       await neo4jService.write(`CREATE (u:User {id: "1"}) RETURN *`);
 
-      const actual = await authorsService.addAuthor({
-        name: 'Name',
-        userId: '1',
-      });
+      const actual = await authorsService.addAuthor('1', {name: 'Name'});
       expect(actual).toStrictEqual({
         id: expect.any(String),
         name: 'Name',
       });
 
-      const authorCount = await neo4jService
-        .read(`MATCH (a:Author) RETURN count(a) AS count`)
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(authorCount).toBe(1);
+      expect(
+        await neo4jService
+          .read(`MATCH (a:Author) RETURN count(a) AS count`)
+          .then((result) => result.records[0].get('count').toNumber()),
+      ).toBe(1);
 
-      const userCount = await neo4jService
-        .read(`MATCH (u:User) RETURN count(u) AS count`)
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(userCount).toBe(1);
+      expect(
+        await neo4jService
+          .read(`MATCH (u:User) RETURN count(u) AS count`)
+          .then((result) => result.records[0].get('count').toNumber()),
+      ).toBe(1);
 
-      const responsibleCount = await neo4jService
-        .read(
-          `MATCH (:User)-[r:RESPONSIBLE_FOR]->(:Author) RETURN count(r) AS count`,
-        )
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(responsibleCount).toBe(1);
+      expect(
+        await neo4jService
+          .read(
+            `MATCH (:User)-[r:RESPONSIBLE_FOR]->(:Author) RETURN count(r) AS count`,
+          )
+          .then((result) => result.records[0].get('count').toNumber()),
+      ).toBe(1);
     });
 
     it('return object if user does not exist in neo4j', async () => {
-      const actual = await authorsService.addAuthor({
-        name: 'Name',
-        userId: '1',
-      });
+      const actual = await authorsService.addAuthor('1', {name: 'Name'});
       expect(actual).toStrictEqual({
         id: expect.any(String),
         name: 'Name',
       });
 
-      const authorCount = await neo4jService
-        .read(`MATCH (a:Author) RETURN count(a) AS count`)
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(authorCount).toBe(1);
+      expect(
+        await neo4jService
+          .read(`MATCH (a:Author) RETURN count(a) AS count`)
+          .then((result) => result.records[0].get('count').toNumber()),
+      ).toBe(1);
 
-      const userCount = await neo4jService
-        .read(`MATCH (u:User) RETURN count(u) AS count`)
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(userCount).toBe(1);
+      expect(
+        await neo4jService
+          .read(`MATCH (u:User) RETURN count(u) AS count`)
+          .then((result) => result.records[0].get('count').toNumber()),
+      ).toBe(1);
 
-      const responsibleCount = await neo4jService
-        .read(
-          `MATCH (:User)-[r:RESPONSIBLE_FOR]->(:Author) RETURN count(r) AS count`,
-        )
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(responsibleCount).toBe(1);
+      expect(
+        await neo4jService
+          .read(
+            `MATCH (:User)-[r:RESPONSIBLE_FOR]->(:Author) RETURN count(r) AS count`,
+          )
+          .then((result) => result.records[0].get('count').toNumber()),
+      ).toBe(1);
     });
   });
 

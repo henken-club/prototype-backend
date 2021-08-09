@@ -23,16 +23,16 @@ export const CYPHER_GET_AUTHOR_WRITES_BOOKS_ORDER_BY_TITLE_ASC = getWritesBooks(
 export const CYPHER_GET_AUTHOR_WRITES_BOOKS_ORDER_BY_TITLE_DESC =
   getWritesBooks('title', 'DESC');
 
-export const CYPHER_ADD_AUTHOR = `
-  MERGE (u:User {id: $userId})
-  CREATE (a:Author {id: $id})
-  SET a.name=$name
-  CREATE (u)-[r:RESPONSIBLE_FOR {updatedAt: localdatetime()}]->(a)
-  RETURN a.id AS id, a.name AS name
-`;
-
 export const CYPHER_GET_USER_RESPONSIBLE_FOR_AUTHOR = `
   MATCH (u:User)-[r:RESPONSIBLE_FOR]->(:Author {id: $id})
   RETURN u.id AS id
   ORDER BY r.updatedAt DESC
+`;
+
+export const CYPHER_ADD_AUTHOR = `
+  MERGE (u:User {id: $userId})
+  CREATE (a:Author {id: $id})
+  CREATE (u)-[r:RESPONSIBLE_FOR {updatedAt: localdatetime()}]->(a)
+  SET a.name=$name
+  RETURN a.id AS id, a.name AS name
 `;

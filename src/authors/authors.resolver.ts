@@ -60,13 +60,11 @@ export class AuthorsResolver {
   @Mutation('addAuthor')
   @UseGuards(GraphQLJwtGuard)
   async addAuthor(
-    @Viewer() {id}: ViewerType,
+    @Viewer() {id: userId}: ViewerType,
     @Args('input') {name}: AddAuthorInput,
   ): Promise<AddAuthorPayload> {
-    const author = await this.authorsService.addAuthor({name, userId: id});
-
+    const author = await this.authorsService.addAuthor(userId, {name});
     if (!author) throw new InternalServerErrorException();
-
     return {author};
   }
 }
