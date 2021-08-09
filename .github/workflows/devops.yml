@@ -59,8 +59,8 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn run typecheck
 
-  test-large:
-    name: Large Test
+  test-unit:
+    name: Unit Test
     runs-on: ubuntu-latest
 
     env:
@@ -101,7 +101,7 @@ jobs:
           node-version: 16.4.2
           cache: yarn
       - run: yarn install --frozen-lockfile
-      - run: yarn run test:large
+      - run: yarn run test:unit
 
   build:
     name: Build
