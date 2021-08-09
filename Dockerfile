@@ -7,7 +7,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock .yarnrc ./
+COPY .yarn ./.yarn
 RUN yarn install --frozen-lockfile && yarn cache clean
 
 COPY prisma/schema.prisma ./prisma/schema.prisma
