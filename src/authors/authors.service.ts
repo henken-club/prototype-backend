@@ -74,20 +74,19 @@ export class AuthorsService {
       );
   }
 
-  async addAuthor({
-    name,
-    userId,
-  }: {
-    name: string;
-    userId: string;
-  }): Promise<AuthorEntity | null> {
-    const id = await this.idService.createId();
+  async addAuthor(
+    userId: string,
+    {name}: {name: string},
+  ): Promise<AuthorEntity | null> {
     const result = await this.neo4jService.write(CYPHER_ADD_AUTHOR, {
-      id,
-      name,
       userId,
+      id: this.idService.createId(),
+      name,
     });
-    if (result.records.length === 0) return null;
+
+    if (result.records.length !== 1)
+      throw new Error('something broken with neo4j');
+
     return {
       id: result.records[0].get('id'),
       name: result.records[0].get('name'),
