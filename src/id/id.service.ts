@@ -1,11 +1,18 @@
 import {Injectable} from '@nestjs/common';
-import {nanoid} from 'nanoid';
+import {customAlphabet} from 'nanoid';
 
 @Injectable()
 export class IdService {
-  constructor() {}
+  private generator;
+
+  constructor() {
+    this.generator = customAlphabet(
+      '123456789abcdefghijkmnopqrstuvwxyz' /* cspell: disable-line */,
+      16,
+    );
+  }
 
   createId(): string {
-    return nanoid(8);
+    return this.generator();
   }
 }
