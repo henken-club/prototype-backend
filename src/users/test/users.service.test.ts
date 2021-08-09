@@ -80,7 +80,7 @@ describe('UsersService', () => {
       expect(actual).toStrictEqual({id: 'id'});
     });
 
-    it('return object if alias ignorecase', async () => {
+    it('return object if alias case mixed', async () => {
       await prismaService.user.create({
         data: {
           id: 'id',

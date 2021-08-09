@@ -2,27 +2,50 @@
   "version": "0.1",
   "language": "en",
   "words": [
+    "changeme",
     "datamodel",
     "datasource",
+    "deps",
     "dmmf",
-    "imageproxy",
-    "IMGPROXY",
+    "ghcr",
+    "healthcheck",
     "localdatetime",
-    "nestjs",
     "noea",
     "nowe",
     "signup",
     "sowa",
     "sowe",
+    "typecheck",
     "unfollow",
     "upsert",
-    "webp"
+    "workdir"
+  ],
+  "ignoreWords": [
+    "arkweid",
+    "buildx",
+    "imageproxy",
+    "henken",
+    "imgproxy",
+    "nestjs",
+    "darthsim",
+    "hadolint",
+    "lefthook",
+    "mysqladmin",
+    "scripty",
+    "webp",
+    "libssl",
+    "JLABS",
+    "yarnrc",
+    "prettierrc"
   ],
   "ignorePaths": [
-    "./package.json",
-    "./yarn.lock",
-    "node_modules/**",
     ".vscode/extensions.json",
-    "src/graphql.ts"
+    "dist/**",
+    "node_modules/**",
+    "prisma/migrations/**",
+    "src/graphql.ts",
+    ".cspell.json",
+    ".yarnrc",
+    "yarn.lock"
   ]
 }
