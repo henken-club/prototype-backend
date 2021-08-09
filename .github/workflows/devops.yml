@@ -65,7 +65,7 @@ jobs:
 
     env:
       TEST_NEO4J_URL: bolt://localhost:7687
-      TEST_PRISMA_DATABASE_URL: mysql://root:@localhost:3306/testdb
+      TEST_PRISMA_DATABASE_URL: mysql://root:@localhost:3306/test
 
     services:
       neo4j:
@@ -85,7 +85,7 @@ jobs:
         image: mysql:8
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-          MYSQL_DATABASE: testdb
+          MYSQL_DATABASE: test
         ports:
           - 3306:3306
         options: >-

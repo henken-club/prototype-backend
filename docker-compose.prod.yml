@@ -19,7 +19,7 @@ services:
       GRAPHQL_PLAYGROUND: enable
 
       JWT_ACCESS_SECRET: access_secret
-      JWT_REFLESH_SECRET: refresh_secret
+      JWT_REFRESH_SECRET: refresh_secret
 
       IMGPROXY_BASE_URL: http://localhost:8080
       IMGPROXY_KEY: imgproxy_key
@@ -29,7 +29,7 @@ services:
       NEO4J_PASSWORD: changeme
       NEO4J_URL: bolt://prod-neo4j:7687
 
-      PRISMA_DATABASE_URL: mysql://root:@prod-mysql:3306/testdb
+      PRISMA_DATABASE_URL: mysql://root:@prod-mysql:3306/test
 
   prod-imgproxy:
     image: darthsim/imgproxy:latest
@@ -67,7 +67,7 @@ services:
       retries: 30
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-      MYSQL_DATABASE: testdb
+      MYSQL_DATABASE: test
     volumes:
       - prod-mysql-data:/var/lib/mysql
 
@@ -79,7 +79,7 @@ services:
       prod-mysql:
         condition: service_healthy
     environment:
-      PRISMA_DATABASE_URL: mysql://root:@prod-mysql:3306/testdb
+      PRISMA_DATABASE_URL: mysql://root:@prod-mysql:3306/test
 
 volumes:
   prod-neo4j-data:

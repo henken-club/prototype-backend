@@ -1,8 +1,6 @@
 #!/usr/bin/env sh
 
 cspell --no-progress \
-  "./src/**/*" \
-  "./public/**/*" \
-  "./prisma/*" \
+  "./**/*" \
   $@
 

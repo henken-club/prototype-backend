@@ -43,7 +43,7 @@ describe('PrejudicesService', () => {
       beforeEach(async () => {
         await neo4jService.write(`
           CREATE (p:User {id: "post"})
-          CREATE (r:User {id: "recieved"})
+          CREATE (r:User {id: "received"})
           CREATE (b1:Book {id: "book1"})
           CREATE (b2:Book {id: "book2"})
           RETURN *
@@ -53,7 +53,7 @@ describe('PrejudicesService', () => {
       it('with single book', async () => {
         const actual = await prejudicesService.createPrejudice(
           'post',
-          'recieved',
+          'received',
           {
             title: 'title',
             relatedBooks: ['book1'],
@@ -92,7 +92,7 @@ describe('PrejudicesService', () => {
         expect(
           await neo4jService
             .read(
-              `MATCH (:Prejudice {id: $id})-[r:PREJUDICE_AGAINST]->(:User {id: "recieved"}) RETURN count(r) = 1 AS result`,
+              `MATCH (:Prejudice {id: $id})-[r:PREJUDICE_AGAINST]->(:User {id: "received"}) RETURN count(r) = 1 AS result`,
               {id: actual.id},
             )
             .then((result) => result.records[0].get('result')),
@@ -110,7 +110,7 @@ describe('PrejudicesService', () => {
       it('with multiple books', async () => {
         const actual = await prejudicesService.createPrejudice(
           'post',
-          'recieved',
+          'received',
           {
             title: 'title',
             relatedBooks: ['book1', 'book2'],
@@ -149,7 +149,7 @@ describe('PrejudicesService', () => {
         expect(
           await neo4jService
             .read(
-              `MATCH (:Prejudice {id: $id})-[r:PREJUDICE_AGAINST]->(:User {id: "recieved"}) RETURN count(r) = 1 AS result`,
+              `MATCH (:Prejudice {id: $id})-[r:PREJUDICE_AGAINST]->(:User {id: "received"}) RETURN count(r) = 1 AS result`,
               {id: actual.id},
             )
             .then((result) => result.records[0].get('result')),
@@ -177,7 +177,7 @@ describe('PrejudicesService', () => {
       beforeEach(async () => {
         await neo4jService.write(`
           CREATE (pu:User {id: "post"})
-          CREATE (ru:User {id: "recieved"})
+          CREATE (ru:User {id: "received"})
           CREATE (b1:Book {id: "book1"})
           CREATE (b2:Book {id: "book2"})
           CREATE (pu)-[:POST_PREJUDICE]->(p:Prejudice)-[:PREJUDICE_AGAINST]->(ru)
@@ -189,7 +189,7 @@ describe('PrejudicesService', () => {
       it('with single book', async () => {
         const actual = await prejudicesService.createPrejudice(
           'post',
-          'recieved',
+          'received',
           {
             title: 'title',
             relatedBooks: ['book1'],
@@ -228,7 +228,7 @@ describe('PrejudicesService', () => {
         expect(
           await neo4jService
             .read(
-              `MATCH (:Prejudice {id: $id})-[r:PREJUDICE_AGAINST]->(:User {id: "recieved"}) RETURN count(r) = 1 AS result`,
+              `MATCH (:Prejudice {id: $id})-[r:PREJUDICE_AGAINST]->(:User {id: "received"}) RETURN count(r) = 1 AS result`,
               {id: actual.id},
             )
             .then((result) => result.records[0].get('result')),
