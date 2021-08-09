@@ -43,30 +43,6 @@ export class BooksService {
     );
   }
 
-  async addBook({
-    title,
-    userId,
-    authors,
-  }: {
-    userId: string;
-    title: string;
-    authors: string[];
-  }): Promise<BookEntity | null> {
-    const id = this.idService.createId();
-
-    const result = await this.neo4jService.write(CYPHER_ADD_BOOK, {
-      id,
-      title,
-      userId,
-      authors,
-    });
-    if (result.records.length !== 1) return null;
-    return {
-      id: result.records[0].get('id'),
-      title: result.records[0].get('title'),
-    };
-  }
-
   getAuthorsQuery({direction, field}: AuthorOrder) {
     if (direction === OrderDirection.ASC)
       return CYPHER_GET_BOOK_AUTHORS_ORDER_BY_NAME_ASC;
@@ -97,5 +73,23 @@ export class BooksService {
         })),
       );
     return authors;
+  }
+
+  async addBook(
+    userId: string,
+    {title, authors}: {title: string; authors: string[]},
+  ): Promise<BookEntity | null> {
+    const result = await this.neo4jService.write(CYPHER_ADD_BOOK, {
+      userId,
+      id: this.idService.createId(),
+      title,
+      authors,
+    });
+    if (result.records.length !== 1)
+      throw new Error('something broken with neo4j');
+    return {
+      id: result.records[0].get('id'),
+      title: result.records[0].get('title'),
+    };
   }
 }

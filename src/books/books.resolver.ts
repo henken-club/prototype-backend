@@ -59,7 +59,7 @@ export class BooksResolver {
     @Viewer() {id: userId}: ViewerType,
     @Args('input') {title, authors}: AddBookInput,
   ): Promise<AddBookPayload> {
-    const book = await this.booksService.addBook({title, authors, userId});
+    const book = await this.booksService.addBook(userId, {title, authors});
     if (!book) throw new InternalServerErrorException();
     return {book};
   }

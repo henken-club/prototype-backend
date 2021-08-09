@@ -69,40 +69,55 @@ describe('BooksService', () => {
         `,
       );
 
-      const actual = await booksService.addBook({
+      const actual = await booksService.addBook('user1', {
         title: 'Title',
-        userId: 'user1',
         authors: ['author1', 'author2'],
       });
-
       expect(actual).toStrictEqual({
         id: expect.any(String),
         title: 'Title',
       });
 
-      const bookCount = await neo4jService
-        .read(`MATCH (b:Book) RETURN count(b) AS count`)
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(bookCount).toBe(1);
+      expect(
+        await neo4jService
+          .read(`MATCH (b:Book {id: $id}) RETURN count(b) AS count`, {
+            id: actual?.id,
+          })
+          .then((result) => result.records[0].get('count').toNumber()),
+      ).toBe(1);
 
-      const userCount = await neo4jService
-        .read(`MATCH (u:User) RETURN count(u) AS count`)
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(userCount).toBe(1);
+      expect(
+        await neo4jService
+          .read(`MATCH (u:User {id: "user1"}) RETURN count(u) AS count`)
+          .then((result) => result.records[0].get('count').toNumber()),
+      ).toBe(1);
 
-      const responsibleCount = await neo4jService
-        .read(
-          `MATCH (:User)-[r:RESPONSIBLE_FOR]->(:Book) RETURN count(r) AS count`,
-        )
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(responsibleCount).toBe(1);
+      expect(
+        await neo4jService
+          .read(
+            `RETURN exists((:User {id: "user1"})-[:RESPONSIBLE_FOR]->(:Book {id: $id})) AS exists`,
+            {id: actual?.id},
+          )
+          .then((result) => result.records[0].get('exists')),
+      ).toBe(true);
 
-      const writesBookCount = await neo4jService
-        .read(
-          `MATCH (:Author)-[r:WRITES_BOOK]->(:Book) RETURN count(r) AS count`,
-        )
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(writesBookCount).toBe(2);
+      expect(
+        await neo4jService
+          .read(
+            `RETURN exists((:Author {id: "author1"})-[:WRITES_BOOK]->(:Book {id: $id})) AS exists`,
+            {id: actual?.id},
+          )
+          .then((result) => result.records[0].get('exists')),
+      ).toBe(true);
+
+      expect(
+        await neo4jService
+          .read(
+            `RETURN exists((:Author {id: "author1"})-[:WRITES_BOOK]->(:Book {id: $id})) AS exists`,
+            {id: actual?.id},
+          )
+          .then((result) => result.records[0].get('exists')),
+      ).toBe(true);
     });
 
     it('return object if user does not exist in neo4j', async () => {
@@ -110,9 +125,8 @@ describe('BooksService', () => {
         `CREATE (a1:Author {id: "author1"}), (a2:Author {id: "author2"}) RETURN *`,
       );
 
-      const actual = await booksService.addBook({
+      const actual = await booksService.addBook('user1', {
         title: 'Title',
-        userId: '1',
         authors: ['author1', 'author2'],
       });
       expect(actual).toStrictEqual({
@@ -120,29 +134,46 @@ describe('BooksService', () => {
         title: 'Title',
       });
 
-      const bookCount = await neo4jService
-        .read(`MATCH (b:Book) RETURN count(b) AS count`)
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(bookCount).toBe(1);
+      expect(
+        await neo4jService
+          .read(`MATCH (b:Book {id: $id}) RETURN count(b) AS count`, {
+            id: actual?.id,
+          })
+          .then((result) => result.records[0].get('count').toNumber()),
+      ).toBe(1);
 
-      const userCount = await neo4jService
-        .read(`MATCH (u:User) RETURN count(u) AS count`)
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(userCount).toBe(1);
+      expect(
+        await neo4jService
+          .read(`MATCH (u:User {id: "user1"}) RETURN count(u) AS count`)
+          .then((result) => result.records[0].get('count').toNumber()),
+      ).toBe(1);
 
-      const responsibleCount = await neo4jService
-        .read(
-          `MATCH (:User)-[r:RESPONSIBLE_FOR]->(:Book) RETURN count(r) AS count`,
-        )
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(responsibleCount).toBe(1);
+      expect(
+        await neo4jService
+          .read(
+            `RETURN exists((:User {id: "user1"})-[:RESPONSIBLE_FOR]->(:Book {id: $id})) AS exists`,
+            {id: actual?.id},
+          )
+          .then((result) => result.records[0].get('exists')),
+      ).toBe(true);
 
-      const writesBookCount = await neo4jService
-        .read(
-          `MATCH (:Author)-[r:WRITES_BOOK]->(:Book) RETURN count(r) AS count`,
-        )
-        .then((result) => result.records[0].get('count').toNumber());
-      expect(writesBookCount).toBe(2);
+      expect(
+        await neo4jService
+          .read(
+            `RETURN exists((:Author {id: "author1"})-[:WRITES_BOOK]->(:Book {id: $id})) AS exists`,
+            {id: actual?.id},
+          )
+          .then((result) => result.records[0].get('exists')),
+      ).toBe(true);
+
+      expect(
+        await neo4jService
+          .read(
+            `RETURN exists((:Author {id: "author1"})-[:WRITES_BOOK]->(:Book {id: $id})) AS exists`,
+            {id: actual?.id},
+          )
+          .then((result) => result.records[0].get('exists')),
+      ).toBe(true);
     });
   });
 
