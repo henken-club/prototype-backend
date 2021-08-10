@@ -17,7 +17,7 @@ import {BooksService} from './books.service';
 import {AddBookArgs, AddBookPayload} from './dto/add-book.dto';
 import {ResolveAuthorsArgs} from './dto/resolve-authors.dto';
 
-import {AuthorConnection, AuthorEntity} from '~/authors/authors.entities';
+import {AuthorArray, AuthorEntity} from '~/authors/authors.entities';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {UserEntity} from '~/users/users.entities';
@@ -42,7 +42,7 @@ export class BooksResolver {
   async authors(
     @Parent() {id}: BookEntity,
     @Args() {skip, limit, orderBy}: ResolveAuthorsArgs,
-  ): Promise<AuthorConnection> {
+  ): Promise<AuthorArray> {
     const nodes = await this.booksService.getAuthors(id, {
       skip,
       limit,

@@ -1,10 +1,6 @@
-import {ArgsType, Field, Int} from '@nestjs/graphql';
+import {ArgsType} from '@nestjs/graphql';
+
+import {OffsetPaginationArgs} from '~/common/common.entities';
 
 @ArgsType()
-export class ResolveFolloweesArgs {
-  @Field(() => Int, {defaultValue: 0, nullable: true})
-  skip!: number;
-
-  @Field(() => Int, {defaultValue: 10, nullable: true})
-  limit!: number;
-}
+export class ResolveFolloweesArgs extends OffsetPaginationArgs {}

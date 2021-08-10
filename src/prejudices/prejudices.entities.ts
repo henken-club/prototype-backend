@@ -6,14 +6,17 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 
-import {Connection, OrderDirection} from '~/common/common.entities';
+import {
+  AbstractOrder,
+  AbstractArray,
+  OrderDirection,
+} from '~/common/common.entities';
 
 @ObjectType('Prejudice')
 export class PrejudiceEntity {
   @Field((type) => ID)
   id!: string;
 }
-export class PrejudiceConnection extends Connection<PrejudiceEntity> {}
 
 export enum PrejudiceOrderField {
   CREATED_AT,
@@ -23,7 +26,7 @@ registerEnumType(PrejudiceOrderField, {
 });
 
 @InputType()
-export class PrejudiceOrder {
+export class PrejudiceOrder extends AbstractOrder<PrejudiceOrderField> {
   @Field(() => OrderDirection)
   direction!: OrderDirection;
 
@@ -32,14 +35,9 @@ export class PrejudiceOrder {
 }
 
 @ObjectType()
-export class PrejudiceArray {
+export class PrejudiceArray extends AbstractArray<PrejudiceEntity> {
   @Field((type) => [PrejudiceEntity])
   nodes!: PrejudiceEntity[];
-
-  /*
-  @Field((type) => Int)
-  totalCount!: number;
-*/
 }
 
 export enum PrejudicePostRule {

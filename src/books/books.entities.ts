@@ -7,7 +7,11 @@ import {
 } from '@nestjs/graphql';
 
 import {AuthorOrderField} from '~/authors/authors.entities';
-import {Connection, OrderDirection} from '~/common/common.entities';
+import {
+  AbstractArray,
+  AbstractOrder,
+  OrderDirection,
+} from '~/common/common.entities';
 
 @ObjectType('Book')
 export class BookEntity {
@@ -17,8 +21,6 @@ export class BookEntity {
   @Field(() => String)
   title!: string;
 }
-export class BookConnection extends Connection<BookEntity> {}
-
 export enum BookOrderField {
   TITLE,
 }
@@ -27,7 +29,7 @@ registerEnumType(BookOrderField, {
 });
 
 @InputType()
-export class BookOrder {
+export class BookOrder extends AbstractOrder<BookOrderField> {
   @Field(() => OrderDirection)
   direction!: OrderDirection;
 
@@ -36,7 +38,7 @@ export class BookOrder {
 }
 
 @ObjectType()
-export class BookArray {
+export class BookArray extends AbstractArray<BookEntity> {
   @Field((type) => [BookEntity])
   nodes!: BookEntity[];
 }

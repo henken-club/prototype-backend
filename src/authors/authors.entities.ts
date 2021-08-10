@@ -6,7 +6,7 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 
-import {Connection, OrderDirection} from '~/common/common.entities';
+import {OrderDirection} from '~/common/common.entities';
 
 @ObjectType('Author')
 export class AuthorEntity {
@@ -16,8 +16,6 @@ export class AuthorEntity {
   @Field((type) => String)
   name!: string;
 }
-export class AuthorConnection extends Connection<AuthorEntity> {}
-
 export enum AuthorOrderField {
   NAME,
 }
