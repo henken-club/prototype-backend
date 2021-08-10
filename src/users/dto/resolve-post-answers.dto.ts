@@ -1,7 +1,8 @@
 import {ArgsType, Field, Int} from '@nestjs/graphql';
 
 import {AnswerOrder, AnswerOrderField} from '../../answers/answers.entities';
-import {OrderDirection} from '../../common/OrderDirection';
+
+import {OrderDirection} from '~/common/common.entities';
 
 @ArgsType()
 export class ResolvePostAnswersArgs {

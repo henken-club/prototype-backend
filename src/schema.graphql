@@ -2,17 +2,41 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AddAuthorPayload {
+  author: Author!
+}
+
 type Answer {
+  correctness: AnswerCorrectness!
+  createdAt: DateTime!
   id: ID!
+  prejudice: Prejudice!
+  text: String!
 }
 
 type AnswerArray {
   nodes: [Answer!]!
 }
 
+enum AnswerCorrectness {
+  CORRECT
+  INCORRECT
+  PARTLY_CORRECT
+}
+
 input AnswerOrder {
   direction: OrderDirection!
   field: PrejudiceOrderField!
+}
+
+type Author {
+  id: ID!
+  name: String!
+  userResponsibleFor: User!
+}
+
+type AuthorArray {
+  nodes: [Author!]!
 }
 
 """
@@ -35,6 +59,10 @@ type FollowerArray {
   totalCount: Int!
 }
 
+type GetAnswerPayload {
+  answer: Answer
+}
+
 type GetPrejudicePayload {
   prejudice: Prejudice
 }
@@ -44,6 +72,7 @@ type GetUserResult {
 }
 
 type Mutation {
+  addAuthor(name: String!): AddAuthorPayload!
   followUser(id: ID!): FollowUserPayload!
   postPrejudice(relatedBooks: [ID!]!, title: String!, userId: ID!): PostPrejudicePayload!
   unfollowUser(id: ID!): UnfollowUserPayload!
@@ -82,8 +111,13 @@ enum PrejudiceOrderField {
 }
 
 type Query {
+  allAnswers: AnswerArray!
+  allAuthors: AuthorArray!
   allPrejudices: PrejudiceArray!
   allUsers: UserArray!
+  answer(id: String!): Answer!
+  author(id: String!): Author!
+  getAnswer(number: Int!, posted: ID!, received: ID!): GetAnswerPayload!
   getPrejudice(number: Int!, posted: ID!, received: ID!): GetPrejudicePayload!
   getUser(alias: ID!): GetUserResult!
   prejudice(id: ID!): Prejudice!

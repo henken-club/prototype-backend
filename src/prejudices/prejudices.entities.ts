@@ -6,8 +6,7 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 
-import {Connection} from '~/common/common.entities';
-import {OrderDirection} from '~/common/OrderDirection';
+import {Connection, OrderDirection} from '~/common/common.entities';
 
 @ObjectType('Prejudice')
 export class PrejudiceEntity {

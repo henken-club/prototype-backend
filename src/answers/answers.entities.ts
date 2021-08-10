@@ -6,8 +6,8 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 
+import {OrderDirection} from '~/common/common.entities';
 import {PrejudiceOrderField} from '~/prejudices/prejudices.entities';
-import {OrderDirection} from '~/common/OrderDirection';
 
 @ObjectType('Answer')
 export class AnswerEntity {
@@ -47,7 +47,6 @@ export enum AnswerCorrectness {
   INCORRECT,
   PARTLY_CORRECT,
 }
-
 registerEnumType(AnswerCorrectness, {
   name: 'AnswerCorrectness',
 });

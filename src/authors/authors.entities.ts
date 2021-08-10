@@ -1,26 +1,46 @@
-import {Connection} from '../common/common.entities';
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  registerEnumType,
+} from '@nestjs/graphql';
 
-import {OrderDirection} from '~/common/common.entities';
+import {Connection, OrderDirection} from '~/common/common.entities';
 
-export type AuthorEntity = {
-  id: string;
-  name: string;
-};
+@ObjectType('Author')
+export class AuthorEntity {
+  @Field((type) => ID)
+  id!: string;
+
+  @Field((type) => String)
+  name!: string;
+}
 export class AuthorConnection extends Connection<AuthorEntity> {}
 
-export class AddAuthorPayload {
-  author!: AuthorEntity;
-}
-
 export enum AuthorOrderField {
-  NAME = 'NAME',
+  NAME,
 }
+registerEnumType(AuthorOrderField, {
+  name: 'AuthorOrderField',
+});
 
+@InputType()
 export class AuthorOrder {
+  @Field(() => OrderDirection)
   direction!: OrderDirection;
+
+  @Field(() => AuthorOrderField)
   field!: AuthorOrderField;
 }
 
-export type AddAuthorInput = {
-  name: string;
-};
+@ObjectType()
+export class AuthorArray {
+  @Field((type) => [AuthorEntity])
+  nodes!: AuthorEntity[];
+
+  /*
+  @Field((type) => Int)
+  totalCount!: number;
+*/
+}

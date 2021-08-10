@@ -1,8 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {int} from 'neo4j-driver';
 
-import {OrderDirection} from '../common/OrderDirection';
-
 import {UserEntity} from './users.entities';
 import {
   CYPHER_FOLLOW_USER,
@@ -27,6 +25,7 @@ import {
 } from '~/prejudices/prejudices.entities';
 import {AnswerEntity, AnswerOrder} from '~/answers/answers.entities';
 import {PrismaService} from '~/prisma/prisma.service';
+import {OrderDirection} from '~/common/common.entities';
 
 export type UserUniqueUnion = {
   alias?: string;

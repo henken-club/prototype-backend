@@ -1,7 +1,6 @@
 import {ArgsType, Field, Int} from '@nestjs/graphql';
 
-import {OrderDirection} from '../../common/OrderDirection';
-
+import {OrderDirection} from '~/common/common.entities';
 import {
   PrejudiceOrder,
   PrejudiceOrderField,

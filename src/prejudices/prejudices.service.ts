@@ -20,7 +20,7 @@ import {PrejudiceEntity} from './prejudices.entities';
 import {Neo4jService} from '~/neo4j/neo4j.service';
 import {AnswerEntity} from '~/answers/answers.entities';
 import {BookEntity, BookOrder} from '~/books/books.entities';
-import {OrderDirection} from '~/common/OrderDirection';
+import {OrderDirection} from '~/common/common.entities';
 
 @Injectable()
 export class PrejudicesService {

@@ -2,13 +2,13 @@ import {Args, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
 import {BadRequestException} from '@nestjs/common';
 
 import {AnswersService} from './answers.service';
-import {AnswerEntity, AnswerCorrectness} from './answers.entities';
+import {AnswerEntity, AnswerCorrectness, AnswerArray} from './answers.entities';
 import {GetAnswerArgs, GetAnswerPayload} from './dto/get-answer.dto';
 
 import {PrejudiceEntity} from '~/prejudices/prejudices.entities';
 import {UsersService} from '~/users/users.service';
 
-@Resolver('Answer')
+@Resolver(() => AnswerEntity)
 export class AnswersResolver {
   constructor(
     private readonly answersService: AnswersService,
@@ -63,8 +63,9 @@ export class AnswersResolver {
     };
   }
 
-  @Query('allAnswers')
-  async getAllAnswers(): Promise<AnswerEntity[]> {
-    return this.answersService.getAll();
+  @Query(() => AnswerArray, {name: 'allAnswers'})
+  async getAllAnswers(): Promise<AnswerArray> {
+    const nodes = await this.answersService.getAll();
+    return {nodes};
   }
 }
