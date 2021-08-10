@@ -1,12 +1,26 @@
 import {Connection} from '../common/common.entities';
 
-import {Author} from '~/graphql';
+import {OrderDirection} from '~/common/common.entities';
 
-export {AuthorOrderField, AuthorOrder, AddAuthorInput} from '~/graphql';
-
-export type AuthorEntity = Omit<Author, 'writesBooks' | 'userResponsibleFor'>;
+export type AuthorEntity = {
+  id: string;
+  name: string;
+};
 export class AuthorConnection extends Connection<AuthorEntity> {}
 
 export class AddAuthorPayload {
   author!: AuthorEntity;
 }
+
+export enum AuthorOrderField {
+  NAME = 'NAME',
+}
+
+export class AuthorOrder {
+  direction!: OrderDirection;
+  field!: AuthorOrderField;
+}
+
+export type AddAuthorInput = {
+  name: string;
+};

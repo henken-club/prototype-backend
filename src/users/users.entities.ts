@@ -1,14 +1,5 @@
+import {UserUniqueUnion} from '~/answers/answers.entities';
 import {Connection} from '~/common/common.entities';
-import {UserUniqueUnion} from '~/graphql';
-
-export {
-  BookOrder,
-  BookOrderField,
-  AddBookInput,
-  FollowUserInput,
-  UnfollowUserInput,
-  UserUniqueUnion,
-} from '~/graphql';
 
 export class UserEntity {
   id!: string;
@@ -36,3 +27,11 @@ export class FollowerConnection {
   nodes!: UserEntity[];
   totalCount!: number;
 }
+
+export type FollowUserInput = {
+  user: GetUserInput;
+};
+
+export type UnfollowUserInput = {
+  user: GetUserInput;
+};

@@ -18,6 +18,7 @@ import {
   PostPrejudiceInput,
   GetPrejudiceResult,
   PostPrejudicePayload,
+  GetPrejudiceInput,
 } from './prejudices.entities';
 import {PrejudicesService} from './prejudices.service';
 
@@ -28,7 +29,6 @@ import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {UsersService} from '~/users/users.service';
 import {SettingsService} from '~/settings/settings.service';
-import {GetPrejudiceInput} from '~/graphql';
 
 @Resolver('Prejudice')
 export class PrejudicesResolver {

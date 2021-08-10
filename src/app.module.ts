@@ -26,7 +26,6 @@ import {SettingsModule} from './settings/settings.module';
           DateTime: GraphQLDateTime,
         },
         definitions: {
-          path: config.definitionPath,
           customScalarTypeMapping: {
             DateTime: 'Date',
           },
