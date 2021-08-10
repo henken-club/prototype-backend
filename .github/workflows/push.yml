@@ -1,8 +1,9 @@
-name: Release
+name: Push
 
 on:
   push:
     branches:
+      - develop
       - release
 
 env:
