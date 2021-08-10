@@ -1,6 +1,13 @@
-import {Field, ID, ObjectType} from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  ObjectType,
+  InputType,
+  registerEnumType,
+} from '@nestjs/graphql';
 
 import {Connection} from '~/common/common.entities';
+import {OrderDirection} from '~/common/OrderDirection';
 
 @ObjectType('Prejudice')
 export class PrejudiceEntity {
@@ -9,9 +16,20 @@ export class PrejudiceEntity {
 }
 export class PrejudiceConnection extends Connection<PrejudiceEntity> {}
 
-export enum PrejudicePostRule {
-  ALL_FOLLOWERS = 'ALL_FOLLOWERS',
-  MUTUAL_ONLY = 'MUTUAL_ONLY',
+export enum PrejudiceOrderField {
+  CREATED_AT,
+}
+registerEnumType(PrejudiceOrderField, {
+  name: 'PrejudiceOrderField',
+});
+
+@InputType()
+export class PrejudiceOrder {
+  @Field(() => OrderDirection)
+  direction!: OrderDirection;
+
+  @Field(() => PrejudiceOrderField)
+  field!: PrejudiceOrderField;
 }
 
 @ObjectType()
@@ -23,4 +41,9 @@ export class PrejudiceArray {
   @Field((type) => Int)
   totalCount!: number;
 */
+}
+
+export enum PrejudicePostRule {
+  ALL_FOLLOWERS = 'ALL_FOLLOWERS',
+  MUTUAL_ONLY = 'MUTUAL_ONLY',
 }

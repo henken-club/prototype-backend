@@ -25,7 +25,7 @@ import {UnfollowUserArgs, UnfollowUserPayload} from './dto/unfollow-user.dto';
 import {ResolveFolloweesArgsType} from './dto/resolve-followees.dto';
 import {ResolvePostPrejudicesArgsType} from './dto/resolve-post-prejudices.dto';
 import {ResolveReceivedPrejudicesArgsType} from './dto/resolve-received-prejudices.dto';
-import {GetUserArgs, GetUserResult} from './GetPrejudiceInput';
+import {GetUserArgs, GetUserResult} from './dto/get-user.dto';
 
 import {SettingsService} from '~/settings/settings.service';
 import {ImgproxyService} from '~/imgproxy/imgproxy.service';

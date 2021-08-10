@@ -1,7 +1,11 @@
 import {ArgsType, Field, Int} from '@nestjs/graphql';
 
-import {OrderDirection} from './OrderDirection';
-import {PrejudiceOrder, PrejudiceOrderField} from './PrejudiceOrderField';
+import {OrderDirection} from '../../common/OrderDirection';
+
+import {
+  PrejudiceOrder,
+  PrejudiceOrderField,
+} from '~/prejudices/prejudices.entities';
 
 @ArgsType()
 export class ResolveReceivedPrejudicesArgsType {

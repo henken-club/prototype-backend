@@ -1,12 +1,6 @@
 import {ArgsType, Field, ID, ObjectType} from '@nestjs/graphql';
 
-import {PrejudiceEntity} from './prejudices.entities';
-
-@ObjectType()
-export class PostPrejudicePayload {
-  @Field(() => PrejudiceEntity)
-  prejudice!: PrejudiceEntity;
-}
+import {PrejudiceEntity} from '../prejudices.entities';
 
 @ArgsType()
 export class PostPrejudiceArgs {
@@ -18,4 +12,10 @@ export class PostPrejudiceArgs {
 
   @Field(() => String)
   title!: string;
+}
+
+@ObjectType()
+export class PostPrejudicePayload {
+  @Field(() => PrejudiceEntity)
+  prejudice!: PrejudiceEntity;
 }

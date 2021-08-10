@@ -15,10 +15,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import {PrejudiceEntity} from './prejudices.entities';
-import {PostPrejudiceArgs, PostPrejudicePayload} from './PostPrejudicePayload';
+import {PrejudiceArray, PrejudiceEntity} from './prejudices.entities';
 import {PrejudicesService} from './prejudices.service';
-import {GetPrejudiceArgs, GetPrejudiceResult} from './GetPrejudiceInput';
+import {GetPrejudiceArgs, GetPrejudicePayload} from './dto/get-prejudice';
+import {
+  PostPrejudiceArgs,
+  PostPrejudicePayload,
+} from './dto/post-prejudice.dto';
 
 import {UserEntity} from '~/users/users.entities';
 import {UsersService} from '~/users/users.service';
@@ -104,10 +107,10 @@ export class PrejudicesResolver {
     return this.prejudicesService.getById(id);
   }
 
-  @Query(() => GetPrejudiceResult, {name: 'getPrejudice'})
+  @Query(() => GetPrejudicePayload, {name: 'getPrejudice'})
   async getPrejudice(
     @Args() {posted, received, number}: GetPrejudiceArgs,
-  ): Promise<GetPrejudiceResult> {
+  ): Promise<GetPrejudicePayload> {
     if (posted === received) throw new BadRequestException();
     if (!(await this.usersService.checkExists({id: posted})))
       throw new BadRequestException();
@@ -123,12 +126,11 @@ export class PrejudicesResolver {
     };
   }
 
-  /*
-  @Query('allPrejudices')
-  async getAllPrejudices(): Promise<PrejudiceEntity[]> {
-    return this.prejudicesService.getAllPrejudices();
+  @Query(() => PrejudiceArray, {name: 'allPrejudices'})
+  async getAllPrejudices(): Promise<PrejudiceArray> {
+    const nodes = await this.prejudicesService.getAllPrejudices();
+    return {nodes};
   }
-*/
 
   @Mutation(() => PostPrejudicePayload, {name: 'postPrejudice'})
   @UseGuards(GraphQLJwtGuard)

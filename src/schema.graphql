@@ -22,7 +22,7 @@ type FollowerArray {
   totalCount: Int!
 }
 
-type GetPrejudiceResult {
+type GetPrejudicePayload {
   prejudice: Prejudice
 }
 
@@ -68,8 +68,9 @@ enum PrejudiceOrderField {
 }
 
 type Query {
+  allPrejudices: PrejudiceArray!
   allUsers: UserArray!
-  getPrejudice(number: Int!, posted: ID!, received: ID!): GetPrejudiceResult!
+  getPrejudice(number: Int!, posted: ID!, received: ID!): GetPrejudicePayload!
   getUser(alias: ID!): GetUserResult!
   prejudice(id: ID!): Prejudice!
   user(id: String!): User!

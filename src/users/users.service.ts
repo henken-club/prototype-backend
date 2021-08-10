@@ -1,6 +1,8 @@
 import {Injectable} from '@nestjs/common';
 import {int} from 'neo4j-driver';
 
+import {OrderDirection} from '../common/OrderDirection';
+
 import {UserEntity} from './users.entities';
 import {
   CYPHER_FOLLOW_USER,
@@ -17,11 +19,12 @@ import {
   CYPHER_IS_USER_FOLLOWING,
   CYPHER_UNFOLLOW_USER,
 } from './users.cypher';
-import {PrejudiceOrder} from './dto/PrejudiceOrderField';
-import {OrderDirection} from './dto/OrderDirection';
 
 import {Neo4jService} from '~/neo4j/neo4j.service';
-import {PrejudiceEntity} from '~/prejudices/prejudices.entities';
+import {
+  PrejudiceEntity,
+  PrejudiceOrder,
+} from '~/prejudices/prejudices.entities';
 import {
   AnswerEntity,
   AnswerOrder,

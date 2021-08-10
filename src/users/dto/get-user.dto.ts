@@ -1,6 +1,6 @@
 import {ArgsType, Field, ID, ObjectType} from '@nestjs/graphql';
 
-import {UserEntity} from './users.entities';
+import {UserEntity} from '../users.entities';
 
 @ArgsType()
 export class GetUserArgs {
