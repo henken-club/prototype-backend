@@ -8,7 +8,7 @@ import {
 } from '~/prejudices/prejudices.entities';
 
 @ArgsType()
-export class ResolveReceivedPrejudicesArgsType {
+export class ResolveReceivedPrejudicesArgs {
   @Field(() => Int, {defaultValue: 0, nullable: true})
   skip!: number;
 

@@ -22,16 +22,18 @@ import {
 import {UsersService} from './users.service';
 import {FollowUserArgs, FollowUserPayload} from './dto/follow-user.dto';
 import {UnfollowUserArgs, UnfollowUserPayload} from './dto/unfollow-user.dto';
-import {ResolveFolloweesArgsType} from './dto/resolve-followees.dto';
-import {ResolvePostPrejudicesArgsType} from './dto/resolve-post-prejudices.dto';
-import {ResolveReceivedPrejudicesArgsType} from './dto/resolve-received-prejudices.dto';
+import {ResolveFolloweesArgs} from './dto/resolve-followees.dto';
+import {ResolvePostPrejudicesArgs} from './dto/resolve-post-prejudices.dto';
+import {ResolveReceivedPrejudicesArgs} from './dto/resolve-received-prejudices.dto';
 import {GetUserArgs, GetUserResult} from './dto/get-user.dto';
+import {ResolvePostAnswersArgs} from './dto/resolve-post-answers.dto';
 
 import {SettingsService} from '~/settings/settings.service';
 import {ImgproxyService} from '~/imgproxy/imgproxy.service';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {PrejudiceArray} from '~/prejudices/prejudices.entities';
+import {AnswerArray} from '~/answers/answers.entities';
 
 @Resolver(() => UserEntity)
 export class UsersResolver {
@@ -70,7 +72,7 @@ export class UsersResolver {
   @ResolveField(() => PrejudiceArray, {name: 'postedPrejudices'})
   async getPostPrejudices(
     @Parent() {id}: UserEntity,
-    @Args() {skip, limit, orderBy}: ResolvePostPrejudicesArgsType,
+    @Args() {skip, limit, orderBy}: ResolvePostPrejudicesArgs,
   ): Promise<PrejudiceArray> {
     const nodes = await this.usersService.resolvePostedPrejudices(id, {
       skip,
@@ -83,7 +85,7 @@ export class UsersResolver {
   @ResolveField(() => PrejudiceArray, {name: 'receivedPrejudices'})
   async getReceivedPrejudices(
     @Parent() {id}: UserEntity,
-    @Args() {skip, limit, orderBy}: ResolveReceivedPrejudicesArgsType,
+    @Args() {skip, limit, orderBy}: ResolveReceivedPrejudicesArgs,
   ): Promise<PrejudiceArray> {
     const nodes = await this.usersService.resolveReceivedPrejudices(id, {
       skip,
@@ -93,14 +95,11 @@ export class UsersResolver {
     return {nodes};
   }
 
-  /*
   @ResolveField('postedAnswers')
   async getPostAnswers(
     @Parent() {id}: UserEntity,
-    @Args('skip') skip: number,
-    @Args('limit') limit: number,
-    @Args('orderBy') orderBy: AnswerOrder,
-  ): Promise<AnswerConnection> {
+    @Args() {skip, limit, orderBy}: ResolvePostAnswersArgs,
+  ): Promise<AnswerArray> {
     const nodes = await this.usersService.resolvePostedAnswers(id, {
       skip,
       limit,
@@ -109,12 +108,10 @@ export class UsersResolver {
     return {nodes};
   }
 
-  */
-
   @ResolveField(() => FolloweeArray, {name: 'followees'})
   async getFollowing(
     @Parent() {id}: UserEntity,
-    @Args() {skip, limit}: ResolveFolloweesArgsType,
+    @Args() {skip, limit}: ResolveFolloweesArgs,
   ): Promise<FolloweeArray> {
     const nodes = await this.usersService.resolveFollowings(id, {
       skip,
@@ -128,7 +125,7 @@ export class UsersResolver {
   @ResolveField(() => FollowerArray, {name: 'followers'})
   async getFollowers(
     @Parent() {id}: UserEntity,
-    @Args() {skip, limit}: ResolveFolloweesArgsType,
+    @Args() {skip, limit}: ResolveFolloweesArgs,
   ): Promise<FollowerArray> {
     const nodes = await this.usersService.resolveFollowers(id, {skip, limit});
     const totalCount = await this.usersService.countFollowers(id);

@@ -1,7 +1,7 @@
 import {ArgsType, Field, Int} from '@nestjs/graphql';
 
 @ArgsType()
-export class ResolveFolloweesArgsType {
+export class ResolveFolloweesArgs {
   @Field(() => Int, {defaultValue: 0, nullable: true})
   skip!: number;
 
