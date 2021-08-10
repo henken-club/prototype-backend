@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - release
+
+env:
+  BACKEND_IMAGE_NAME: prototype-backend
+  PRISMA_MIGRATE_IMAGE_NAME: prototype-backend-prisma-migrate
+
+jobs:
+  push-backend:
+    name: Docker push for backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker/setup-buildx-action@v1
+      - uses: docker/metadata-action@v3
+        id: meta
+        with:
+          images: ghcr.io/henken-club/${{ env.BACKEND_IMAGE_NAME }}
+      - uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v2
+        with:
+          push: true
+          context: .
+          file: Dockerfile
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  push-prisma-migrate:
+    name: Docker push for prisma-migrate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hadolint/hadolint-action@v1.5.0
+        with:
+          dockerfile: Dockerfile.prisma-migrate
+      - uses: docker/setup-buildx-action@v1
+      - uses: docker/metadata-action@v3
+        id: meta
+        with:
+          images: ghcr.io/henken-club/${{ env.PRISMA_MIGRATE_IMAGE_NAME }}
+      - uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v2
+        with:
+          push: true
+          context: .
+          file: Dockerfile.prisma-migrate
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
