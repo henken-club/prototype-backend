@@ -9,7 +9,7 @@ import {
   CYPHER_RESOLVE_ANSWER_CREATED_AT,
   CYPHER_RESOLVE_ANSWER_CORRECTNESS,
 } from './answers.cypher';
-import {AnswerEntity, Correctness} from './answers.entities';
+import {AnswerEntity, AnswerCorrectness} from './answers.entities';
 
 import {Neo4jService} from '~/neo4j/neo4j.service';
 import {PrejudiceEntity} from '~/prejudices/prejudices.entities';
@@ -18,7 +18,7 @@ import {PrejudiceEntity} from '~/prejudices/prejudices.entities';
 export class AnswersService {
   constructor(private readonly neo4jService: Neo4jService) {}
 
-  async resolveCorrectness(id: string): Promise<Correctness> {
+  async resolveCorrectness(id: string): Promise<AnswerCorrectness> {
     return this.neo4jService
       .read(CYPHER_RESOLVE_ANSWER_CORRECTNESS, {id})
       .then(({records}) => records[0].get('correctness'));

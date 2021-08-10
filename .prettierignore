@@ -9,3 +9,4 @@ coverage/
 
 # auto generated
 src/graphql.ts
+src/schema.graphql

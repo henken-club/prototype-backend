@@ -5,24 +5,17 @@ import {
 } from '@nestjs/common';
 import {Args, Mutation, Resolver} from '@nestjs/graphql';
 
-import {
-  LoginPayload,
-  LoginInput,
-  SignupPayload,
-  RefreshTokenInput,
-  RefreshTokenPayload,
-  SignupInput,
-} from './auth.entities';
 import {AuthService} from './auth.service';
+import {LoginArgs, LoginPayload} from './dto/login.dto';
+import {RefreshTokenArgs, RefreshTokenPayload} from './dto/refresh-token.dto';
+import {SignUpArgs, SignUpPayload} from './dto/signup.dto';
 
-@Resolver('Auth')
+@Resolver()
 export class AuthResolver {
   constructor(private authServer: AuthService) {}
 
-  @Mutation('login')
-  async login(
-    @Args('input') {alias, password}: LoginInput,
-  ): Promise<LoginPayload> {
+  @Mutation(() => LoginPayload, {name: 'login'})
+  async login(@Args() {alias, password}: LoginArgs): Promise<LoginPayload> {
     const validated = await this.authServer.verifyUser({alias, password});
     if (!validated) throw new UnauthorizedException();
 
@@ -32,10 +25,10 @@ export class AuthResolver {
     };
   }
 
-  @Mutation('signup')
+  @Mutation(() => SignUpPayload, {name: 'signup'})
   async signup(
-    @Args('input') {password, alias, displayName}: SignupInput,
-  ): Promise<SignupPayload> {
+    @Args() {password, alias, displayName}: SignUpArgs,
+  ): Promise<SignUpPayload> {
     const isDuplicated = await this.authServer
       .existsUser({alias})
       .then((user) => Boolean(user));
@@ -54,9 +47,9 @@ export class AuthResolver {
     };
   }
 
-  @Mutation('refreshToken')
+  @Mutation(() => RefreshTokenPayload, {name: 'refreshToken'})
   async refreshToken(
-    @Args('input') {token}: RefreshTokenInput,
+    @Args() {token}: RefreshTokenArgs,
   ): Promise<RefreshTokenPayload> {
     const tokens = await this.authServer.refreshToken(token);
     if (!tokens) throw new UnauthorizedException();

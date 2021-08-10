@@ -1,16 +1,14 @@
 import {Module} from '@nestjs/common';
 import {GraphQLModule} from '@nestjs/graphql';
-import {GraphQLDateTime} from 'graphql-scalars';
 import {ConfigModule, ConfigType} from '@nestjs/config';
 
-import {BooksModule} from './books/books.module';
-import {AuthorsModule} from './authors/authors.module';
 import {UsersModule} from './users/users.module';
+import {GraphQLConfig} from './graphql/graphql.config';
 import {PrejudicesModule} from './prejudices/prejudices.module';
 import {AnswersModule} from './answers/answers.module';
+import {AuthorsModule} from './authors/authors.module';
+import {BooksModule} from './books/books.module';
 import {AuthModule} from './auth/auth.module';
-import {GraphQLConfig} from './graphql/graphql.config';
-import {SettingsModule} from './settings/settings.module';
 
 @Module({
   imports: [
@@ -20,27 +18,18 @@ import {SettingsModule} from './settings/settings.module';
       useFactory: (config: ConfigType<typeof GraphQLConfig>) => ({
         playground: config.playground,
         debug: config.debug,
-        typePaths: config.typePaths,
         introspection: config.introspection,
-        resolvers: {
-          DateTime: GraphQLDateTime,
-        },
-        definitions: {
-          customScalarTypeMapping: {
-            DateTime: 'Date',
-          },
-        },
         sortSchema: config.sortSchema,
+        autoSchemaFile: config.autoSchemaFile,
         fieldResolverEnhancers: ['guards'],
       }),
     }),
-    AnswersModule,
+    UsersModule,
     AuthModule,
+    PrejudicesModule,
+    AnswersModule,
     AuthorsModule,
     BooksModule,
-    PrejudicesModule,
-    SettingsModule,
-    UsersModule,
   ],
 })
 export class AppModule {}

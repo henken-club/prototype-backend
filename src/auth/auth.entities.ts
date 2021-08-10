@@ -1,31 +1,14 @@
+import {Field, ObjectType} from '@nestjs/graphql';
+
 export class JwtPayload {
   uid!: string;
 }
+
+@ObjectType()
 export class TokenEntities {
+  @Field(() => String)
   accessToken!: string;
+
+  @Field(() => String)
   refreshToken!: string;
 }
-export class LoginPayload {
-  tokens!: TokenEntities;
-}
-export class SignupPayload {
-  tokens!: TokenEntities;
-}
-export class RefreshTokenPayload {
-  tokens!: TokenEntities;
-}
-
-export type LoginInput = {
-  alias: string;
-  password: string;
-};
-
-export type SignupInput = {
-  alias: string;
-  displayName: string;
-  password: string;
-};
-
-export type RefreshTokenInput = {
-  token: string;
-};

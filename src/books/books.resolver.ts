@@ -12,23 +12,25 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import {BookEntity, AddBookInput, AddBookPayload} from './books.entities';
+import {BookArray, BookEntity} from './books.entities';
 import {BooksService} from './books.service';
+import {AddBookArgs, AddBookPayload} from './dto/add-book.dto';
+import {ResolveAuthorsArgs} from './dto/resolve-authors.dto';
 
-import {AuthorConnection, AuthorOrder} from '~/authors/authors.entities';
+import {AuthorArray, AuthorEntity} from '~/authors/authors.entities';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {UserEntity} from '~/users/users.entities';
 import {AuthorsService} from '~/authors/authors.service';
 
-@Resolver('Book')
+@Resolver(() => BookEntity)
 export class BooksResolver {
   constructor(
     private readonly booksService: BooksService,
     private readonly authorsService: AuthorsService,
   ) {}
 
-  @ResolveField('userResponsibleFor')
+  @ResolveField(() => UserEntity, {name: 'userResponsibleFor'})
   async resolveUserResponsibleFor(
     @Parent() {id}: BookEntity,
   ): Promise<UserEntity[]> {
@@ -36,13 +38,11 @@ export class BooksResolver {
     return user;
   }
 
-  @ResolveField('authors')
+  @ResolveField(() => AuthorEntity, {name: 'authors'})
   async authors(
     @Parent() {id}: BookEntity,
-    @Args('skip') skip: number,
-    @Args('limit') limit: number,
-    @Args('orderBy') orderBy: AuthorOrder,
-  ): Promise<AuthorConnection> {
+    @Args() {skip, limit, orderBy}: ResolveAuthorsArgs,
+  ): Promise<AuthorArray> {
     const nodes = await this.booksService.getAuthors(id, {
       skip,
       limit,
@@ -51,21 +51,21 @@ export class BooksResolver {
     return {nodes};
   }
 
-  @Query('book')
+  @Query(() => BookEntity, {name: 'book'})
   async getBook(@Args('id') id: string): Promise<BookEntity | null> {
     return this.booksService.getById(id);
   }
 
-  @Query('allBooks')
+  @Query(() => BookArray, {name: 'allBooks'})
   async getAllBooks(): Promise<BookEntity[]> {
     return this.booksService.getAll();
   }
 
-  @Mutation('addBook')
+  @Mutation(() => AddBookPayload, {name: 'addBook'})
   @UseGuards(GraphQLJwtGuard)
   async addBook(
     @Viewer() {id: userId}: ViewerType,
-    @Args('input') {title, authors: authorIds}: AddBookInput,
+    @Args() {title, authors: authorIds}: AddBookArgs,
   ): Promise<AddBookPayload> {
     if (!(await this.authorsService.checkExistence(authorIds)))
       throw new BadRequestException('not exist author(s)');

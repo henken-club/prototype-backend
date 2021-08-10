@@ -10,12 +10,12 @@ import {
   CYPHER_GET_ALL_AUTHORS,
 } from './authors.cypher';
 
-import {OrderDirection} from '~/common/common.entities';
 import {Neo4jService} from '~/neo4j/neo4j.service';
 import {AuthorEntity} from '~/authors/authors.entities';
 import {BookEntity, BookOrder} from '~/books/books.entities';
 import {IdService} from '~/id/id.service';
 import {UserEntity} from '~/users/users.entities';
+import {OrderDirection} from '~/common/common.entities';
 
 @Injectable()
 export class AuthorsService {

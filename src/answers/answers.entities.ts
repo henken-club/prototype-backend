@@ -1,43 +1,52 @@
-import {OrderDirection, Connection} from '~/common/common.entities';
-import {PrejudiceEntity} from '~/prejudices/prejudices.entities';
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  registerEnumType,
+} from '@nestjs/graphql';
 
-export enum Correctness {
-  CORRECT = 'CORRECT',
-  INCORRECT = 'INCORRECT',
-  PARTLY_CORRECT = 'PARTLY_CORRECT',
+import {OrderDirection} from '~/common/common.entities';
+import {PrejudiceOrderField} from '~/prejudices/prejudices.entities';
+
+@ObjectType('Answer')
+export class AnswerEntity {
+  @Field(() => ID)
+  id!: string;
 }
-
-export type AnswerOrder = {
-  direction: OrderDirection;
-  field: AnswerOrderField;
-};
 
 export enum AnswerOrderField {
-  CREATED_AT = 'CREATED_AT',
+  CREATED_AT,
 }
-export type AnswerEntity = {id: string};
-export class AnswerConnection extends Connection<AnswerEntity> {}
+registerEnumType(AnswerOrderField, {
+  name: 'AnswerOrderField',
+});
 
-export type GetPrejudiceInput = {
-  number: number;
-  posted: UserUniqueUnion;
-  received: UserUniqueUnion;
-};
+@InputType()
+export class AnswerOrder {
+  @Field(() => OrderDirection)
+  direction!: OrderDirection;
 
-export type UserUniqueUnion = {
-  alias?: string;
-  id?: string;
-};
+  @Field(() => PrejudiceOrderField)
+  field!: AnswerOrderField;
+}
 
-export type GetAnswerPayload = {
-  possibility: boolean;
-  answer: AnswerEntity | null;
-};
+@ObjectType()
+export class AnswerArray {
+  @Field((type) => [AnswerEntity])
+  nodes!: AnswerEntity[];
 
-export type PostAnswerInput = {
-  prejudiceId: string;
-};
+  /*
+  @Field((type) => Int)
+  totalCount!: number;
+*/
+}
 
-export type PostPrejudicePayload = {
-  prejudice: PrejudiceEntity;
-};
+export enum AnswerCorrectness {
+  CORRECT,
+  INCORRECT,
+  PARTLY_CORRECT,
+}
+registerEnumType(AnswerCorrectness, {
+  name: 'AnswerCorrectness',
+});

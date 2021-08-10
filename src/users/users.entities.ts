@@ -1,37 +1,33 @@
-import {UserUniqueUnion} from '~/answers/answers.entities';
-import {Connection} from '~/common/common.entities';
+import {Field, ID, Int, ObjectType} from '@nestjs/graphql';
 
+import {AbstractArray} from '~/common/common.entities';
+
+@ObjectType('User')
 export class UserEntity {
+  @Field((type) => ID)
   id!: string;
 }
-export class FollowUserPayload {
-  from!: UserEntity;
-  to!: UserEntity;
-}
-export class UnfollowUserPayload {
-  from!: UserEntity;
-  to!: UserEntity;
+
+@ObjectType()
+export class UserArray extends AbstractArray<UserEntity> {
+  @Field((type) => [UserEntity])
+  nodes!: UserEntity[];
 }
 
-export type GetUserInput = UserUniqueUnion;
-export type GetUserResult = {
-  user: UserEntity | null;
-};
+@ObjectType()
+export class FolloweeArray extends AbstractArray<UserEntity> {
+  @Field((type) => [UserEntity])
+  nodes!: UserEntity[];
 
-export class UserConnection extends Connection<UserEntity> {}
-export class FollowingConnection {
-  nodes!: UserEntity[];
-  totalCount!: number;
-}
-export class FollowerConnection {
-  nodes!: UserEntity[];
+  @Field((type) => Int)
   totalCount!: number;
 }
 
-export type FollowUserInput = {
-  user: GetUserInput;
-};
+@ObjectType()
+export class FollowerArray extends AbstractArray<UserEntity> {
+  @Field((type) => [UserEntity])
+  nodes!: UserEntity[];
 
-export type UnfollowUserInput = {
-  user: GetUserInput;
-};
+  @Field((type) => Int)
+  totalCount!: number;
+}

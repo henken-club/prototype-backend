@@ -1,25 +1,44 @@
-import {Connection, OrderDirection} from '~/common/common.entities';
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  registerEnumType,
+} from '@nestjs/graphql';
 
-export type BookEntity = {
-  id: string;
-  title: string;
-};
-export class BookConnection extends Connection<BookEntity> {}
+import {AuthorOrderField} from '~/authors/authors.entities';
+import {
+  AbstractArray,
+  AbstractOrder,
+  OrderDirection,
+} from '~/common/common.entities';
 
-export class AddBookPayload {
-  book!: BookEntity;
+@ObjectType('Book')
+export class BookEntity {
+  @Field(() => ID)
+  id!: string;
+
+  @Field(() => String)
+  title!: string;
 }
-
-export type BookOrder = {
-  direction: OrderDirection;
-  field: BookOrderField;
-};
-
 export enum BookOrderField {
-  TITLE = 'TITLE',
+  TITLE,
+}
+registerEnumType(BookOrderField, {
+  name: 'BookOrderField',
+});
+
+@InputType()
+export class BookOrder extends AbstractOrder<BookOrderField> {
+  @Field(() => OrderDirection)
+  direction!: OrderDirection;
+
+  @Field(() => AuthorOrderField)
+  field!: BookOrderField;
 }
 
-export type AddBookInput = {
-  authors: string[];
-  title: string;
-};
+@ObjectType()
+export class BookArray extends AbstractArray<BookEntity> {
+  @Field((type) => [BookEntity])
+  nodes!: BookEntity[];
+}

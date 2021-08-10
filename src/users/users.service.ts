@@ -23,13 +23,14 @@ import {
   PrejudiceEntity,
   PrejudiceOrder,
 } from '~/prejudices/prejudices.entities';
-import {
-  AnswerEntity,
-  AnswerOrder,
-  UserUniqueUnion,
-} from '~/answers/answers.entities';
+import {AnswerEntity, AnswerOrder} from '~/answers/answers.entities';
 import {PrismaService} from '~/prisma/prisma.service';
 import {OrderDirection} from '~/common/common.entities';
+
+export type UserUniqueUnion = {
+  alias?: string;
+  id?: string;
+};
 
 @Injectable()
 export class UsersService {

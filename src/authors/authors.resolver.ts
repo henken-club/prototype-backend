@@ -9,21 +9,18 @@ import {
 import {InternalServerErrorException, UseGuards} from '@nestjs/common';
 
 import {AuthorsService} from './authors.service';
-import {
-  AuthorEntity,
-  AddAuthorInput,
-  AddAuthorPayload,
-} from './authors.entities';
+import {AuthorArray, AuthorEntity} from './authors.entities';
+import {AddAuthorArgs, AddAuthorPayload} from './dto/add-author.dto';
 
-import {BookConnection, BookOrder} from '~/books/books.entities';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {UserEntity} from '~/users/users.entities';
 
-@Resolver('Author')
+@Resolver(() => AuthorEntity)
 export class AuthorsResolver {
   constructor(private authorsService: AuthorsService) {}
 
+  /*
   @ResolveField('writesBooks')
   async authors(
     @Parent() {id}: AuthorEntity,
@@ -38,8 +35,9 @@ export class AuthorsResolver {
     });
     return {nodes};
   }
+  */
 
-  @ResolveField('userResponsibleFor')
+  @ResolveField(() => UserEntity, {name: 'userResponsibleFor'})
   async resolveUserResponsibleFor(
     @Parent() {id}: AuthorEntity,
   ): Promise<UserEntity[]> {
@@ -47,21 +45,22 @@ export class AuthorsResolver {
     return user;
   }
 
-  @Query('author')
+  @Query(() => AuthorEntity, {name: 'author'})
   async getBook(@Args('id') id: string): Promise<AuthorEntity | null> {
     return this.authorsService.getById(id);
   }
 
-  @Query('allAuthors')
-  async getAllBooks(): Promise<AuthorEntity[]> {
-    return this.authorsService.getAll();
+  @Query(() => AuthorArray, {name: 'allAuthors'})
+  async getAllBooks(): Promise<AuthorArray> {
+    const nodes = await this.authorsService.getAll();
+    return {nodes};
   }
 
-  @Mutation('addAuthor')
+  @Mutation(() => AddAuthorPayload, {name: 'addAuthor'})
   @UseGuards(GraphQLJwtGuard)
   async addAuthor(
     @Viewer() {id: userId}: ViewerType,
-    @Args('input') {name}: AddAuthorInput,
+    @Args() {name}: AddAuthorArgs,
   ): Promise<AddAuthorPayload> {
     const author = await this.authorsService.addAuthor(userId, {name});
     if (!author) throw new InternalServerErrorException();

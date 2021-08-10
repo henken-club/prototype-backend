@@ -1,47 +1,41 @@
 import {
-  Args,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
   Resolver,
+  Query,
+  Args,
+  ResolveField,
+  Parent,
+  Mutation,
+  ID,
 } from '@nestjs/graphql';
 import {
   BadRequestException,
   InternalServerErrorException,
-  NotFoundException,
   UseGuards,
 } from '@nestjs/common';
 
-import {Viewer, ViewerType} from '../auth/viewer.decorator';
-
 import {
+  FolloweeArray,
+  FollowerArray,
+  UserArray,
   UserEntity,
-  FollowingConnection,
-  FollowerConnection,
-  FollowUserPayload,
-  UnfollowUserPayload,
-  GetUserResult,
-  GetUserInput,
-  UnfollowUserInput,
-  FollowUserInput,
 } from './users.entities';
 import {UsersService} from './users.service';
+import {FollowUserArgs, FollowUserPayload} from './dto/follow-user.dto';
+import {UnfollowUserArgs, UnfollowUserPayload} from './dto/unfollow-user.dto';
+import {ResolveFolloweesArgs} from './dto/resolve-followees.dto';
+import {ResolvePostPrejudicesArgs} from './dto/resolve-post-prejudices.dto';
+import {ResolveReceivedPrejudicesArgs} from './dto/resolve-received-prejudices.dto';
+import {GetUserArgs, GetUserResult} from './dto/get-user.dto';
+import {ResolvePostAnswersArgs} from './dto/resolve-post-answers.dto';
 
-import {
-  AnswerConnection,
-  AnswerOrder,
-  UserUniqueUnion,
-} from '~/answers/answers.entities';
-import {
-  PrejudiceConnection,
-  PrejudiceOrder,
-} from '~/prejudices/prejudices.entities';
-import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {SettingsService} from '~/settings/settings.service';
 import {ImgproxyService} from '~/imgproxy/imgproxy.service';
+import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
+import {Viewer, ViewerType} from '~/auth/viewer.decorator';
+import {PrejudiceArray} from '~/prejudices/prejudices.entities';
+import {AnswerArray} from '~/answers/answers.entities';
 
-@Resolver('User')
+@Resolver(() => UserEntity)
 export class UsersResolver {
   constructor(
     private usersService: UsersService,
@@ -49,21 +43,21 @@ export class UsersResolver {
     private imgproxyService: ImgproxyService,
   ) {}
 
-  @ResolveField('alias')
+  @ResolveField(() => String, {name: 'alias'})
   async resolveAlias(@Parent() {id}: UserEntity): Promise<string> {
     const alias = await this.usersService.resolveAlias(id);
     if (!alias) throw new InternalServerErrorException();
     return alias;
   }
 
-  @ResolveField('displayName')
+  @ResolveField(() => String, {name: 'displayName'})
   async resolveDisplayName(@Parent() {id}: UserEntity): Promise<string> {
     const displayName = await this.usersService.resolveDisplayName(id);
     if (!displayName) throw new InternalServerErrorException();
     return displayName;
   }
 
-  @ResolveField('picture')
+  @ResolveField(() => String, {name: 'picture'})
   async resolvePicture(@Parent() {id}: UserEntity): Promise<string> {
     return this.usersService
       .resolvePicture(id)
@@ -75,13 +69,11 @@ export class UsersResolver {
       });
   }
 
-  @ResolveField('postedPrejudices')
+  @ResolveField(() => PrejudiceArray, {name: 'postedPrejudices'})
   async getPostPrejudices(
     @Parent() {id}: UserEntity,
-    @Args('skip') skip: number,
-    @Args('limit') limit: number,
-    @Args('orderBy') orderBy: PrejudiceOrder,
-  ): Promise<PrejudiceConnection> {
+    @Args() {skip, limit, orderBy}: ResolvePostPrejudicesArgs,
+  ): Promise<PrejudiceArray> {
     const nodes = await this.usersService.resolvePostedPrejudices(id, {
       skip,
       limit,
@@ -90,13 +82,11 @@ export class UsersResolver {
     return {nodes};
   }
 
-  @ResolveField('receivedPrejudices')
+  @ResolveField(() => PrejudiceArray, {name: 'receivedPrejudices'})
   async getReceivedPrejudices(
     @Parent() {id}: UserEntity,
-    @Args('skip') skip: number,
-    @Args('limit') limit: number,
-    @Args('orderBy') orderBy: PrejudiceOrder,
-  ): Promise<PrejudiceConnection> {
+    @Args() {skip, limit, orderBy}: ResolveReceivedPrejudicesArgs,
+  ): Promise<PrejudiceArray> {
     const nodes = await this.usersService.resolveReceivedPrejudices(id, {
       skip,
       limit,
@@ -105,13 +95,11 @@ export class UsersResolver {
     return {nodes};
   }
 
-  @ResolveField('postedAnswers')
+  @ResolveField(() => AnswerArray, {name: 'postedAnswers'})
   async getPostAnswers(
     @Parent() {id}: UserEntity,
-    @Args('skip') skip: number,
-    @Args('limit') limit: number,
-    @Args('orderBy') orderBy: AnswerOrder,
-  ): Promise<AnswerConnection> {
+    @Args() {skip, limit, orderBy}: ResolvePostAnswersArgs,
+  ): Promise<AnswerArray> {
     const nodes = await this.usersService.resolvePostedAnswers(id, {
       skip,
       limit,
@@ -120,12 +108,11 @@ export class UsersResolver {
     return {nodes};
   }
 
-  @ResolveField('following')
+  @ResolveField(() => FolloweeArray, {name: 'followees'})
   async getFollowing(
     @Parent() {id}: UserEntity,
-    @Args('skip') skip: number,
-    @Args('limit') limit: number,
-  ): Promise<FollowingConnection> {
+    @Args() {skip, limit}: ResolveFolloweesArgs,
+  ): Promise<FolloweeArray> {
     const nodes = await this.usersService.resolveFollowings(id, {
       skip,
       limit,
@@ -135,53 +122,49 @@ export class UsersResolver {
     return {nodes, totalCount};
   }
 
-  @ResolveField('followers')
+  @ResolveField(() => FollowerArray, {name: 'followers'})
   async getFollowers(
     @Parent() {id}: UserEntity,
-    @Args('skip') skip: number,
-    @Args('limit') limit: number,
-  ): Promise<FollowerConnection> {
+    @Args() {skip, limit}: ResolveFolloweesArgs,
+  ): Promise<FollowerArray> {
     const nodes = await this.usersService.resolveFollowers(id, {skip, limit});
     const totalCount = await this.usersService.countFollowers(id);
     if (totalCount === null) throw new InternalServerErrorException();
     return {nodes, totalCount};
   }
 
-  @ResolveField('isFollowing')
+  @ResolveField(() => Boolean, {name: 'isFollowing'})
   async isFollowing(
     @Parent() {id: fromId}: UserEntity,
-    @Args('to') to: UserUniqueUnion,
+    @Args('id', {type: () => ID}) toId: string,
   ): Promise<boolean> {
-    const toId = await this.usersService.convertUserUniqueUnion(to);
-
-    if (!toId) throw new NotFoundException();
-    else if (fromId === toId) throw new BadRequestException();
+    if (fromId === toId) throw new BadRequestException();
+    if (!(await this.usersService.checkExists({id: toId})))
+      throw new BadRequestException();
 
     return this.usersService.isFollowing(fromId, toId).catch(() => {
       throw new InternalServerErrorException();
     });
   }
 
-  @ResolveField('isFollowed')
+  @ResolveField(() => Boolean, {name: 'isFollowedBy'})
   async isFollowed(
     @Parent() {id: toId}: UserEntity,
-    @Args('from') from: UserUniqueUnion,
+    @Args('id', {type: () => ID}) fromId: string,
   ): Promise<boolean> {
-    const fromId = await this.usersService.convertUserUniqueUnion(from);
-
-    if (!fromId) throw new NotFoundException();
-    else if (fromId === toId) throw new BadRequestException();
+    if (fromId === toId) throw new BadRequestException();
+    if (!(await this.usersService.checkExists({id: fromId})))
+      throw new BadRequestException();
 
     return this.usersService.isFollowing(toId, toId).catch(() => {
       throw new InternalServerErrorException();
     });
   }
 
-  @ResolveField('canPostPrejudiceTo')
-  @UseGuards(GraphQLJwtGuard)
+  @ResolveField(() => Boolean, {name: 'canPostPrejudiceTo'})
   async canPostPrejudiceTo(
-    @Viewer() {id: fromId}: ViewerType,
-    @Parent() {id: toId}: UserEntity,
+    @Parent() {id: fromId}: ViewerType,
+    @Args('id', {type: () => ID}) toId: string,
   ): Promise<boolean> {
     if (fromId === toId) throw new BadRequestException();
     if (!(await this.usersService.checkExists({id: toId})))
@@ -190,24 +173,35 @@ export class UsersResolver {
     return this.settingsService.canPostPrejudiceTo(fromId, toId);
   }
 
-  @Query('user')
+  @ResolveField(() => Boolean, {name: 'canReceivePrejudiceFrom'})
+  async canReceivePrejudiceFrom(
+    @Parent() {id: toId}: ViewerType,
+    @Args('id', {type: () => ID}) fromId: string,
+  ): Promise<boolean> {
+    if (fromId === toId) throw new BadRequestException();
+    if (!(await this.usersService.checkExists({id: toId})))
+      throw new BadRequestException();
+
+    return this.settingsService.canPostPrejudiceTo(fromId, toId);
+  }
+
+  @Query(() => UserEntity, {name: 'user'})
   async getUserById(@Args('id') id: string): Promise<UserEntity | null> {
     return this.usersService.getById(id);
   }
 
-  @Query('getUser')
-  async getUser(@Args('input') input: GetUserInput): Promise<GetUserResult> {
-    return this.usersService
-      .convertUserUniqueUnion(input)
-      .then((id) => (id ? {user: {id}} : {user: null}));
+  @Query(() => GetUserResult, {name: 'getUser'})
+  async getUser(@Args() {alias}: GetUserArgs): Promise<GetUserResult> {
+    return {user: await this.usersService.getByAlias(alias)};
   }
 
-  @Query('allUsers')
-  async getAllUsers(): Promise<UserEntity[]> {
-    return this.usersService.getAll();
+  @Query(() => UserArray, {name: 'allUsers'})
+  async getAllUsers(): Promise<UserArray> {
+    const nodes = await this.usersService.getAll();
+    return {nodes};
   }
 
-  @Query('viewer')
+  @Query(() => UserEntity, {name: 'viewer'})
   @UseGuards(GraphQLJwtGuard)
   async getViewer(@Viewer() {id}: ViewerType): Promise<UserEntity> {
     const result = await this.usersService.getById(id);
@@ -215,30 +209,30 @@ export class UsersResolver {
     return result;
   }
 
-  @Mutation('followUser')
+  @Mutation(() => FollowUserPayload, {name: 'followUser'})
   @UseGuards(GraphQLJwtGuard)
   async follow(
     @Viewer() {id: fromId}: ViewerType,
-    @Args('input') {user}: FollowUserInput,
+    @Args() {id: toId}: FollowUserArgs,
   ): Promise<FollowUserPayload> {
-    const toId = await this.usersService.convertUserUniqueUnion(user);
-    if (!toId) throw new NotFoundException();
     if (fromId === toId) throw new BadRequestException();
+    if (!(await this.usersService.checkExists({id: toId})))
+      throw new BadRequestException();
 
     return this.usersService.followUser(fromId, toId).catch(() => {
       throw new InternalServerErrorException();
     });
   }
 
-  @Mutation('unfollowUser')
+  @Mutation(() => UnfollowUserPayload, {name: 'unfollowUser'})
   @UseGuards(GraphQLJwtGuard)
   async unfollow(
     @Viewer() {id: from}: ViewerType,
-    @Args('input') {user}: UnfollowUserInput,
+    @Args() {id: toId}: UnfollowUserArgs,
   ): Promise<UnfollowUserPayload> {
-    const toId = await this.usersService.convertUserUniqueUnion(user);
-    if (!toId) throw new NotFoundException();
     if (from === toId) throw new BadRequestException();
+    if (!(await this.usersService.checkExists({id: toId})))
+      throw new BadRequestException();
 
     return this.usersService.unfollowUser(from, toId).catch(() => {
       throw new InternalServerErrorException();

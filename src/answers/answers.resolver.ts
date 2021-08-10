@@ -2,81 +2,70 @@ import {Args, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql';
 import {BadRequestException} from '@nestjs/common';
 
 import {AnswersService} from './answers.service';
-import {AnswerEntity, Correctness, GetAnswerPayload} from './answers.entities';
+import {AnswerEntity, AnswerCorrectness, AnswerArray} from './answers.entities';
+import {GetAnswerArgs, GetAnswerPayload} from './dto/get-answer.dto';
 
-import {
-  GetPrejudiceInput,
-  PrejudiceEntity,
-} from '~/prejudices/prejudices.entities';
+import {PrejudiceEntity} from '~/prejudices/prejudices.entities';
 import {UsersService} from '~/users/users.service';
-import {PrejudicesService} from '~/prejudices/prejudices.service';
 
-@Resolver('Answer')
+@Resolver(() => AnswerEntity)
 export class AnswersResolver {
   constructor(
     private readonly answersService: AnswersService,
-    private readonly prejudiceService: PrejudicesService,
     private readonly usersService: UsersService,
   ) {}
 
-  @ResolveField('text')
+  @ResolveField(() => String, {name: 'text'})
   async resolveText(@Parent() {id}: AnswerEntity): Promise<string> {
     return this.answersService.resolveText(id);
   }
 
-  @ResolveField('createdAt')
+  @ResolveField(() => Date, {name: 'createdAt'})
   async resolveCreatedAt(@Parent() {id}: AnswerEntity): Promise<Date> {
     return this.answersService.resolveCreatedAt(id);
   }
 
-  @ResolveField('correctness')
-  async resolveCorrectness(@Parent() {id}: AnswerEntity): Promise<Correctness> {
+  @ResolveField(() => AnswerCorrectness, {name: 'correctness'})
+  async resolveCorrectness(
+    @Parent() {id}: AnswerEntity,
+  ): Promise<AnswerCorrectness> {
     return this.answersService.resolveCorrectness(id);
   }
 
-  @ResolveField('prejudice')
+  @ResolveField(() => PrejudiceEntity, {name: 'prejudice'})
   async resolvePrejudice(
     @Parent() {id}: AnswerEntity,
   ): Promise<PrejudiceEntity> {
     return this.answersService.resolvePrejudice(id);
   }
 
-  @Query('answer')
+  @Query(() => AnswerEntity, {name: 'answer'})
   async getAnswerById(@Args('id') id: string) {
     return this.answersService.getById(id);
   }
 
-  @Query('getAnswer')
+  @Query(() => GetAnswerPayload, {name: 'getAnswer'})
   async getAnswer(
-    @Args('input') {posted, received, number}: GetPrejudiceInput,
-  ): Promise<GetAnswerPayload | null> {
-    const postedId = await this.usersService.convertUserUniqueUnion(posted);
-    const receivedId = await this.usersService.convertUserUniqueUnion(received);
+    @Args() {posted, received, number}: GetAnswerArgs,
+  ): Promise<GetAnswerPayload> {
+    if (posted === received) throw new BadRequestException();
+    if (!(await this.usersService.checkExists({id: posted})))
+      throw new BadRequestException();
+    if (!(await this.usersService.checkExists({id: received})))
+      throw new BadRequestException();
 
-    if (!postedId || !receivedId) return null;
-    if (postedId === receivedId) throw new BadRequestException();
-
-    if (
-      await this.prejudiceService
-        .getByUserIdAndNumber(postedId, receivedId, number)
-        .then((prejudice) => !prejudice)
-    )
-      return {
-        possibility: false,
-        answer: null,
-      };
     return {
-      possibility: true,
       answer: await this.answersService.getByUserIdAndNumber(
-        postedId,
-        receivedId,
+        posted,
+        received,
         number,
       ),
     };
   }
 
-  @Query('allAnswers')
-  async getAllAnswers(): Promise<AnswerEntity[]> {
-    return this.answersService.getAll();
+  @Query(() => AnswerArray, {name: 'allAnswers'})
+  async getAllAnswers(): Promise<AnswerArray> {
+    const nodes = await this.answersService.getAll();
+    return {nodes};
   }
 }
