@@ -1,3 +1,6 @@
 # test
 test/
 *.test.ts
+
+# schema.graphql
+schema.graphql
