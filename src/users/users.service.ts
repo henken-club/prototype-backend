@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {int} from 'neo4j-driver';
 
-import {UserEntity, UserUniqueUnion} from './users.entities';
+import {UserEntity} from './users.entities';
 import {
   CYPHER_FOLLOW_USER,
   CYPHER_GET_USER_FOLLOWERS,
@@ -23,10 +23,13 @@ import {
   PrejudiceEntity,
   PrejudiceOrder,
 } from '~/prejudices/prejudices.entities';
-import {OrderDirection} from '~/common/common.entities';
-import {AnswerOrder} from '~/graphql';
-import {AnswerEntity} from '~/answers/answers.entities';
+import {
+  AnswerEntity,
+  AnswerOrder,
+  UserUniqueUnion,
+} from '~/answers/answers.entities';
 import {PrismaService} from '~/prisma/prisma.service';
+import {OrderDirection} from '~/common/common.entities';
 
 @Injectable()
 export class UsersService {

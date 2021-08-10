@@ -1,5 +1,3 @@
-export {LoginInput, SignupInput, RefreshTokenInput} from '~/graphql';
-
 export class JwtPayload {
   uid!: string;
 }
@@ -16,3 +14,18 @@ export class SignupPayload {
 export class RefreshTokenPayload {
   tokens!: TokenEntities;
 }
+
+export type LoginInput = {
+  alias: string;
+  password: string;
+};
+
+export type SignupInput = {
+  alias: string;
+  displayName: string;
+  password: string;
+};
+
+export type RefreshTokenInput = {
+  token: string;
+};

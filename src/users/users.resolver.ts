@@ -19,15 +19,20 @@ import {
   UserEntity,
   FollowingConnection,
   FollowerConnection,
-  FollowUserInput,
   FollowUserPayload,
   UnfollowUserPayload,
   GetUserResult,
   GetUserInput,
+  UnfollowUserInput,
+  FollowUserInput,
 } from './users.entities';
 import {UsersService} from './users.service';
 
-import {AnswerConnection, AnswerOrder} from '~/answers/answers.entities';
+import {
+  AnswerConnection,
+  AnswerOrder,
+  UserUniqueUnion,
+} from '~/answers/answers.entities';
 import {
   PrejudiceConnection,
   PrejudiceOrder,
@@ -35,7 +40,6 @@ import {
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {SettingsService} from '~/settings/settings.service';
 import {ImgproxyService} from '~/imgproxy/imgproxy.service';
-import {UserUniqueUnion} from '~/graphql';
 
 @Resolver('User')
 export class UsersResolver {
@@ -230,7 +234,7 @@ export class UsersResolver {
   @UseGuards(GraphQLJwtGuard)
   async unfollow(
     @Viewer() {id: from}: ViewerType,
-    @Args('input') {user}: FollowUserInput,
+    @Args('input') {user}: UnfollowUserInput,
   ): Promise<UnfollowUserPayload> {
     const toId = await this.usersService.convertUserUniqueUnion(user);
     if (!toId) throw new NotFoundException();
