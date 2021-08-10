@@ -28,6 +28,7 @@ import {UsersService} from '~/users/users.service';
 import {SettingsService} from '~/settings/settings.service';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
+import {AnswerEntity} from '~/answers/answers.entities';
 
 @Resolver(() => PrejudiceEntity)
 export class PrejudicesResolver {
@@ -76,14 +77,14 @@ export class PrejudicesResolver {
     return user;
   }
 
-  /*
-  @ResolveField('answer')
+  @ResolveField(() => AnswerEntity, {name: 'answer', nullable: true})
   async getAnswer(
     @Parent() {id}: PrejudiceEntity,
   ): Promise<AnswerEntity | null> {
     return this.prejudicesService.resolveAnswer(id);
   }
 
+  /*
   @ResolveField('relatedBooks')
   async getRelatedBooks(
     @Parent() {id}: PrejudiceEntity,

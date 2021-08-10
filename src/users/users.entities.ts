@@ -1,20 +1,10 @@
 import {Field, ID, Int, ObjectType} from '@nestjs/graphql';
 
-import {UserUniqueUnion} from '~/answers/answers.entities';
-import {Connection} from '~/common/common.entities';
-
 @ObjectType('User')
 export class UserEntity {
   @Field((type) => ID)
   id!: string;
 }
-
-export type GetUserInput = UserUniqueUnion;
-export type GetUserResult = {
-  user: UserEntity | null;
-};
-
-export class UserConnection extends Connection<UserEntity> {}
 
 @ObjectType()
 export class UserArray {

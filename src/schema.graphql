@@ -2,6 +2,19 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Answer {
+  id: ID!
+}
+
+type AnswerArray {
+  nodes: [Answer!]!
+}
+
+input AnswerOrder {
+  direction: OrderDirection!
+  field: PrejudiceOrderField!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -46,6 +59,7 @@ type PostPrejudicePayload {
 }
 
 type Prejudice {
+  answer: Answer
   createdAt: DateTime!
   id: ID!
   number: Int!
@@ -93,6 +107,7 @@ type User {
   isFollowedBy(id: ID!): Boolean!
   isFollowing(id: ID!): Boolean!
   picture: String!
+  postedAnswers(limit: Int = 10, orderBy: AnswerOrder = {direction: DESC, field: CREATED_AT}, skip: Int = 0): AnswerArray!
   postedPrejudices(limit: Int = 10, orderBy: PrejudiceOrder = {direction: DESC, field: CREATED_AT}, skip: Int = 0): PrejudiceArray!
   receivedPrejudices(limit: Int = 10, orderBy: PrejudiceOrder = {direction: DESC, field: CREATED_AT}, skip: Int = 0): PrejudiceArray!
 }

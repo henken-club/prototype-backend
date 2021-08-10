@@ -95,7 +95,7 @@ export class UsersResolver {
     return {nodes};
   }
 
-  @ResolveField('postedAnswers')
+  @ResolveField(() => AnswerArray, {name: 'postedAnswers'})
   async getPostAnswers(
     @Parent() {id}: UserEntity,
     @Args() {skip, limit, orderBy}: ResolvePostAnswersArgs,
