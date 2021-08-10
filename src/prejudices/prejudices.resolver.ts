@@ -136,18 +136,25 @@ export class PrejudicesResolver {
   @Mutation(() => PostPrejudicePayload, {name: 'postPrejudice'})
   @UseGuards(GraphQLJwtGuard)
   async postPrejudice(
-    @Viewer() {id: postedId}: ViewerType,
+    @Viewer() {id: postId}: ViewerType,
     @Args()
     {userId: receivedId, title, relatedBooks}: PostPrejudiceArgs,
   ): Promise<PostPrejudicePayload> {
-    if (postedId === receivedId) throw new BadRequestException();
+    if (postId === receivedId) throw new BadRequestException();
     if (!(await this.usersService.checkExists({id: receivedId})))
       throw new BadRequestException();
-    if (!(await this.settingsService.canPostPrejudiceTo(postedId, receivedId)))
+
+    if (
+      !(await this.settingsService
+        .getFromUserId(postId)
+        .then(({policyReceivePrejudice: policy}) =>
+          this.settingsService.canPostPrejudice(postId, receivedId, policy),
+        ))
+    )
       throw new ForbiddenException();
 
     return this.prejudicesService
-      .createPrejudice(postedId, receivedId, {title, relatedBooks})
+      .createPrejudice(postId, receivedId, {title, relatedBooks})
       .then((prejudice) => ({prejudice}))
       .catch(() => {
         throw new InternalServerErrorException();

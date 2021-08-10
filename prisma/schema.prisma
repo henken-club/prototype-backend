@@ -22,10 +22,12 @@ model Setting {
   user   User   @relation(fields: [userId], references: [id])
   userId String @unique
 
-  rulePostPrejudice PrejudicePostRule @default(MUTUAL_ONLY)
+  policyReceivePrejudice ReceivePrejudicePolicy @default(MUTUAL_ONLY)
 }
 
-enum PrejudicePostRule {
+enum ReceivePrejudicePolicy {
   ALL_FOLLOWERS
   MUTUAL_ONLY
+
+  @@map("PrejudicePostRule")
 }

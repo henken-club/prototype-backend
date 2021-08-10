@@ -34,6 +34,7 @@ import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {PrejudiceArray} from '~/prejudices/prejudices.entities';
 import {AnswerArray} from '~/answers/answers.entities';
+import {SettingEntity} from '~/settings/settings.entities';
 
 @Resolver(() => UserEntity)
 export class UsersResolver {
@@ -170,7 +171,11 @@ export class UsersResolver {
     if (!(await this.usersService.checkExists({id: toId})))
       throw new BadRequestException();
 
-    return this.settingsService.canPostPrejudiceTo(fromId, toId);
+    return this.settingsService
+      .getFromUserId(toId)
+      .then(({policyReceivePrejudice: policy}) =>
+        this.settingsService.canPostPrejudice(fromId, toId, policy),
+      );
   }
 
   @ResolveField(() => Boolean, {name: 'canReceivePrejudiceFrom'})
@@ -182,7 +187,17 @@ export class UsersResolver {
     if (!(await this.usersService.checkExists({id: toId})))
       throw new BadRequestException();
 
-    return this.settingsService.canPostPrejudiceTo(fromId, toId);
+    return this.settingsService
+      .getFromUserId(toId)
+      .then(({policyReceivePrejudice: policy}) =>
+        this.settingsService.canPostPrejudice(fromId, toId, policy),
+      );
+  }
+
+  @ResolveField(() => SettingEntity, {name: 'settings'})
+  @UseGuards(GraphQLJwtGuard)
+  async resolveSettings(@Parent() {id}: UserEntity): Promise<SettingEntity> {
+    return this.settingsService.getFromUserId(id);
   }
 
   @Query(() => UserEntity, {name: 'user'})

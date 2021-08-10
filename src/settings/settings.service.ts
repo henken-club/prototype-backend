@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
+import {ReceivePrejudicePolicy} from '@prisma/client';
 
-import {SettingEntity, PrejudicePostRule} from './settings.entities';
 import {
   CYPHER_CAN_POST_PREJUDICE_ALL_FOLLOWERS,
   CYPHER_CAN_POST_PREJUDICE_MUTUAL_ONLY,
@@ -16,7 +16,7 @@ export class SettingsService {
     private readonly prismaService: PrismaService,
   ) {}
 
-  async getSettingByUserId(userId: string): Promise<SettingEntity> {
+  async getFromUserId(userId: string) {
     return this.prismaService.setting.upsert({
       where: {userId},
       create: {user: {connect: {id: userId}}},
@@ -24,23 +24,24 @@ export class SettingsService {
     });
   }
 
-  canPostPrejudiceToQuery(mode: PrejudicePostRule) {
-    if (mode === PrejudicePostRule.ALL_FOLLOWERS)
+  canPostPrejudiceToQuery(policy: ReceivePrejudicePolicy) {
+    if (policy === ReceivePrejudicePolicy.ALL_FOLLOWERS)
       return CYPHER_CAN_POST_PREJUDICE_ALL_FOLLOWERS;
     else return CYPHER_CAN_POST_PREJUDICE_MUTUAL_ONLY;
   }
 
-  async canPostPrejudiceTo(fromId: string, toId: string): Promise<boolean> {
-    const result = await this.getSettingByUserId(toId)
-      .then(({rulePostPrejudice}) => rulePostPrejudice)
-      .then((mode) =>
-        this.neo4jService.read(this.canPostPrejudiceToQuery(mode), {
-          from: fromId,
-          to: toId,
-        }),
-      );
+  async canPostPrejudice(
+    post: string,
+    received: string,
+    policy: ReceivePrejudicePolicy,
+  ) {
+    const query = this.canPostPrejudiceToQuery(policy);
+    const result = await this.neo4jService.read(query, {
+      from: post,
+      to: received,
+    });
 
-    if (!result.records[0]) throw new Error();
+    if (!result.records[0]) throw new Error('something broken with neo4j');
     return result.records[0].get('can');
   }
 }

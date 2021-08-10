@@ -1,8 +1,12 @@
-import {PrejudicePostRule} from '@prisma/client';
+import {Field, ObjectType, registerEnumType} from '@nestjs/graphql';
+import {ReceivePrejudicePolicy} from '@prisma/client';
 
-export {PrejudicePostRule} from '@prisma/client';
+registerEnumType(ReceivePrejudicePolicy, {name: 'ReceivePrejudicePolicy'});
+
+@ObjectType()
 export class SettingEntity {
   id!: string;
 
-  rulePostPrejudice!: PrejudicePostRule;
+  @Field(() => ReceivePrejudicePolicy)
+  policyReceivePrejudice!: ReceivePrejudicePolicy;
 }
