@@ -13,16 +13,25 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import {FolloweeArray, FollowerArray, UserEntity} from './users.entities';
+import {
+  FolloweeArray,
+  FollowerArray,
+  UserArray,
+  UserEntity,
+} from './users.entities';
 import {UsersService} from './users.service';
 import {FollowUserArgs, FollowUserPayload} from './dto/follow-user.dto';
 import {UnfollowUserArgs, UnfollowUserPayload} from './dto/unfollow-user.dto';
 import {ResolveFolloweesArgsType} from './dto/resolve-followees.dto';
+import {ResolvePostPrejudicesArgsType} from './dto/resolve-post-prejudices.dto';
+import {ResolveReceivedPrejudicesArgsType} from './dto/resolve-received-prejudices.dto';
+import {GetUserArgs, GetUserResult} from './GetPrejudiceInput';
 
 import {SettingsService} from '~/settings/settings.service';
 import {ImgproxyService} from '~/imgproxy/imgproxy.service';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
+import {PrejudiceArray} from '~/prejudices/prejudices.entities';
 
 @Resolver(() => UserEntity)
 export class UsersResolver {
@@ -58,12 +67,11 @@ export class UsersResolver {
       });
   }
 
-  /*
-  @ResolveField('postedPrejudices')
+  @ResolveField(() => PrejudiceArray, {name: 'postedPrejudices'})
   async getPostPrejudices(
     @Parent() {id}: UserEntity,
     @Args() {skip, limit, orderBy}: ResolvePostPrejudicesArgsType,
-  ): Promise<PrejudiceConnection> {
+  ): Promise<PrejudiceArray> {
     const nodes = await this.usersService.resolvePostedPrejudices(id, {
       skip,
       limit,
@@ -72,13 +80,11 @@ export class UsersResolver {
     return {nodes};
   }
 
-  @ResolveField('receivedPrejudices')
+  @ResolveField(() => PrejudiceArray, {name: 'receivedPrejudices'})
   async getReceivedPrejudices(
     @Parent() {id}: UserEntity,
-    @Args('skip') skip: number,
-    @Args('limit') limit: number,
-    @Args('orderBy') orderBy: PrejudiceOrder,
-  ): Promise<PrejudiceConnection> {
+    @Args() {skip, limit, orderBy}: ResolveReceivedPrejudicesArgsType,
+  ): Promise<PrejudiceArray> {
     const nodes = await this.usersService.resolveReceivedPrejudices(id, {
       skip,
       limit,
@@ -87,6 +93,7 @@ export class UsersResolver {
     return {nodes};
   }
 
+  /*
   @ResolveField('postedAnswers')
   async getPostAnswers(
     @Parent() {id}: UserEntity,
@@ -186,20 +193,17 @@ export class UsersResolver {
     return this.usersService.getById(id);
   }
 
-  /*
-  @Query('getUser')
-  async getUser(@Args('input') input: GetUserInput): Promise<GetUserResult> {
-    return this.usersService
-      .convertUserUniqueUnion(input)
-      .then((id) => (id ? {user: {id}} : {user: null}));
+  @Query(() => GetUserResult, {name: 'getUser'})
+  async getUser(@Args() {alias}: GetUserArgs): Promise<GetUserResult> {
+    return {user: await this.usersService.getByAlias(alias)};
   }
 
-  @Query('allUsers')
-  async getAllUsers(): Promise<UserEntity[]> {
-    return this.usersService.getAll();
+  @Query(() => UserArray, {name: 'allUsers'})
+  async getAllUsers(): Promise<UserArray> {
+    const nodes = await this.usersService.getAll();
+    return {nodes};
   }
 
-  */
   @Query(() => UserEntity, {name: 'viewer'})
   @UseGuards(GraphQLJwtGuard)
   async getViewer(@Viewer() {id}: ViewerType): Promise<UserEntity> {

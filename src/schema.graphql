@@ -26,10 +26,19 @@ type GetPrejudiceResult {
   prejudice: Prejudice
 }
 
+type GetUserResult {
+  user: User
+}
+
 type Mutation {
   followUser(id: ID!): FollowUserPayload!
   postPrejudice(relatedBooks: [ID!]!, title: String!, userId: ID!): PostPrejudicePayload!
   unfollowUser(id: ID!): UnfollowUserPayload!
+}
+
+enum OrderDirection {
+  ASC
+  DESC
 }
 
 type PostPrejudicePayload {
@@ -45,8 +54,23 @@ type Prejudice {
   title: String!
 }
 
+type PrejudiceArray {
+  nodes: [Prejudice!]!
+}
+
+input PrejudiceOrder {
+  direction: OrderDirection!
+  field: PrejudiceOrderField!
+}
+
+enum PrejudiceOrderField {
+  CREATED_AT
+}
+
 type Query {
+  allUsers: UserArray!
   getPrejudice(number: Int!, posted: ID!, received: ID!): GetPrejudiceResult!
+  getUser(alias: ID!): GetUserResult!
   prejudice(id: ID!): Prejudice!
   user(id: String!): User!
   viewer: User!
@@ -68,4 +92,10 @@ type User {
   isFollowedBy(id: ID!): Boolean!
   isFollowing(id: ID!): Boolean!
   picture: String!
+  postedPrejudices(limit: Int = 10, orderBy: PrejudiceOrder = {direction: DESC, field: CREATED_AT}, skip: Int = 0): PrejudiceArray!
+  receivedPrejudices(limit: Int = 10, orderBy: PrejudiceOrder = {direction: DESC, field: CREATED_AT}, skip: Int = 0): PrejudiceArray!
+}
+
+type UserArray {
+  nodes: [User!]!
 }

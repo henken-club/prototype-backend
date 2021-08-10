@@ -1,4 +1,4 @@
-import {Field, registerEnumType} from '@nestjs/graphql';
+import {Field, InputType, registerEnumType} from '@nestjs/graphql';
 
 import {OrderDirection} from './OrderDirection';
 
@@ -9,6 +9,7 @@ registerEnumType(PrejudiceOrderField, {
   name: 'PrejudiceOrderField',
 });
 
+@InputType()
 export class PrejudiceOrder {
   @Field(() => OrderDirection)
   direction!: OrderDirection;

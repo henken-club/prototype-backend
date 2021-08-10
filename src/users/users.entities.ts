@@ -20,9 +20,6 @@ export class UserConnection extends Connection<UserEntity> {}
 export class UserArray {
   @Field((type) => [UserEntity])
   nodes!: UserEntity[];
-
-  @Field((type) => Int)
-  totalCount!: number;
 }
 
 @ObjectType()

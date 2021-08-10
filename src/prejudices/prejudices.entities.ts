@@ -1,4 +1,4 @@
-import {Field, ID, Int, ObjectType} from '@nestjs/graphql';
+import {Field, ID, ObjectType} from '@nestjs/graphql';
 
 import {Connection} from '~/common/common.entities';
 
@@ -19,6 +19,8 @@ export class PrejudiceArray {
   @Field((type) => [PrejudiceEntity])
   nodes!: PrejudiceEntity[];
 
+  /*
   @Field((type) => Int)
   totalCount!: number;
+*/
 }
