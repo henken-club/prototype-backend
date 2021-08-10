@@ -95,11 +95,18 @@ type GetUserResult {
   user: User
 }
 
+type LoginPayload {
+  tokens: TokenEntities!
+}
+
 type Mutation {
   addAuthor(name: String!): AddAuthorPayload!
   addBook(authors: [ID!]!, title: String!): AddBookPayload!
   followUser(id: ID!): FollowUserPayload!
+  login(alias: String!, password: String!): LoginPayload!
   postPrejudice(relatedBooks: [ID!]!, title: String!, userId: ID!): PostPrejudicePayload!
+  refreshToken(token: String!): RefreshTokenPayload!
+  signup(alias: String!, displayName: String!, password: String!): SignUpPayload!
   unfollowUser(id: ID!): UnfollowUserPayload!
 }
 
@@ -150,6 +157,19 @@ type Query {
   prejudice(id: ID!): Prejudice!
   user(id: String!): User!
   viewer: User!
+}
+
+type RefreshTokenPayload {
+  tokens: TokenEntities!
+}
+
+type SignUpPayload {
+  tokens: TokenEntities!
+}
+
+type TokenEntities {
+  accessToken: String!
+  refreshToken: String!
 }
 
 type UnfollowUserPayload {

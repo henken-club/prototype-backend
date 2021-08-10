@@ -8,6 +8,7 @@ import {PrejudicesModule} from './prejudices/prejudices.module';
 import {AnswersModule} from './answers/answers.module';
 import {AuthorsModule} from './authors/authors.module';
 import {BooksModule} from './books/books.module';
+import {AuthModule} from './auth/auth.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import {BooksModule} from './books/books.module';
       }),
     }),
     UsersModule,
+    AuthModule,
     PrejudicesModule,
     AnswersModule,
     AuthorsModule,

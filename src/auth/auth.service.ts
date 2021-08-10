@@ -90,7 +90,7 @@ export class AuthService {
   }
 
   async refreshToken(token: string) {
-    const {uid}: JwtPayload = this.jwtService.verify(token, {
+    const {uid} = this.jwtService.verify<JwtPayload>(token, {
       secret: this.config.refreshJwtSecret,
     });
     if (uid) return this.generateTokens({id: uid});
