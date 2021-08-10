@@ -6,6 +6,7 @@
     "datamodel",
     "datasource",
     "deps",
+    "direnv",
     "dmmf",
     "ghcr",
     "healthcheck",
