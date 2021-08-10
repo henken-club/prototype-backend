@@ -6,6 +6,10 @@ type AddAuthorPayload {
   author: Author!
 }
 
+type AddBookPayload {
+  book: Book!
+}
+
 type Answer {
   correctness: AnswerCorrectness!
   createdAt: DateTime!
@@ -37,6 +41,26 @@ type Author {
 
 type AuthorArray {
   nodes: [Author!]!
+}
+
+input AuthorOrder {
+  direction: OrderDirection!
+  field: AuthorOrderField!
+}
+
+enum AuthorOrderField {
+  NAME
+}
+
+type Book {
+  authors(limit: Int = 10, orderBy: AuthorOrder = {direction: DESC, field: NAME}, skip: Int = 0): Author!
+  id: ID!
+  title: String!
+  userResponsibleFor: User!
+}
+
+type BookArray {
+  nodes: [Book!]!
 }
 
 """
@@ -73,6 +97,7 @@ type GetUserResult {
 
 type Mutation {
   addAuthor(name: String!): AddAuthorPayload!
+  addBook(authors: [ID!]!, title: String!): AddBookPayload!
   followUser(id: ID!): FollowUserPayload!
   postPrejudice(relatedBooks: [ID!]!, title: String!, userId: ID!): PostPrejudicePayload!
   unfollowUser(id: ID!): UnfollowUserPayload!
@@ -113,10 +138,12 @@ enum PrejudiceOrderField {
 type Query {
   allAnswers: AnswerArray!
   allAuthors: AuthorArray!
+  allBooks: BookArray!
   allPrejudices: PrejudiceArray!
   allUsers: UserArray!
   answer(id: String!): Answer!
   author(id: String!): Author!
+  book(id: String!): Book!
   getAnswer(number: Int!, posted: ID!, received: ID!): GetAnswerPayload!
   getPrejudice(number: Int!, posted: ID!, received: ID!): GetPrejudicePayload!
   getUser(alias: ID!): GetUserResult!

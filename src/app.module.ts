@@ -7,6 +7,7 @@ import {GraphQLConfig} from './graphql/graphql.config';
 import {PrejudicesModule} from './prejudices/prejudices.module';
 import {AnswersModule} from './answers/answers.module';
 import {AuthorsModule} from './authors/authors.module';
+import {BooksModule} from './books/books.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import {AuthorsModule} from './authors/authors.module';
     PrejudicesModule,
     AnswersModule,
     AuthorsModule,
+    BooksModule,
   ],
 })
 export class AppModule {}
