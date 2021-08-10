@@ -1,3 +1,5 @@
+import * as path from 'path';
+
 import {registerAs} from '@nestjs/config';
 
 export const GraphQLConfig = registerAs('graphql', () => ({
@@ -13,4 +15,5 @@ export const GraphQLConfig = registerAs('graphql', () => ({
     process.env.NODE_ENV === 'production'
       ? ['dist/**/*.graphql']
       : ['src/**/*.graphql'],
+  autoSchemaFile: path.resolve(process.cwd(), 'src/schema.graphql'),
 }));

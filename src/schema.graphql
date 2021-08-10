@@ -1,0 +1,46 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type FollowUserPayload {
+  from: User!
+  to: User!
+}
+
+type FolloweeArray {
+  nodes: [User!]!
+  totalCount: Int!
+}
+
+type FollowerArray {
+  nodes: [User!]!
+  totalCount: Int!
+}
+
+type Mutation {
+  followUser(id: ID!): FollowUserPayload!
+  unfollowUser(id: ID!): UnfollowUserPayload!
+}
+
+type Query {
+  user(id: String!): User!
+  viewer: User!
+}
+
+type UnfollowUserPayload {
+  from: User!
+  to: User!
+}
+
+type User {
+  alias: String!
+  canPostPrejudiceTo(id: ID!): Boolean!
+  canReceivePrejudiceFrom(id: ID!): Boolean!
+  displayName: String!
+  followees(limit: Int = 10, skip: Int = 0): FolloweeArray!
+  followers(limit: Int = 10, skip: Int = 0): FollowerArray!
+  id: ID!
+  isFollowedBy(id: ID!): Boolean!
+  isFollowing(id: ID!): Boolean!
+  picture: String!
+}
