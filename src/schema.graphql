@@ -159,8 +159,17 @@ type Query {
   viewer: User!
 }
 
+enum ReceivePrejudicePolicy {
+  ALL_FOLLOWERS
+  MUTUAL_ONLY
+}
+
 type RefreshTokenPayload {
   tokens: TokenEntities!
+}
+
+type SettingEntity {
+  policyReceivePrejudice: ReceivePrejudicePolicy!
 }
 
 type SignUpPayload {
@@ -191,6 +200,7 @@ type User {
   postedAnswers(limit: Int = 10, orderBy: AnswerOrder = {direction: DESC, field: CREATED_AT}, skip: Int = 0): AnswerArray!
   postedPrejudices(limit: Int = 10, orderBy: PrejudiceOrder = {direction: DESC, field: CREATED_AT}, skip: Int = 0): PrejudiceArray!
   receivedPrejudices(limit: Int = 10, orderBy: PrejudiceOrder = {direction: DESC, field: CREATED_AT}, skip: Int = 0): PrejudiceArray!
+  settings: SettingEntity!
 }
 
 type UserArray {
