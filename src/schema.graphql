@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type FollowUserPayload {
   from: User!
   to: User!
@@ -17,12 +22,32 @@ type FollowerArray {
   totalCount: Int!
 }
 
+type GetPrejudiceResult {
+  prejudice: Prejudice
+}
+
 type Mutation {
   followUser(id: ID!): FollowUserPayload!
+  postPrejudice(relatedBooks: [ID!]!, title: String!, userId: ID!): PostPrejudicePayload!
   unfollowUser(id: ID!): UnfollowUserPayload!
 }
 
+type PostPrejudicePayload {
+  prejudice: Prejudice!
+}
+
+type Prejudice {
+  createdAt: DateTime!
+  id: ID!
+  number: Int!
+  posted: User!
+  received: User!
+  title: String!
+}
+
 type Query {
+  getPrejudice(number: Int!, posted: ID!, received: ID!): GetPrejudiceResult!
+  prejudice(id: ID!): Prejudice!
   user(id: String!): User!
   viewer: User!
 }

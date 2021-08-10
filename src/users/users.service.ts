@@ -17,19 +17,17 @@ import {
   CYPHER_IS_USER_FOLLOWING,
   CYPHER_UNFOLLOW_USER,
 } from './users.cypher';
+import {PrejudiceOrder} from './dto/PrejudiceOrderField';
+import {OrderDirection} from './dto/OrderDirection';
 
 import {Neo4jService} from '~/neo4j/neo4j.service';
-import {
-  PrejudiceEntity,
-  PrejudiceOrder,
-} from '~/prejudices/prejudices.entities';
+import {PrejudiceEntity} from '~/prejudices/prejudices.entities';
 import {
   AnswerEntity,
   AnswerOrder,
   UserUniqueUnion,
 } from '~/answers/answers.entities';
 import {PrismaService} from '~/prisma/prisma.service';
-import {OrderDirection} from '~/common/common.entities';
 
 @Injectable()
 export class UsersService {
