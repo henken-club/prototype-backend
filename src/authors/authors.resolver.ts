@@ -67,8 +67,8 @@ export class AuthorsResolver {
         skip,
         limit,
       });
-      // const count = await this.authorsService.countSearchAuthors(query);
-      return {nodes};
+      const totalCount = await this.authorsService.countSearchAuthors(query);
+      return {nodes, totalCount};
     } catch (error) {
       throw new InternalServerErrorException();
     }
