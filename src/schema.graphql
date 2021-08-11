@@ -53,7 +53,7 @@ enum AuthorOrderField {
 }
 
 type Book {
-  authors(limit: Int = 10, orderBy: AuthorOrder = {direction: DESC, field: NAME}, skip: Int = 0): Author!
+  authors(limit: Int = 10, orderBy: AuthorOrder = {direction: DESC, field: NAME}, skip: Int = 0): AuthorArray!
   id: ID!
   title: String!
   userResponsibleFor: User!
