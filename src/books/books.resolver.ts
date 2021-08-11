@@ -17,7 +17,7 @@ import {BooksService} from './books.service';
 import {AddBookArgs, AddBookPayload} from './dto/add-book.dto';
 import {ResolveAuthorsArgs} from './dto/resolve-authors.dto';
 
-import {AuthorArray, AuthorEntity} from '~/authors/authors.entities';
+import {AuthorArray} from '~/authors/authors.entities';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {UserEntity} from '~/users/users.entities';
@@ -48,7 +48,8 @@ export class BooksResolver {
       limit,
       orderBy,
     });
-    return {nodes};
+    const totalCount = await this.booksService.countAuthors(id);
+    return {nodes, totalCount};
   }
 
   @Query(() => BookEntity, {name: 'book'})

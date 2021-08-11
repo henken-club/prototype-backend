@@ -10,6 +10,7 @@ import {
   CYPHER_GET_BOOK_AUTHORS_ORDER_BY_NAME_DESC,
   CYPHER_GET_USER_RESPONSIBLE_FOR_BOOK,
   CYPHER_GET_ALL_BOOKS,
+  CYPHER_GET_BOOK_AUTHORS_COUNT,
 } from './books.cypher';
 import {BookEntity} from './books.entities';
 
@@ -73,6 +74,15 @@ export class BooksService {
         })),
       );
     return authors;
+  }
+
+  async countAuthors(id: string): Promise<number> {
+    const result = await this.neo4jService.read(CYPHER_GET_BOOK_AUTHORS_COUNT, {
+      id,
+    });
+    if (result.records.length !== 1)
+      throw new Error('something broken with neo4j');
+    return result.records[0].get('count').toNumber();
   }
 
   async addBook(

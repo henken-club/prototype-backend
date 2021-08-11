@@ -8,6 +8,7 @@ import {
   CYPHER_GET_AUTHOR_WRITES_BOOKS_ORDER_BY_TITLE_DESC,
   CYPHER_GET_USER_RESPONSIBLE_FOR_AUTHOR,
   CYPHER_GET_ALL_AUTHORS,
+  CYPHER_COUNT_ALL_AUTHORS,
 } from './authors.cypher';
 
 import {Neo4jService} from '~/neo4j/neo4j.service';
@@ -40,6 +41,13 @@ export class AuthorsService {
         name: record.get('name'),
       })),
     );
+  }
+
+  async countAll(): Promise<number> {
+    const result = await this.neo4jService.read(CYPHER_COUNT_ALL_AUTHORS);
+    if (result.records.length !== 1)
+      throw new Error('something broken with neo4j');
+    return result.records[0].get('count').toNumber();
   }
 
   async checkExistence(idArray: string[]): Promise<boolean> {
