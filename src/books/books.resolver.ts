@@ -38,7 +38,7 @@ export class BooksResolver {
     return user;
   }
 
-  @ResolveField(() => AuthorEntity, {name: 'authors'})
+  @ResolveField(() => AuthorArray, {name: 'authors'})
   async authors(
     @Parent() {id}: BookEntity,
     @Args() {skip, limit, orderBy}: ResolveAuthorsArgs,
@@ -57,8 +57,9 @@ export class BooksResolver {
   }
 
   @Query(() => BookArray, {name: 'allBooks'})
-  async getAllBooks(): Promise<BookEntity[]> {
-    return this.booksService.getAll();
+  async getAllBooks(): Promise<BookArray> {
+    const nodes = await this.booksService.getAll();
+    return {nodes};
   }
 
   @Mutation(() => AddBookPayload, {name: 'addBook'})
