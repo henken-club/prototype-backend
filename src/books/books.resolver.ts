@@ -60,7 +60,8 @@ export class BooksResolver {
   @Query(() => BookArray, {name: 'allBooks'})
   async getAllBooks(): Promise<BookArray> {
     const nodes = await this.booksService.getAll();
-    return {nodes};
+    const totalCount = await this.booksService.countAll();
+    return {nodes, totalCount};
   }
 
   @Mutation(() => AddBookPayload, {name: 'addBook'})

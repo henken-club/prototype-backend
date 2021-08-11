@@ -11,6 +11,7 @@ import {
   CYPHER_GET_USER_RESPONSIBLE_FOR_BOOK,
   CYPHER_GET_ALL_BOOKS,
   CYPHER_GET_BOOK_AUTHORS_COUNT,
+  CYPHER_COUNT_ALL_BOOKS,
 } from './books.cypher';
 import {BookEntity} from './books.entities';
 
@@ -42,6 +43,13 @@ export class BooksService {
         title: record.get('title'),
       })),
     );
+  }
+
+  async countAll(): Promise<number> {
+    const result = await this.neo4jService.read(CYPHER_COUNT_ALL_BOOKS);
+    if (result.records.length !== 1)
+      throw new Error('something broken with neo4j');
+    return result.records[0].get('count').toNumber();
   }
 
   getAuthorsQuery({direction, field}: AuthorOrder) {

@@ -62,6 +62,7 @@ type Book {
 
 type BookArray {
   nodes: [Book!]!
+  totalCount: Int!
 }
 
 """
