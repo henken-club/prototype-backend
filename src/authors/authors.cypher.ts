@@ -41,3 +41,15 @@ export const CYPHER_ADD_AUTHOR = `
   SET a.name=$name
   RETURN a.id AS id, a.name AS name
 `;
+
+export const CYPHER_SEARCH_AUTHORS = `
+  MATCH (a:Author) WHERE a.name CONTAINS $query
+  RETURN a.id AS id, a.name AS name
+  ORDER BY apoc.text.levenshteinDistance(a.name, $query), size(a.name), a.name
+  SKIP $skip LIMIT $limit
+`;
+
+export const CYPHER_COUNT_SEARCH_AUTHORS = `
+  MATCH (a:Author) WHERE a.name CONTAINS $query
+  RETURN count(a) AS count
+`;

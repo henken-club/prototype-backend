@@ -8,6 +8,8 @@ import {
   CYPHER_GET_AUTHOR_WRITES_BOOKS_ORDER_BY_TITLE_DESC,
   CYPHER_GET_USER_RESPONSIBLE_FOR_AUTHOR,
   CYPHER_GET_ALL_AUTHORS,
+  CYPHER_SEARCH_AUTHORS,
+  CYPHER_COUNT_SEARCH_AUTHORS,
   CYPHER_COUNT_ALL_AUTHORS,
 } from './authors.cypher';
 
@@ -105,5 +107,36 @@ export class AuthorsService {
       id: result.records[0].get('id'),
       name: result.records[0].get('name'),
     };
+  }
+
+  async getSearchAuthorsQuery() {}
+
+  async searchAuthors(
+    query: string,
+    {skip, limit}: {skip: number; limit: number},
+  ): Promise<AuthorEntity[]> {
+    return this.neo4jService
+      .read(CYPHER_SEARCH_AUTHORS, {
+        query,
+        skip: int(skip),
+        limit: int(limit),
+      })
+      .then(({records}) =>
+        records.map((record) => ({
+          id: record.get('id'),
+          name: record.get('name'),
+        })),
+      );
+  }
+
+  async countSearchAuthors(query: string): Promise<number> {
+    const result = await this.neo4jService.write(CYPHER_COUNT_SEARCH_AUTHORS, {
+      query,
+    });
+
+    if (result.records.length !== 1)
+      throw new Error('something broken with neo4j');
+
+    return result.records[0].get('count').toNumber();
   }
 }

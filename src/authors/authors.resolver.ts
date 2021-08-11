@@ -11,6 +11,7 @@ import {InternalServerErrorException, UseGuards} from '@nestjs/common';
 import {AuthorsService} from './authors.service';
 import {AuthorArray, AuthorEntity} from './authors.entities';
 import {AddAuthorArgs, AddAuthorPayload} from './dto/add-author.dto';
+import {SearchAuthorsArgs} from './dto/search-authors.dto';
 
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
@@ -55,6 +56,22 @@ export class AuthorsResolver {
     const nodes = await this.authorsService.getAll();
     const totalCount = await this.authorsService.countAll();
     return {nodes, totalCount};
+  }
+
+  @Query(() => AuthorArray, {name: 'searchAuthors'})
+  async searchAuthors(
+    @Args() {query, skip, limit}: SearchAuthorsArgs,
+  ): Promise<AuthorArray> {
+    try {
+      const nodes = await this.authorsService.searchAuthors(query, {
+        skip,
+        limit,
+      });
+      const totalCount = await this.authorsService.countSearchAuthors(query);
+      return {nodes, totalCount};
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
   @Mutation(() => AddAuthorPayload, {name: 'addAuthor'})
