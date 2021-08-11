@@ -155,6 +155,7 @@ type Query {
   getPrejudice(number: Int!, posted: ID!, received: ID!): GetPrejudicePayload!
   getUser(alias: ID!): GetUserResult!
   prejudice(id: ID!): Prejudice!
+  searchAuthors(limit: Int = 10, query: String!, skip: Int = 0): AuthorArray!
   user(id: String!): User!
   viewer: User!
 }
