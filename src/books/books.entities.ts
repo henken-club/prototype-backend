@@ -2,6 +2,7 @@ import {
   Field,
   ID,
   InputType,
+  Int,
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
@@ -41,4 +42,7 @@ export class BookOrder extends AbstractOrder<BookOrderField> {
 export class BookArray extends AbstractArray<BookEntity> {
   @Field((type) => [BookEntity])
   nodes!: BookEntity[];
+
+  @Field((type) => Int)
+  totalCount!: number;
 }
