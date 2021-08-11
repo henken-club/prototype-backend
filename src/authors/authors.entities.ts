@@ -2,6 +2,7 @@ import {
   Field,
   ID,
   InputType,
+  Int,
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
@@ -37,8 +38,6 @@ export class AuthorArray {
   @Field((type) => [AuthorEntity])
   nodes!: AuthorEntity[];
 
-  /*
   @Field((type) => Int)
   totalCount!: number;
-*/
 }

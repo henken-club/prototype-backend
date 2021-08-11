@@ -41,6 +41,7 @@ type Author {
 
 type AuthorArray {
   nodes: [Author!]!
+  totalCount: Int!
 }
 
 input AuthorOrder {
