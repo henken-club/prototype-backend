@@ -17,7 +17,7 @@ import {BooksService} from './books.service';
 import {AddBookArgs, AddBookPayload} from './dto/add-book.dto';
 import {ResolveAuthorsArgs} from './dto/resolve-authors.dto';
 
-import {AuthorArray, AuthorEntity} from '~/authors/authors.entities';
+import {AuthorArray} from '~/authors/authors.entities';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {UserEntity} from '~/users/users.entities';
@@ -38,7 +38,7 @@ export class BooksResolver {
     return user;
   }
 
-  @ResolveField(() => AuthorEntity, {name: 'authors'})
+  @ResolveField(() => AuthorArray, {name: 'authors'})
   async authors(
     @Parent() {id}: BookEntity,
     @Args() {skip, limit, orderBy}: ResolveAuthorsArgs,
@@ -58,8 +58,9 @@ export class BooksResolver {
   }
 
   @Query(() => BookArray, {name: 'allBooks'})
-  async getAllBooks(): Promise<BookEntity[]> {
-    return this.booksService.getAll();
+  async getAllBooks(): Promise<BookArray> {
+    const nodes = await this.booksService.getAll();
+    return {nodes};
   }
 
   @Mutation(() => AddBookPayload, {name: 'addBook'})
