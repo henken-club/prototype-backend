@@ -8,6 +8,10 @@ package-lock.json
 # output
 dist/
 
+# auto generated
+src/graphql.ts
+src/schema.graphql
+
 # test
 coverage/
 
