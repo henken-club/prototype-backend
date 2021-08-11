@@ -48,7 +48,8 @@ export class BooksResolver {
       limit,
       orderBy,
     });
-    return {nodes};
+    const totalCount = await this.booksService.countAuthors(id);
+    return {nodes, totalCount};
   }
 
   @Query(() => BookEntity, {name: 'book'})

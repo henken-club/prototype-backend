@@ -52,9 +52,10 @@ export class AuthorsResolver {
   }
 
   @Query(() => AuthorArray, {name: 'allAuthors'})
-  async getAllBooks(): Promise<AuthorArray> {
+  async getAllAuthors(): Promise<AuthorArray> {
     const nodes = await this.authorsService.getAll();
-    return {nodes};
+    const totalCount = await this.authorsService.countAll();
+    return {nodes, totalCount};
   }
 
   @Query(() => AuthorArray, {name: 'searchAuthors'})

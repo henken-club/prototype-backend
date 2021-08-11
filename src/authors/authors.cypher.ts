@@ -8,6 +8,11 @@ export const CYPHER_GET_ALL_AUTHORS = `
   RETURN a.id AS id, a.name AS name
 `;
 
+export const CYPHER_COUNT_ALL_AUTHORS = `
+  MATCH (a:Author)
+  RETURN count(a) AS count
+`;
+
 const getWritesBooks = (parameter: 'title', order: 'ASC' | 'DESC') =>
   `
   MATCH (a:Author {id: $id})-[:WRITES_BOOK]->(b:Book)
