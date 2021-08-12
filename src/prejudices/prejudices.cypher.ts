@@ -60,6 +60,11 @@ export const CYPHER_GET_PREJUDICE_RELATED_BOOKS_ORDERBY_TITLE_AT_ASC =
 export const CYPHER_GET_PREJUDICE_RELATED_BOOKS_ORDERBY_TITLE_AT_DESC =
   getRelatedBooks('title', 'DESC');
 
+export const CYPHER_COUNT_PREJUDICE_RELATED_BOOKS = `
+  MATCH (:Prejudice {id: $id})-[:RELATED_BOOK]->(b:Book)
+  RETURN count(b) AS count
+`;
+
 export const CYPHER_CREATE_PREJUDICE = `
   MATCH (pu:User {id: $posted})
   MATCH (ru:User {id: $received})
