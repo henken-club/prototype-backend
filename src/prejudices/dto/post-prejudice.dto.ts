@@ -1,4 +1,5 @@
 import {ArgsType, Field, ID, ObjectType} from '@nestjs/graphql';
+import {IsNotEmpty, MinLength} from 'class-validator';
 
 import {PrejudiceEntity} from '../prejudices.entities';
 
@@ -8,9 +9,11 @@ export class PostPrejudiceArgs {
   userId!: string;
 
   @Field(() => [ID]!)
+  @MinLength(1)
   relatedBooks!: string[];
 
   @Field(() => String)
+  @IsNotEmpty()
   title!: string;
 }
 

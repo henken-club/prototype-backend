@@ -1,6 +1,7 @@
-import {Module} from '@nestjs/common';
+import {Module, ValidationPipe} from '@nestjs/common';
 import {GraphQLModule} from '@nestjs/graphql';
 import {ConfigModule, ConfigType} from '@nestjs/config';
+import {APP_PIPE} from '@nestjs/core';
 
 import {UsersModule} from './users/users.module';
 import {GraphQLConfig} from './graphql/graphql.config';
@@ -11,6 +12,12 @@ import {BooksModule} from './books/books.module';
 import {AuthModule} from './auth/auth.module';
 
 @Module({
+  providers: [
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
+  ],
   imports: [
     GraphQLModule.forRootAsync({
       imports: [ConfigModule.forFeature(GraphQLConfig)],
