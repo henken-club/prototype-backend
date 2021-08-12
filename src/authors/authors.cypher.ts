@@ -28,6 +28,11 @@ export const CYPHER_GET_AUTHOR_WRITES_BOOKS_ORDER_BY_TITLE_ASC = getWritesBooks(
 export const CYPHER_GET_AUTHOR_WRITES_BOOKS_ORDER_BY_TITLE_DESC =
   getWritesBooks('title', 'DESC');
 
+export const CYPHER_COUNT_AUTHOR_WRITES_BOOKS = `
+  MATCH (a:Author {id: $id})-[:WRITES_BOOK]->(b:Book)
+  RETURN count(b)
+`;
+
 export const CYPHER_GET_USER_RESPONSIBLE_FOR_AUTHOR = `
   MATCH (u:User)-[r:RESPONSIBLE_FOR]->(:Author {id: $id})
   RETURN u.id AS id

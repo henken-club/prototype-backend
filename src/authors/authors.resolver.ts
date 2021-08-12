@@ -12,31 +12,30 @@ import {AuthorsService} from './authors.service';
 import {AuthorArray, AuthorEntity} from './authors.entities';
 import {AddAuthorArgs, AddAuthorPayload} from './dto/add-author.dto';
 import {SearchAuthorsArgs} from './dto/search-authors.dto';
+import {ResolveWritesBooksArgs} from './dto/resolve-writes-books.dto';
 
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {UserEntity} from '~/users/users.entities';
+import {BookArray} from '~/books/books.entities';
 
 @Resolver(() => AuthorEntity)
 export class AuthorsResolver {
   constructor(private authorsService: AuthorsService) {}
 
-  /*
-  @ResolveField('writesBooks')
-  async authors(
+  @ResolveField(() => BookArray, {name: 'writesBooks'})
+  async resolveWritesBooks(
     @Parent() {id}: AuthorEntity,
-    @Args('skip') skip: number,
-    @Args('limit') limit: number,
-    @Args('orderBy') orderBy: BookOrder,
-  ): Promise<BookConnection> {
+    @Args() {skip, limit, orderBy}: ResolveWritesBooksArgs,
+  ): Promise<BookArray> {
     const nodes = await this.authorsService.getWritesBooks(id, {
       skip,
       limit,
       orderBy,
     });
-    return {nodes};
+    const totalCount = await this.authorsService.countWritesBooks(id);
+    return {nodes, totalCount};
   }
-  */
 
   @ResolveField(() => UserEntity, {name: 'userResponsibleFor'})
   async resolveUserResponsibleFor(
