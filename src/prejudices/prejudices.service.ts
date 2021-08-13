@@ -14,6 +14,7 @@ import {
   CYPHER_RESOLVE_PREJUDICE_TITLE,
   CYPHER_RESOLVE_PREJUDICE_CREATED_AT,
   CYPHER_RESOLVE_PREJUDICE_NUMBER,
+  CYPHER_COUNT_PREJUDICE_RELATED_BOOKS,
 } from './prejudices.cypher';
 import {PrejudiceEntity} from './prejudices.entities';
 
@@ -92,6 +93,16 @@ export class PrejudicesService {
           title: record.get('title'),
         })),
       );
+  }
+
+  async countRelatedBooks(id: string) {
+    const result = await this.neo4jService.read(
+      CYPHER_COUNT_PREJUDICE_RELATED_BOOKS,
+      {id},
+    );
+    if (result.records.length !== 1)
+      throw new Error('something broken with neo4j');
+    return result.records[0].get('count').toNumber();
   }
 
   async getById(id: string): Promise<PrejudiceEntity | null> {
