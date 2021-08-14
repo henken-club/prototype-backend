@@ -1,6 +1,5 @@
 import {
   Args,
-  ID,
   Mutation,
   Parent,
   Query,
@@ -14,6 +13,7 @@ import {AuthorArray, AuthorEntity} from './authors.entities';
 import {AddAuthorArgs, AddAuthorPayload} from './dto/add-author.dto';
 import {SearchAuthorsArgs} from './dto/search-authors.dto';
 import {ResolveWritesBooksArgs} from './dto/resolve-writes-books.dto';
+import {GetAuthorArgs, GetAuthorPayload} from './dto/get-author.dto';
 
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
@@ -47,10 +47,9 @@ export class AuthorsResolver {
   }
 
   @Query(() => AuthorEntity, {name: 'getAuthor'})
-  async getAuthor(
-    @Args('id', {type: () => ID}) id: string,
-  ): Promise<AuthorEntity | null> {
-    return this.authorsService.getById(id);
+  async getAuthor(@Args() {id}: GetAuthorArgs): Promise<GetAuthorPayload> {
+    const author = await this.authorsService.getById(id);
+    return {author};
   }
 
   @Query(() => AuthorArray, {name: 'allAuthors'})
