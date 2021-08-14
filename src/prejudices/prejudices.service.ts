@@ -90,6 +90,7 @@ export class PrejudicesService {
         result.records.map((record) => ({
           id: record.get('id'),
           title: record.get('title'),
+          isbn: record.get('isbn'),
         })),
       );
   }

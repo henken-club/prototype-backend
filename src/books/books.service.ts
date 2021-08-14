@@ -33,6 +33,7 @@ export class BooksService {
     return {
       id: result.records[0].get('id'),
       title: result.records[0].get('title'),
+      isbn: result.records[0].get('isbn'),
     };
   }
 
@@ -41,6 +42,7 @@ export class BooksService {
       records.map((record) => ({
         id: record.get('id'),
         title: record.get('title'),
+        isbn: record.get('isbn'),
       })),
     );
   }
@@ -108,6 +110,7 @@ export class BooksService {
     return {
       id: result.records[0].get('id'),
       title: result.records[0].get('title'),
+      isbn: result.records[0].get('isbn'),
     };
   }
 }
