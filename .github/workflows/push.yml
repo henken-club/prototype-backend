@@ -33,6 +33,8 @@ jobs:
           file: Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   push-prisma-migrate:
     name: Docker push for prisma-migrate
@@ -59,3 +61,5 @@ jobs:
           file: Dockerfile.prisma-migrate
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
