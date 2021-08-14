@@ -1,6 +1,5 @@
 import {
   Args,
-  ID,
   Mutation,
   Parent,
   Query,
@@ -17,6 +16,7 @@ import {BookArray, BookEntity} from './books.entities';
 import {BooksService} from './books.service';
 import {AddBookArgs, AddBookPayload} from './dto/add-book.dto';
 import {ResolveAuthorsArgs} from './dto/resolve-authors.dto';
+import {GetBookArgs, GetBookPayload} from './dto/get-book.dto';
 
 import {AuthorArray} from '~/authors/authors.entities';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
@@ -53,11 +53,10 @@ export class BooksResolver {
     return {nodes, totalCount};
   }
 
-  @Query(() => BookEntity, {name: 'getBook'})
-  async getBook(
-    @Args('id', {type: () => ID}) id: string,
-  ): Promise<BookEntity | null> {
-    return this.booksService.getById(id);
+  @Query(() => GetBookPayload, {name: 'getBook'})
+  async getBook(@Args() {id}: GetBookArgs): Promise<GetBookPayload> {
+    const book = await this.booksService.getById(id);
+    return {book};
   }
 
   @Query(() => BookArray, {name: 'allBooks'})
