@@ -9,9 +9,5 @@ export const GraphQLConfig = registerAs('graphql', () => ({
     process.env.NODE_ENV !== 'production',
   sortSchema: true,
   introspection: true,
-  typePaths:
-    process.env.NODE_ENV === 'production'
-      ? ['dist/**/*.graphql']
-      : ['src/**/*.graphql'],
-  autoSchemaFile: false,
+  autoSchemaFile: true,
 }));
