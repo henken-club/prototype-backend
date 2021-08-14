@@ -1,5 +1,6 @@
 import {
   Args,
+  ID,
   Mutation,
   Parent,
   Query,
@@ -45,8 +46,10 @@ export class AuthorsResolver {
     return user;
   }
 
-  @Query(() => AuthorEntity, {name: 'author'})
-  async getBook(@Args('id') id: string): Promise<AuthorEntity | null> {
+  @Query(() => AuthorEntity, {name: 'getAuthor'})
+  async getAuthor(
+    @Args('id', {type: () => ID}) id: string,
+  ): Promise<AuthorEntity | null> {
     return this.authorsService.getById(id);
   }
 
