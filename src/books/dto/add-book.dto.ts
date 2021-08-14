@@ -1,12 +1,12 @@
 import {ArgsType, Field, ID, ObjectType} from '@nestjs/graphql';
-import {IsNotEmpty, MinLength} from 'class-validator';
+import {ArrayNotEmpty, IsNotEmpty} from 'class-validator';
 
 import {BookEntity} from '../books.entities';
 
 @ArgsType()
 export class AddBookArgs {
   @Field(() => [ID])
-  @MinLength(1)
+  @ArrayNotEmpty()
   authors!: string[];
 
   @Field(() => String)
