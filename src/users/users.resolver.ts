@@ -25,7 +25,7 @@ import {UnfollowUserArgs, UnfollowUserPayload} from './dto/unfollow-user.dto';
 import {ResolveFolloweesArgs} from './dto/resolve-followees.dto';
 import {ResolvePostPrejudicesArgs} from './dto/resolve-post-prejudices.dto';
 import {ResolveReceivedPrejudicesArgs} from './dto/resolve-received-prejudices.dto';
-import {GetUserArgs, GetUserResult} from './dto/get-user.dto';
+import {FindUserArgs, FindUserResult} from './dto/find-user.dto';
 import {ResolvePostAnswersArgs} from './dto/resolve-post-answers.dto';
 
 import {SettingsService} from '~/settings/settings.service';
@@ -205,8 +205,8 @@ export class UsersResolver {
     return this.usersService.getById(id);
   }
 
-  @Query(() => GetUserResult, {name: 'getUser'})
-  async getUser(@Args() {alias}: GetUserArgs): Promise<GetUserResult> {
+  @Query(() => FindUserResult, {name: 'findUser'})
+  async findUser(@Args() {alias}: FindUserArgs): Promise<FindUserResult> {
     return {user: await this.usersService.getByAlias(alias)};
   }
 

@@ -4,7 +4,7 @@ import {Min} from 'class-validator';
 import {AnswerEntity} from '../answers.entities';
 
 @ArgsType()
-export class GetAnswerArgs {
+export class FindAnswerArgs {
   @Field(() => Int)
   @Min(1)
   number!: number;
@@ -17,7 +17,7 @@ export class GetAnswerArgs {
 }
 
 @ObjectType()
-export class GetAnswerPayload {
+export class FindAnswerPayload {
   @Field(() => AnswerEntity, {nullable: true})
   answer!: AnswerEntity | null;
 }
