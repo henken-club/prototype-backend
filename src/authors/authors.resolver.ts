@@ -1,19 +1,24 @@
 import {
   Args,
+  ID,
   Mutation,
   Parent,
   Query,
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import {InternalServerErrorException, UseGuards} from '@nestjs/common';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+  UseGuards,
+} from '@nestjs/common';
 
 import {AuthorsService} from './authors.service';
 import {AuthorArray, AuthorEntity} from './authors.entities';
 import {AddAuthorArgs, AddAuthorPayload} from './dto/add-author.dto';
 import {SearchAuthorsArgs} from './dto/search-authors.dto';
 import {ResolveWritesBooksArgs} from './dto/resolve-writes-books.dto';
-import {GetAuthorArgs, GetAuthorPayload} from './dto/get-author.dto';
+import {FindAuthorArgs, FindAuthorPayload} from './dto/get-author.dto';
 
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
@@ -46,8 +51,17 @@ export class AuthorsResolver {
     return user;
   }
 
-  @Query(() => GetAuthorPayload, {name: 'getAuthor'})
-  async getAuthor(@Args() {id}: GetAuthorArgs): Promise<GetAuthorPayload> {
+  @Query(() => AuthorEntity, {name: 'author'})
+  async getAuthorById(
+    @Args('id', {type: () => ID}) id: string,
+  ): Promise<AuthorEntity> {
+    const author = await this.authorsService.getById(id);
+    if (!author) throw new BadRequestException();
+    return author;
+  }
+
+  @Query(() => FindAuthorPayload, {name: 'findAuthor'})
+  async findAuthor(@Args() {id}: FindAuthorArgs): Promise<FindAuthorPayload> {
     const author = await this.authorsService.getById(id);
     return {author};
   }

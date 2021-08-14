@@ -4,7 +4,7 @@ import {Min} from 'class-validator';
 import {PrejudiceEntity} from '../prejudices.entities';
 
 @ArgsType()
-export class GetPrejudiceArgs {
+export class FindPrejudiceArgs {
   @Field(() => Int)
   @Min(1)
   number!: number;
@@ -17,7 +17,7 @@ export class GetPrejudiceArgs {
 }
 
 @ObjectType()
-export class GetPrejudicePayload {
+export class FindPrejudicePayload {
   @Field(() => PrejudiceEntity, {nullable: true})
   prejudice!: PrejudiceEntity | null;
 }

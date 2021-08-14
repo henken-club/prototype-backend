@@ -40,7 +40,7 @@ export class AnswersResolver {
   }
 
   @Query(() => AnswerEntity, {name: 'answer'})
-  async getAnswer(@Args('id') id: string) {
+  async getAnswerById(@Args('id') id: string) {
     return this.answersService.getById(id);
   }
 

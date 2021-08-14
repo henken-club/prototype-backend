@@ -17,7 +17,7 @@ import {
 
 import {PrejudiceArray, PrejudiceEntity} from './prejudices.entities';
 import {PrejudicesService} from './prejudices.service';
-import {GetPrejudiceArgs, GetPrejudicePayload} from './dto/get-prejudice';
+import {FindPrejudiceArgs, FindPrejudicePayload} from './dto/find-prejudice';
 import {
   PostPrejudiceArgs,
   PostPrejudicePayload,
@@ -108,10 +108,10 @@ export class PrejudicesResolver {
     return this.prejudicesService.getById(id);
   }
 
-  @Query(() => GetPrejudicePayload, {name: 'getPrejudice'})
-  async getPrejudice(
-    @Args() {posted, received, number}: GetPrejudiceArgs,
-  ): Promise<GetPrejudicePayload> {
+  @Query(() => FindPrejudicePayload, {name: 'findPrejudice'})
+  async findPrejudice(
+    @Args() {posted, received, number}: FindPrejudiceArgs,
+  ): Promise<FindPrejudicePayload> {
     if (posted === received) throw new BadRequestException();
     if (!(await this.usersService.checkExists({id: posted})))
       throw new BadRequestException();
