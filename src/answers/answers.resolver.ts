@@ -3,7 +3,7 @@ import {BadRequestException} from '@nestjs/common';
 
 import {AnswersService} from './answers.service';
 import {AnswerEntity, AnswerCorrectness, AnswerArray} from './answers.entities';
-import {GetAnswerArgs, GetAnswerPayload} from './dto/get-answer.dto';
+import {FindAnswerArgs, FindAnswerPayload} from './dto/find-answer.dto';
 
 import {PrejudiceEntity} from '~/prejudices/prejudices.entities';
 import {UsersService} from '~/users/users.service';
@@ -40,14 +40,14 @@ export class AnswersResolver {
   }
 
   @Query(() => AnswerEntity, {name: 'answer'})
-  async getAnswerById(@Args('id') id: string) {
+  async getAnswer(@Args('id') id: string) {
     return this.answersService.getById(id);
   }
 
-  @Query(() => GetAnswerPayload, {name: 'getAnswer'})
-  async getAnswer(
-    @Args() {posted, received, number}: GetAnswerArgs,
-  ): Promise<GetAnswerPayload> {
+  @Query(() => FindAnswerPayload, {name: 'findAnswer'})
+  async findAnswer(
+    @Args() {posted, received, number}: FindAnswerArgs,
+  ): Promise<FindAnswerPayload> {
     if (posted === received) throw new BadRequestException();
     if (!(await this.usersService.checkExists({id: posted})))
       throw new BadRequestException();
