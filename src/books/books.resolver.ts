@@ -1,5 +1,6 @@
 import {
   Args,
+  ID,
   Mutation,
   Parent,
   Query,
@@ -52,8 +53,10 @@ export class BooksResolver {
     return {nodes, totalCount};
   }
 
-  @Query(() => BookEntity, {name: 'book'})
-  async getBook(@Args('id') id: string): Promise<BookEntity | null> {
+  @Query(() => BookEntity, {name: 'getBook'})
+  async getBook(
+    @Args('id', {type: () => ID}) id: string,
+  ): Promise<BookEntity | null> {
     return this.booksService.getById(id);
   }
 
