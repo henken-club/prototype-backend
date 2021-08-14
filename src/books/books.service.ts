@@ -97,13 +97,18 @@ export class BooksService {
 
   async addBook(
     userId: string,
-    {title, authors}: {title: string; authors: string[]},
+    {
+      title,
+      authors,
+      isbn,
+    }: {title: string; authors: string[]; isbn: string | null},
   ): Promise<BookEntity | null> {
     const result = await this.neo4jService.write(CYPHER_ADD_BOOK, {
       userId,
       id: this.idService.createId(),
       title,
       authors,
+      isbn,
     });
     if (result.records.length !== 1)
       throw new Error('something broken with neo4j');

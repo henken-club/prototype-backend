@@ -48,7 +48,7 @@ export const CYPHER_ADD_BOOK = `
   CALL {
     WITH u
     CREATE (u)-[r:RESPONSIBLE_FOR]->(b:Book)
-    SET b.id = $id, b.title=$title
+    SET b.id = $id, b.title=$title, b.isbn = $isbn
     SET r.updatedAt = localdatetime()
     RETURN b
   }

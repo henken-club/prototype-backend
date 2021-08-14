@@ -94,14 +94,15 @@ export class BooksResolver {
   @UseGuards(GraphQLJwtGuard)
   async addBook(
     @Viewer() {id: userId}: ViewerType,
-    @Args() {title, authors: authorIds}: AddBookArgs,
+    @Args() {title, authors, isbn}: AddBookArgs,
   ): Promise<AddBookPayload> {
-    if (!(await this.authorsService.checkExistence(authorIds)))
+    if (!(await this.authorsService.checkExistence(authors)))
       throw new BadRequestException('not exist author(s)');
 
     const book = await this.booksService.addBook(userId, {
       title,
-      authors: authorIds,
+      authors,
+      isbn: isbn || null,
     });
     if (!book) throw new InternalServerErrorException();
     return {book};
