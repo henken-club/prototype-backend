@@ -46,7 +46,7 @@ export class AuthorsResolver {
     return user;
   }
 
-  @Query(() => AuthorEntity, {name: 'getAuthor'})
+  @Query(() => GetAuthorPayload, {name: 'getAuthor'})
   async getAuthor(@Args() {id}: GetAuthorArgs): Promise<GetAuthorPayload> {
     const author = await this.authorsService.getById(id);
     return {author};
