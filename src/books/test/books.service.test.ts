@@ -72,10 +72,12 @@ describe('BooksService', () => {
       const actual = await booksService.addBook('user1', {
         title: 'Title',
         authors: ['author1', 'author2'],
+        isbn: '9784845860203',
       });
       expect(actual).toStrictEqual({
         id: expect.any(String),
         title: 'Title',
+        isbn: '9784845860203',
       });
 
       expect(
@@ -128,10 +130,12 @@ describe('BooksService', () => {
       const actual = await booksService.addBook('user1', {
         title: 'Title',
         authors: ['author1', 'author2'],
+        isbn: '9784845860203',
       });
       expect(actual).toStrictEqual({
         id: expect.any(String),
         title: 'Title',
+        isbn: '9784845860203',
       });
 
       expect(

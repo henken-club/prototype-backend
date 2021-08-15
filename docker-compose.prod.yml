@@ -21,6 +21,8 @@ services:
       JWT_ACCESS_SECRET: access_secret
       JWT_REFRESH_SECRET: refresh_secret
 
+      BOOKCOVER_PROXY_BASE_URL: http://prod-bookcover-proxy:8080
+
       IMGPROXY_BASE_URL: http://localhost:8080
       IMGPROXY_KEY: imgproxy_key
       IMGPROXY_SALT: imgproxy_secret
@@ -41,6 +43,11 @@ services:
       timeout: 10s
       interval: 10s
       retries: 10
+
+  prod-bookcover-proxy:
+    image: ghcr.io/henken-club/bookcover-proxy:develop@sha256:a7bc67e11d43e235d8f08178e32a6bf585fd083b5141c166f29ee3da3ad689a6
+    environment:
+      PORT: 8080
 
   prod-neo4j:
     image: neo4j:4.2
