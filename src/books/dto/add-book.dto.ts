@@ -1,5 +1,5 @@
 import {ArgsType, Field, ID, ObjectType} from '@nestjs/graphql';
-import {ArrayNotEmpty, IsNotEmpty} from 'class-validator';
+import {ArrayNotEmpty, IsISBN, IsNotEmpty, IsOptional} from 'class-validator';
 
 import {BookEntity} from '../books.entities';
 
@@ -12,6 +12,11 @@ export class AddBookArgs {
   @Field(() => String)
   @IsNotEmpty()
   title!: string;
+
+  @Field(() => String, {nullable: true})
+  @IsOptional()
+  @IsISBN()
+  isbn?: string;
 }
 
 @ObjectType()

@@ -33,6 +33,7 @@ export class BooksService {
     return {
       id: result.records[0].get('id'),
       title: result.records[0].get('title'),
+      isbn: result.records[0].get('isbn'),
     };
   }
 
@@ -41,6 +42,7 @@ export class BooksService {
       records.map((record) => ({
         id: record.get('id'),
         title: record.get('title'),
+        isbn: record.get('isbn'),
       })),
     );
   }
@@ -95,19 +97,25 @@ export class BooksService {
 
   async addBook(
     userId: string,
-    {title, authors}: {title: string; authors: string[]},
+    {
+      title,
+      authors,
+      isbn,
+    }: {title: string; authors: string[]; isbn: string | null},
   ): Promise<BookEntity | null> {
     const result = await this.neo4jService.write(CYPHER_ADD_BOOK, {
       userId,
       id: this.idService.createId(),
       title,
       authors,
+      isbn,
     });
     if (result.records.length !== 1)
       throw new Error('something broken with neo4j');
     return {
       id: result.records[0].get('id'),
       title: result.records[0].get('title'),
+      isbn: result.records[0].get('isbn'),
     };
   }
 }

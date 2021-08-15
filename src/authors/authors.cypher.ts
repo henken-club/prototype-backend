@@ -16,7 +16,7 @@ export const CYPHER_COUNT_ALL_AUTHORS = `
 const getWritesBooks = (parameter: 'title', order: 'ASC' | 'DESC') =>
   `
   MATCH (a:Author {id: $id})-[:WRITES_BOOK]->(b:Book)
-  RETURN b.id AS id, b.title AS title
+  RETURN b.id AS id, b.title AS title, b.isbn AS isbn
   ORDER BY ${parameter} ${order}
   SKIP $skip LIMIT $limit
   ` as const;

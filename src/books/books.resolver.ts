@@ -24,13 +24,27 @@ import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {UserEntity} from '~/users/users.entities';
 import {AuthorsService} from '~/authors/authors.service';
+import {BookcoverProxyService} from '~/bookcover-proxy/bookcover-proxy.service';
+import {ImgproxyService} from '~/imgproxy/imgproxy.service';
 
 @Resolver(() => BookEntity)
 export class BooksResolver {
   constructor(
     private readonly booksService: BooksService,
     private readonly authorsService: AuthorsService,
+    private readonly bookcoverProxy: BookcoverProxyService,
+    private readonly imgproxy: ImgproxyService,
   ) {}
+
+  @ResolveField(() => String, {name: 'cover', nullable: true})
+  async resolveBookcover(@Parent() {isbn}: BookEntity): Promise<string | null> {
+    if (!isbn) return null;
+
+    const bookcoverUrl = await this.bookcoverProxy.getFromISBN(isbn);
+    if (!bookcoverUrl) return null;
+
+    return this.imgproxy.proxy(bookcoverUrl, {extension: 'webp'});
+  }
 
   @ResolveField(() => UserEntity, {name: 'userResponsibleFor'})
   async resolveUserResponsibleFor(
@@ -80,14 +94,15 @@ export class BooksResolver {
   @UseGuards(GraphQLJwtGuard)
   async addBook(
     @Viewer() {id: userId}: ViewerType,
-    @Args() {title, authors: authorIds}: AddBookArgs,
+    @Args() {title, authors, isbn}: AddBookArgs,
   ): Promise<AddBookPayload> {
-    if (!(await this.authorsService.checkExistence(authorIds)))
+    if (!(await this.authorsService.checkExistence(authors)))
       throw new BadRequestException('not exist author(s)');
 
     const book = await this.booksService.addBook(userId, {
       title,
-      authors: authorIds,
+      authors,
+      isbn: isbn || null,
     });
     if (!book) throw new InternalServerErrorException();
     return {book};

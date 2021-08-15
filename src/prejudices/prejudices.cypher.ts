@@ -52,7 +52,8 @@ const getRelatedBooks = (property: 'title', order: 'ASC' | 'DESC') =>
   MATCH (:Prejudice {id: $id})-[:RELATED_BOOK]->(b:Book)
   RETURN
     b.id AS id,
-    b.title AS title
+    b.title AS title,
+    b.isbn AS isbn
   ORDER BY ${property} ${order}
   SKIP $skip LIMIT $limit` as const;
 export const CYPHER_GET_PREJUDICE_RELATED_BOOKS_ORDERBY_TITLE_AT_ASC =

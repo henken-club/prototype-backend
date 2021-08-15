@@ -21,7 +21,11 @@ export class BookEntity {
 
   @Field(() => String)
   title!: string;
+
+  @Field(() => String, {nullable: true})
+  isbn!: string | null;
 }
+
 export enum BookOrderField {
   TITLE,
 }

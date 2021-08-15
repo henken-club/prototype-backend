@@ -1,11 +1,11 @@
 export const CYPHER_GET_BOOK = `
   MATCH (b:Book {id: $id})
-  RETURN b.id AS id, b.title AS title
+  RETURN b.id AS id, b.title AS title, b.isbn AS isbn
 `;
 
 export const CYPHER_GET_ALL_BOOKS = `
   MATCH (b:Book)
-  RETURN b.id AS id, b.title AS title
+  RETURN b.id AS id, b.title AS title, b.isbn AS isbn
 `;
 
 export const CYPHER_COUNT_ALL_BOOKS = `
@@ -48,7 +48,7 @@ export const CYPHER_ADD_BOOK = `
   CALL {
     WITH u
     CREATE (u)-[r:RESPONSIBLE_FOR]->(b:Book)
-    SET b.id = $id, b.title=$title
+    SET b.id = $id, b.title=$title, b.isbn = $isbn
     SET r.updatedAt = localdatetime()
     RETURN b
   }
@@ -58,5 +58,5 @@ export const CYPHER_ADD_BOOK = `
     CREATE (a)-[r:WRITES_BOOK]->(b)
     RETURN r
   }
-  RETURN DISTINCT b.id AS id, b.title AS title
+  RETURN DISTINCT b.id AS id, b.title AS title, b.isbn AS isbn
 `;

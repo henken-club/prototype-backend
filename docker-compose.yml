@@ -47,6 +47,12 @@ services:
       IMGPROXY_KEY: $IMGPROXY_KEY
       IMGPROXY_SALT: $IMGPROXY_SALT
 
+  bookcover-proxy:
+    image: ghcr.io/henken-club/bookcover-proxy:develop
+    ports:
+      - published: $BOOKCOVER_PROXY_PORT
+        target: 8080
+
 volumes:
   neo4j-data:
   neo4j-logs:
