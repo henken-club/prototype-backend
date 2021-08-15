@@ -47,7 +47,7 @@ describe('BooksService', () => {
 
     it('return object if id exists', async () => {
       await neo4jService.write(
-        `CREATE (b:Book {id: "1", title: "Title"}) RETURN *`,
+        `CREATE (b:Book {id: "1", title: "Title", isbn: "9784845860203"}) RETURN *`,
       );
 
       const actual = await booksService.getById('1');
@@ -55,6 +55,7 @@ describe('BooksService', () => {
       expect(actual).toStrictEqual({
         id: '1',
         title: 'Title',
+        isbn: '9784845860203',
       });
     });
   });
