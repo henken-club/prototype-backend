@@ -1,0 +1,11 @@
+#!/bin/sh
+
+mkdir -p src/protogen
+
+$(npm bin)/grpc_tools_node_protoc \
+    --proto_path=proto \
+    --plugin=$(npm bin)/protoc-gen-ts_proto \
+    --ts_proto_out=src/protogen \
+    --ts_proto_opt=nestJs=true \
+    --ts_proto_opt=addGrpcMetadata=true \
+    proto/*.proto

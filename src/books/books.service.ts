@@ -1,5 +1,7 @@
-import {Injectable} from '@nestjs/common';
+import {Inject, Injectable, OnModuleInit} from '@nestjs/common';
 import {int} from 'neo4j-driver';
+import {ClientGrpc} from '@nestjs/microservices';
+import {map, Observable} from 'rxjs';
 
 import {OrderDirection} from '../common/common.entities';
 
@@ -19,13 +21,30 @@ import {Neo4jService} from '~/neo4j/neo4j.service';
 import {IdService} from '~/id/id.service';
 import {AuthorEntity, AuthorOrder} from '~/authors/authors.entities';
 import {UserEntity} from '~/users/users.entities';
+import {FetcherClient, FETCHER_SERVICE_NAME} from '~/protogen/bookcover';
 
 @Injectable()
-export class BooksService {
+export class BooksService implements OnModuleInit {
+  private bookcoverFetcher!: FetcherClient;
+
   constructor(
+    @Inject('BookcoverClient')
+    private readonly bookcoverClient: ClientGrpc,
+
     private readonly neo4jService: Neo4jService,
     private readonly idService: IdService,
   ) {}
+
+  onModuleInit() {
+    this.bookcoverFetcher =
+      this.bookcoverClient.getService<FetcherClient>(FETCHER_SERVICE_NAME);
+  }
+
+  getBookcoverFromISBN(isbn: string): Observable<string | null> {
+    return this.bookcoverFetcher
+      .findFromISBN({isbn})
+      .pipe(map(({url}) => url || null));
+  }
 
   async getById(id: string): Promise<BookEntity | null> {
     const result = await this.neo4jService.read(CYPHER_GET_BOOK, {id});

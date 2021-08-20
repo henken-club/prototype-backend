@@ -8,6 +8,9 @@ package-lock.json
 # output
 dist/
 
+# protogen
+src/protogen/
+
 # auto generated
 src/graphql.ts
 src/schema.graphql
