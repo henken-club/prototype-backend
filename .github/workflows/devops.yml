@@ -53,6 +53,7 @@ jobs:
           node-version: 16.4.2
           cache: yarn
       - run: yarn install --frozen-lockfile
+      - run: yarn run protogen
       - run: yarn run typecheck
 
   test-unit:
@@ -97,6 +98,7 @@ jobs:
           node-version: 16.4.2
           cache: yarn
       - run: yarn install --frozen-lockfile
+      - run: yarn run protogen
       - run: yarn run test:unit
 
   build:
@@ -110,6 +112,7 @@ jobs:
           cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn prisma generate
+      - run: yarn run protogen
       - run: yarn run build
 
   hadolint-backend:
