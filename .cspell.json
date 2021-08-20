@@ -13,8 +13,13 @@
     "ghcr",
     "healthcheck",
     "localdatetime",
+    "microservice",
+    "microservices",
     "noea",
     "nowe",
+    "outdir",
+    "proto",
+    "protogen",
     "signup",
     "sowa",
     "sowe",
@@ -28,6 +33,7 @@
     "buildx",
     "imageproxy",
     "henken",
+    "henkenclub",
     "imgproxy",
     "nestjs",
     "darthsim",
@@ -39,7 +45,8 @@
     "libssl",
     "JLABS",
     "yarnrc",
-    "prettierrc"
+    "prettierrc",
+    "grpc"
   ],
   "ignorePaths": [
     ".vscode/extensions.json",
@@ -47,8 +54,11 @@
     "dist/**",
     "node_modules/**",
     "prisma/migrations/**",
+    "proto/**",
+    "scripts/**",
     "src/graphql.ts",
     "src/schema.graphql",
+    "src/protogen/**",
     ".cspell.json",
     ".yarnrc",
     "yarn.lock"

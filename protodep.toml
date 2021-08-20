@@ -1,0 +1,5 @@
+proto_outdir = "./proto"
+
+[[dependencies]]
+  target = "github.com/henken-club/bookcover-grpc-service/proto"
+  branch = "main"

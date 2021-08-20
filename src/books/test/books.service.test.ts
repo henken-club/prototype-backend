@@ -16,7 +16,13 @@ describe('BooksService', () => {
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       imports: [Neo4jModule, IdModule],
-      providers: [BooksService],
+      providers: [
+        BooksService,
+        {
+          provide: 'BookcoverClient',
+          useValue: {getService() {}},
+        },
+      ],
     }).compile();
 
     app = module.createNestApplication();

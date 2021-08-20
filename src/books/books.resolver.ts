@@ -12,6 +12,7 @@ import {
   InternalServerErrorException,
   UseGuards,
 } from '@nestjs/common';
+import {Observable, of} from 'rxjs';
 
 import {BookArray, BookEntity} from './books.entities';
 import {BooksService} from './books.service';
@@ -24,26 +25,18 @@ import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {UserEntity} from '~/users/users.entities';
 import {AuthorsService} from '~/authors/authors.service';
-import {BookcoverProxyService} from '~/bookcover-proxy/bookcover-proxy.service';
-import {ImgproxyService} from '~/imgproxy/imgproxy.service';
 
 @Resolver(() => BookEntity)
 export class BooksResolver {
   constructor(
     private readonly booksService: BooksService,
     private readonly authorsService: AuthorsService,
-    private readonly bookcoverProxy: BookcoverProxyService,
-    private readonly imgproxy: ImgproxyService,
   ) {}
 
   @ResolveField(() => String, {name: 'cover', nullable: true})
-  async resolveBookcover(@Parent() {isbn}: BookEntity): Promise<string | null> {
-    if (!isbn) return null;
-
-    const bookcoverUrl = await this.bookcoverProxy.getFromISBN(isbn);
-    if (!bookcoverUrl) return null;
-
-    return this.imgproxy.proxy(bookcoverUrl, {extension: 'webp'});
+  resolveBookcover(@Parent() {isbn}: BookEntity): Observable<string | null> {
+    if (!isbn) return of(null);
+    return this.booksService.getBookcoverFromISBN(isbn);
   }
 
   @ResolveField(() => UserEntity, {name: 'userResponsibleFor'})

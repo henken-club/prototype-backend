@@ -1,6 +1,49 @@
 version: '3.8'
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      neo4j:
+        condition: service_healthy
+      prisma-migrate:
+        condition: service_completed_successfully
+    ports:
+      - published: 4001
+        target: 4001
+    environment:
+      PORT: 4001
+
+      GRAPHQL_PLAYGROUND: enable
+
+      JWT_ACCESS_SECRET: $JWT_ACCESS_SECRET
+      JWT_REFRESH_SECRET: $JWT_REFRESH_SECRET
+
+      PRISMA_DATABASE_URL: mysql://root:$MYSQL_PASSWORD@mysql:3306/$MYSQL_DATABASE
+
+      NEO4J_USERNAME: $NEO4J_USERNAME
+      NEO4J_PASSWORD: $NEO4J_PASSWORD
+      NEO4J_URL: bolt://neo4j:7687
+
+      IMGPROXY_BASE_URL: $IMGPROXY_BASE_URL
+      IMGPROXY_KEY: $IMGPROXY_KEY
+      IMGPROXY_SALT: $IMGPROXY_SALT
+
+      BOOKCOVER_SERVICE_URL: bookcover-service:5000
+
+  bookcover-service:
+    image: ghcr.io/henken-club/bookcover-grpc-service@sha256:691a4bd1fe5f1581038998b738e284981fcb6e39751c28c7e1773e05e35bec1c
+    ports:
+      - published: $BOOKCOVER_SERVICE_PORT
+        target: 5000
+    environment:
+      PORT: 5000
+      IMGPROXY_BASE_URL: $IMGPROXY_BASE_URL
+      IMGPROXY_KEY: $IMGPROXY_KEY
+      IMGPROXY_SALT: $IMGPROXY_SALT
+
   neo4j:
     image: neo4j:4.2
     ports:
@@ -38,6 +81,16 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
 
+  prisma-migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile.prisma-migrate
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      PRISMA_DATABASE_URL: mysql://root:$MYSQL_PASSWORD@mysql:3306/$MYSQL_DATABASE
+
   imgproxy:
     image: darthsim/imgproxy:latest
     ports:
@@ -47,16 +100,9 @@ services:
       IMGPROXY_KEY: $IMGPROXY_KEY
       IMGPROXY_SALT: $IMGPROXY_SALT
 
-  bookcover-proxy:
-    image: ghcr.io/henken-club/bookcover-proxy:develop
-    ports:
-      - published: $BOOKCOVER_PROXY_PORT
-        target: 8080
-
 volumes:
   neo4j-data:
   neo4j-logs:
   neo4j-import:
   neo4j-plugins:
   mysql-data:
-  imageproxy-redis-data:

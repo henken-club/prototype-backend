@@ -2,6 +2,9 @@
 test/
 *.test.ts
 
+# protogen
+src/protogen/
+
 # schema.graphql
 schema.graphql
 

@@ -24,6 +24,10 @@ RUN npm prune --production
 FROM deps AS builder
 WORKDIR /app
 
+COPY scripts/protogen ./scripts/protogen
+COPY proto ./proto
+RUN yarn run protogen
+
 COPY tsconfig.json tsconfig.build.json nest-cli.json ./
 COPY src ./src
 RUN yarn run build
@@ -35,6 +39,7 @@ WORKDIR /app
 ENV PORT 4000
 ENV NODE_ENV production
 
+COPY --from=builder /app/proto ./proto
 COPY --from=builder /app/dist ./dist
 
 EXPOSE $PORT

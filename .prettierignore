@@ -7,6 +7,9 @@ dist/
 # test
 coverage/
 
+# protogen
+src/protogen/
+
 # auto generated
 src/graphql.ts
 src/schema.graphql
