@@ -1,5 +1,7 @@
-import {Injectable} from '@nestjs/common';
+import {Inject, Injectable} from '@nestjs/common';
 import {int} from 'neo4j-driver';
+import {ClientGrpc} from '@nestjs/microservices';
+import {map, Observable} from 'rxjs';
 
 import {UserEntity} from './users.entities';
 import {
@@ -26,6 +28,7 @@ import {
 import {AnswerEntity, AnswerOrder} from '~/answers/answers.entities';
 import {PrismaService} from '~/prisma/prisma.service';
 import {OrderDirection} from '~/common/common.entities';
+import {AvatarClient, AVATAR_SERVICE_NAME} from '~/protogen/avatar';
 
 export type UserUniqueUnion = {
   alias?: string;
@@ -34,10 +37,20 @@ export type UserUniqueUnion = {
 
 @Injectable()
 export class UsersService {
+  private avatarService!: AvatarClient;
+
   constructor(
+    @Inject('AvatarClient')
+    private readonly avatarClient: ClientGrpc,
+
     private readonly neo4jService: Neo4jService,
     private readonly prismaService: PrismaService,
   ) {}
+
+  onModuleInit() {
+    this.avatarService =
+      this.avatarClient.getService<AvatarClient>(AVATAR_SERVICE_NAME);
+  }
 
   async resolveAlias(id: string) {
     return this.prismaService.user
@@ -51,17 +64,8 @@ export class UsersService {
       .then((user) => user?.displayName || null);
   }
 
-  async resolvePicture(id: string): Promise<string> {
-    return this.prismaService.user
-      .findUnique({
-        where: {id},
-        select: {alias: true},
-        rejectOnNotFound: true,
-      })
-      .then(
-        ({alias}) =>
-          `https://identicon-api.herokuapp.com/${alias}/256?format=png`,
-      );
+  resolvePicture(id: string): Observable<string> {
+    return this.avatarService.getAvatar({id}).pipe(map(({url}) => url));
   }
 
   async resolvePostedPrejudices(
