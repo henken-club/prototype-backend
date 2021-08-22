@@ -4,12 +4,6 @@ henken.club の**プロトタイプ**バックエンド．
 
 ## Docker Image
 
-### リリース版
-
-```bash
-docker pull ghcr.io/henken-club/prototype-backend:release
-```
-
 ### 開発版
 
 `develop`ブランチでの push ごとに更新されるので sha256 ダイジェストの指定推奨．
@@ -29,13 +23,8 @@ yarn install
 各種`docker-compose.*.yml`の詳細は以下の通り．
 
 - `docker-compose.yml`
-  - ローカルで実際に動かす際に必要な DB などを立ち上げる．
-  - `prisma migrate deploy`必須．
-- `docker-compose.test.yml`
+- `tests/docker-compose.test.yml`
   - テスト用の MySQL や Neo4j などを立ち上げる．
-- `docker-compose.prod.yml`
-  - 本番で必要なものを立ち上げる．
-  - 本番で使わないこと．
 
 ## GitHub Actions
 
