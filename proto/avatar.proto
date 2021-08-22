@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package henkenclub.avatar;
+
+service Avatar {
+  rpc GetAvatar(GetAvatarRequest) returns (GetAvatarResponse);
+}
+
+message GetAvatarRequest {
+  string id = 1;
+}
+
+message GetAvatarResponse {
+  string url = 1;
+}

@@ -13,3 +13,10 @@ proto_outdir = "./proto"
   branch = "main"
   path = ""
   protocol = ""
+
+[[dependencies]]
+  target = "github.com/henken-club/avatar-grpc-service/proto"
+  revision = "dcdeff58a2dda1658c955b4fd0b18e1419582f98"
+  branch = "main"
+  path = ""
+  protocol = ""

@@ -19,7 +19,10 @@ describe('UsersService', () => {
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       imports: [Neo4jModule, PrismaModule],
-      providers: [UsersService],
+      providers: [
+        UsersService,
+        {provide: 'AvatarClient', useValue: {getService() {}}},
+      ],
     }).compile();
 
     app = module.createNestApplication();
