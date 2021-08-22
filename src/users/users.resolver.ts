@@ -12,6 +12,7 @@ import {
   InternalServerErrorException,
   UseGuards,
 } from '@nestjs/common';
+import {Observable} from 'rxjs';
 
 import {
   FolloweeArray,
@@ -29,7 +30,6 @@ import {FindUserArgs, FindUserResult} from './dto/find-user.dto';
 import {ResolvePostAnswersArgs} from './dto/resolve-post-answers.dto';
 
 import {SettingsService} from '~/settings/settings.service';
-import {ImgproxyService} from '~/imgproxy/imgproxy.service';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {PrejudiceArray} from '~/prejudices/prejudices.entities';
@@ -41,7 +41,6 @@ export class UsersResolver {
   constructor(
     private usersService: UsersService,
     private settingsService: SettingsService,
-    private imgproxyService: ImgproxyService,
   ) {}
 
   @ResolveField(() => String, {name: 'alias'})
@@ -59,15 +58,8 @@ export class UsersResolver {
   }
 
   @ResolveField(() => String, {name: 'picture'})
-  async resolvePicture(@Parent() {id}: UserEntity): Promise<string> {
-    return this.usersService
-      .resolvePicture(id)
-      .then((picture) =>
-        this.imgproxyService.proxy(picture, {extension: 'webp'}),
-      )
-      .catch((err) => {
-        throw new InternalServerErrorException(err);
-      });
+  resolvePicture(@Parent() {id}: UserEntity): Observable<string> {
+    return this.usersService.resolvePicture(id);
   }
 
   @ResolveField(() => PrejudiceArray, {name: 'postedPrejudices'})
