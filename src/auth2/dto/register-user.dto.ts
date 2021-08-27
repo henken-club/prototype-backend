@@ -1,13 +1,16 @@
 import {ArgsType, Field, ObjectType} from '@nestjs/graphql';
 
 @ArgsType()
-export class RefreshTokenArgs {
+export class RegisterUserArgs {
   @Field(() => String)
-  refreshToken!: string;
+  code!: string;
+
+  @Field(() => String)
+  token!: string;
 }
 
 @ObjectType()
-export class RefreshTokenPayload {
+export class RegisterUserPayload {
   @Field(() => String)
   accessToken!: string;
 

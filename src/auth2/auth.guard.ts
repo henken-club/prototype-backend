@@ -6,6 +6,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {GqlExecutionContext} from '@nestjs/graphql';
+import {map} from 'rxjs';
 
 import {AuthService} from './auth.service';
 
@@ -15,14 +16,15 @@ export function RequireAuth() {
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly auth: AuthService) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  async canActivate(context: ExecutionContext) {
     const gqlContext = GqlExecutionContext.create(context);
     const req = gqlContext.getContext().req;
+    const token = '?';
 
-    // this.authService.verifyToken({req.});console.dir(req);
+    if (!token) return false;
 
-    return true;
+    return this.auth.verifyToken({accessToken: token}).pipe(map(() => {}));
   }
 }

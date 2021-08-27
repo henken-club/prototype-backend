@@ -1,6 +1,7 @@
 import {Module} from '@nestjs/common';
 import {ConfigModule, ConfigType} from '@nestjs/config';
 import {ClientsModule, Transport} from '@nestjs/microservices';
+import {JwtModule} from '@nestjs/jwt';
 
 import {AuthResolver} from './auth.resolver';
 import {AuthService} from './auth.service';
@@ -10,6 +11,7 @@ import {AccountConfig} from '~/services/account.config';
 
 @Module({
   imports: [
+    JwtModule.register({}),
     ClientsModule.registerAsync([
       {
         name: 'AccountClient',

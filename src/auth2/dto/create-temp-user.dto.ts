@@ -2,7 +2,7 @@ import {ArgsType, Field, ObjectType} from '@nestjs/graphql';
 import {IsEmail, IsNotEmpty, IsOptional} from 'class-validator';
 
 @ArgsType()
-export class SignUpArgs {
+export class CreateTempUserArgs {
   @Field(() => String)
   @IsEmail()
   email!: string;
@@ -22,10 +22,7 @@ export class SignUpArgs {
 }
 
 @ObjectType()
-export class SignUpPayload {
+export class CreateTempUserPayload {
   @Field(() => String)
-  accessToken!: string;
-
-  @Field(() => String)
-  refreshToken!: string;
+  token!: string;
 }
