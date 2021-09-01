@@ -1,0 +1,141 @@
+syntax = "proto3";
+
+package henkenclub.account;
+
+import "google/protobuf/timestamp.proto";
+
+/* common */
+
+// Basic User Info
+message User {
+  string id = 1;
+  string alias = 2;
+  optional string display_name = 3;
+}
+
+// Auth Tokens pair
+message TokensPair {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+service Account {
+  // GetUser
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+}
+
+// GetUser
+message GetUserRequest {
+  oneof where {
+    string id = 1;
+    string alias = 2;
+  }
+}
+message GetUserResponse {
+  User user = 1;
+}
+
+service Signup {
+  // create temporary user
+  rpc CreateTemporaryUser(CreateTemporaryUserRequest)
+      returns (CreateTemporaryUserResponse);
+
+  // resend verify email
+  rpc ResendVerificationEmail(ResendVerificationEmailRequest)
+      returns (ResendVerificationEmailResponse);
+
+  // register user
+  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse);
+}
+
+message Registration {
+  string verification_code = 1;
+  string register_token = 2;
+  google.protobuf.Timestamp expired_at = 3;
+}
+
+/* Create Temporary User */
+
+message CreateTemporaryUserRequest {
+  string password = 1;
+  string email = 2;
+  string alias = 3;
+  optional string display_name = 4;
+}
+
+message CreateTemporaryUserResponse {
+
+  message Error {
+    enum Detail {
+      INVALID = 0;
+      DUPLICATED_EMAIL = 1;
+      DUPLICATED_ALIAS = 2;
+    }
+    repeated Detail details = 1;
+  }
+
+  oneof result {
+    Registration registration = 1;
+    Error error = 2;
+  }
+}
+
+/* Resend verification email */
+
+message ResendVerificationEmailRequest {
+  string register_token = 1;
+}
+
+message ResendVerificationEmailResponse {
+  Registration registration = 1;
+}
+
+/* Register User */
+
+message RegisterUserRequest {
+  string verify_code = 1;
+  string register_token = 2;
+}
+
+message RegisterUserResponse {
+  TokensPair tokens = 1;
+}
+
+service Signin {
+  // sign in
+  rpc Signin(SigninRequest) returns (SigninResponse);
+
+  // refresh access token
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
+
+  // verify access token
+  rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
+}
+
+// SignIn
+message SigninRequest {
+  string password = 1;
+  oneof name {
+    string email = 2;
+    string alias = 3;
+  }
+}
+message SigninResponse {
+  TokensPair tokens = 1;
+}
+
+// RefreshToken
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+message RefreshTokenResponse {
+  TokensPair tokens = 1;
+}
+
+// VerifyToken
+message VerifyTokenRequest {
+  string access_token = 1;
+}
+message VerifyTokenResponse {
+  string user_id = 1;
+}

@@ -8,8 +8,15 @@ proto_outdir = "./proto"
   protocol = ""
 
 [[dependencies]]
+  target = "github.com/henken-club/account-grpc-service/proto"
+  revision = "e514fea9f6f13179a5bb12595d5a469ffd11b836"
+  branch = "main"
+  path = ""
+  protocol = ""
+
+[[dependencies]]
   target = "github.com/henken-club/avatar-grpc-service/proto"
-  revision = "517c81cb323f2795140b46d9a7b27fb91f1c02dc"
+  revision = "dcdeff58a2dda1658c955b4fd0b18e1419582f98"
   branch = "main"
   path = ""
   protocol = ""
