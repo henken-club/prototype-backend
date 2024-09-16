@@ -22,6 +22,7 @@ import {
   PostPrejudiceArgs,
   PostPrejudicePayload,
 } from './dto/post-prejudice.dto';
+import {ResolveRelatedBooksArgs} from './dto/resolve-related-books.dto';
 
 import {UserEntity} from '~/users/users.entities';
 import {UsersService} from '~/users/users.service';
@@ -29,6 +30,7 @@ import {SettingsService} from '~/settings/settings.service';
 import {GraphQLJwtGuard} from '~/auth/graphql-jwt.guard';
 import {Viewer, ViewerType} from '~/auth/viewer.decorator';
 import {AnswerEntity} from '~/answers/answers.entities';
+import {BookArray} from '~/books/books.entities';
 
 @Resolver(() => PrejudiceEntity)
 export class PrejudicesResolver {
@@ -84,22 +86,19 @@ export class PrejudicesResolver {
     return this.prejudicesService.resolveAnswer(id);
   }
 
-  /*
-  @ResolveField('relatedBooks')
+  @ResolveField(() => BookArray, {name: 'relatedBooks'})
   async getRelatedBooks(
     @Parent() {id}: PrejudiceEntity,
-    @Args('skip') skip: number,
-    @Args('limit') limit: number,
-    @Args('orderBy') orderBy: BookOrder,
-  ): Promise<BookConnection> {
+    @Args() {skip, limit, orderBy}: ResolveRelatedBooksArgs,
+  ): Promise<BookArray> {
     const nodes = await this.prejudicesService.resolveRelatedBooks(id, {
       skip,
       limit,
       orderBy,
     });
-    return {nodes};
+    const totalCount = await this.prejudicesService.countRelatedBooks(id);
+    return {nodes, totalCount};
   }
-  */
 
   @Query(() => PrejudiceEntity, {name: 'prejudice'})
   async getPrejudiceById(
